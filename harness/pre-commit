@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+set -e
+
+echo "pre-commit: gofmt"
+git diff --cached --name-only --diff-filter=ACMR | grep '\.go$' | xargs -r gofmt -w
+
+# Re-add formatted Go files.
+git diff --cached --name-only --diff-filter=ACMR | grep '\.go$' | xargs -r git add
+
+echo "pre-commit: arch-check"
+go run ./tools/archcheck
+
+echo "pre-commit: staticcheck"
+go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+
+echo "pre-commit: dead-check"
+go run ./tools/deadcheck
+
+echo "pre-commit: test"
+go test ./...
+
+echo "pre-commit: passed"
