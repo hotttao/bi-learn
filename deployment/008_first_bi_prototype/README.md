@@ -2,11 +2,11 @@
 
 ## 当前状态与协作方式
 
-2026-10-16：**S0 规划与教学设计完成，等待用户 review；尚未部署、初始化数据库或验证产品能力，尚未提交。**
+2026-10-17：**用户已确认“先接 Superset，再实验 Codex＋Wren 新版”。S0 与 wiki 已提交（`d61faeb`）；S1 环境与配置验证已完成，等待 review：Docker/Compose、镜像构建及一次性容器中的版本/驱动/配置检查通过。S1 新变更未提交，业务数据库与 Superset Web 均未启动。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
-本实验采用 Superset＋Trino＋官方 Superset MCP，直接用 Codex 作为通用 Agent。先手工 BI，再跨库、权限、MCP、Codex；首版不开发聊天应用或 Agent 框架。Superset 6.1.0 是原方案指定的待核验基线，其镜像、驱动和 MCP 的实际可用性在 S1 核实；其他版本也在 S1 固定，不使用 `latest`。
+本实验先用 Superset 建立可核对、可编辑的 BI 基线，再以同一组数据实验 Codex＋Wren 新版。Wren 重点验证关系建模、查询及语义变更发布，Superset 保留作基线和展示入口；不假定两者已经自动同步。跨源查询由 Trino 阶段验证，首版不开发聊天应用或 Agent 框架。Superset 固定 6.1.0；S1 先准备元数据库与 Web 配置，其他组件在进入对应步骤时锁定版本，不使用 `latest`。
 
 每个 S 编号都是一次独立 review 边界：
 
@@ -48,17 +48,22 @@
 
 | 步骤 | 本步实现与交付 | 带你理解 | 通过条件与 review 边界 |
 | --- | --- | --- | --- |
-| S0 规划（本轮） | README、agent.md、指令入口、语义与实验设计 | 组件职责、实验顺序、固定答案 | 文档自查完成，用户 review；不部署 |
-| S1 环境与版本 | 核查宿主/沙箱、容器运行时、Compose、CPU/内存/磁盘、端口和访问方式；核对官方版本，固定镜像/驱动，写环境记录及配置骨架 | 容器、业务库与 BI 元数据库的区别 | 运行时可用，配置校验通过；版本、端口、资源预算、持久卷、密钥注入路径明确；必要安装在本步实施并记录 |
+| S0 规划（已提交） | README、agent.md、指令入口、语义与实验设计 | 组件职责、实验顺序、固定答案 | 文档自查完成，用户 review；不部署 |
+| S1 环境与版本 | 核查宿主/沙箱、容器运行时、Compose、CPU/内存/磁盘、端口和访问方式；核对本步官方版本，指定镜像/驱动，写环境记录及配置骨架；构建成功后补镜像摘要 | 容器、业务库与 BI 元数据库的区别 | 运行时可用，配置校验通过；版本、端口、资源预算、持久卷、密钥注入路径明确；必要安装在本步实施并记录 |
 | S2 数据源与造数 | 启动 MySQL 和业务 PostgreSQL；建表、seed、只读账号、数据字典、独立预期答案、重复初始化检查 | 主键、粒度、外键与跨源逻辑关系 | 两源 baseline 行数与金额正确；重复 seed 不增量；提供查询、连接方法、停止/重启和恢复方法 |
 | S3 手工 BI（第一关） | Superset＋独立持久元数据库，先直连 MySQL；订单退款数据集、指标卡、日趋势、日期筛选、看板 | 数据集/指标/图表/看板分别保存什么 | 245；筛选 10-01 得 120；布局重开保留；订单 2 实付 80→90 后刷新得 255，恢复后得 245；记录缓存策略 |
 | S4 跨库与关系（第二关） | 单节点 Trino、两个 catalog、正确/错误 JOIN 对照、跨源虚拟数据集、行业柱状图、edge 用例、可执行语义契约 | 基数、扇出、当前/历史维度、数据质量 | 245/120/125 对账；订单粒度不变；更新 A/1 行业为零售后软件 50、零售 195，总额 245，恢复后还原；异常用例按契约处理 |
+| W1 Wren 建模与查询 | S4 后固定新版 Wren 版本，建立独立语义项目，复用同一测试源；核验 MDL、严格模型范围与固定查询 | 文档语义如何变成可执行模型 | 245 基准与 Superset 对账；退款和客户关联正确；记录模型版本与允许入口 |
+| W2 Codex＋Wren MCP | 先固定工具调用，再用现成 Codex 发现模型并问数，不开发 Agent | 上下文、工具和执行模型的区别 | 同义问法、歧义和异常 fixture 通过；未验证的部门边界不作为团队服务开放 |
+| W3 语义变更维护 | 独立 fixture 制造客户键和业务口径变化；发现、审核、构建、索引更新、发布与回归 | schema 不变也可能需要语义升级 | 能发现错误关系、核对版本一致性并恢复正确结果；明确 Superset 资产是否需要人工同步 |
 | S5 部门隔离（第三关） | 可信 Trino 认证、A/B 受限身份和访问策略、各自 BI connection/dataset/普通用户 | 身份、连接权限、行列与资产权限的区别 | A 145、B 100；伪造用户名、猜资产 ID、导出、直接查询、缓存和撤权路径均验证；失败不得宣称隔离通过 |
 | S6 官方 MCP 固定调用 | 核对版本实际工具清单、启动 MCP、固定参数完成预览→保存→加入指定看板；写调用与读回证据 | MCP 是工具协议；保存涉及外部副作用 | 原生资产可编辑、重开/刷新有效；重复调用不重复加图；中断恢复与 A/B 权限通过；不足时先报告最小适配范围 |
 | S7 Codex 接入（第四关） | 将已验证 MCP 接给 Codex；加载语义上下文；运行中文问题集，覆盖 KPI/趋势/行业/明细、筛选和多轮修改 | 从业务意图到受控工具；区分模型理解与服务端校验 | 三句原型对话通过；保留人工改动；结果可追溯到身份、数据集和指标版本；同义问法、歧义、失败路径有记录 |
 | S8 增长与语义演进 | 目录增长、数据量增长分开测；比较仅 schema 与语义契约；记录性能、错误、成本和下一步选型 | 何时需要汇总、语义服务、本体 | 先声明实验规模与可接受目标，再记录实测；明确是否需要独立语义层或分析仓库，不能从 4 条数据推出生产容量 |
 
-S1 固定后续使用的版本，但只启动当前步骤需要的服务。S2 的业务 PostgreSQL 与 S3 的元数据库分开，减少误操作混淆。S3 是第一个可以亲手使用的看板；不等待 MCP 才交付。
+执行顺序调整为 **S1 → S2 → S3 → S4 → W1 → W2 → W3 → S5 → S6 → S7 → S8**。保留原 S 编号便于对应历史记录；新增 W 步骤体现已确认的研究重点。Superset MCP 与 Wren MCP 是不同工具入口，后续 S6/S7 仍独立验收资产操作；W 阶段先验证语义，不宣称已打通图表保存。每一步继续单独 review。
+
+S1 只固定本步配置目标，Trino/Wren 等进入相应步骤时再固定版本和依赖，只启动当前步骤需要的服务。S2 的业务 PostgreSQL 与 S3 的元数据库分开，减少误操作混淆。S3 是第一个可以亲手使用的看板；不等待 MCP 才交付。
 
 ### 每一步怎么教、怎么复现
 
@@ -68,7 +73,7 @@ S1 固定后续使用的版本，但只启动当前步骤需要的服务。S2 �
 
 每步结束回答三个问题：这一步数据经过哪些组件？什么事实证明结果正确？如果结果不对，先检查哪里？
 
-未来按需要新增 `compose.yaml`、`.env.example`、`sql/`、`scripts/`、`semantic/`、`evidence/`。这些当前尚未生成。只提交去敏后的配置和证据，不提交实际密钥、数据卷或原始会话凭据；实验服务默认限本机访问。
+S1 已新增 `compose.yaml`、`.env.example`、`scripts/prepare_env.py`、`superset/` 和本地忽略规则；这些是待运行验证的配置骨架。后续按需新增 `sql/`、`semantic/`、`evidence/`。只提交去敏后的配置和证据，不提交实际密钥、数据卷或原始会话凭据；实验服务默认限本机访问。
 
 ## S0 已完成操作记录
 
@@ -103,6 +108,161 @@ review 反馈与确认：
 下一步（仅确认并提交后开始）：
 ```
 
-## 本轮需要 review 的决定
+## 当前 review 范围
 
-确认实验场景和指标口径、S0～S8 顺序、每步确认后提交的节奏，以及“Codex＋官方 MCP、轻量语义先行”的范围。下一步是 S1 环境与版本，不会直接跳到部署完整技术栈。
+S0 已按用户确认提交。当前可 review：新增 W1～W3 的计划细化、S1 配置骨架及下面的实际记录。S1 的运行环境验收现已通过，详细结果见第 8 节。停在当前 review 边界；用户确认后才提交本步并进入 S2。
+
+## S1 操作记录：环境与配置准备
+
+### 1. 这一步先理解什么
+
+Docker Engine 运行容器；Compose 描述服务、网络、持久卷和依赖。镜像是可重建的程序环境，卷是需要保留的数据。本步的 `metadata` PostgreSQL 专门保存 Superset 用户、数据集和看板配置，不存放订单实验数据。删除元数据库卷会丢失 BI 配置，因此日常停止使用 `stop`，不使用带 `-v` 的清理命令。
+
+`superset-init` 是后续迁移元数据库的短任务，不是第二个常驻 BI；当前默认命令仅迁移 schema，尚不创建管理员或初始化角色。S3 将按固定版本完成整套初始化并验证，不要现在直接启动 Web 并认为安装已经完成。
+
+### 2. 已实际执行的环境检查
+
+日期：2026-10-16。在仓库根执行：
+
+```bash
+command -v docker podman codex sudo
+id
+nproc
+systemctl is-active docker
+ls -l /var/run/docker.sock
+ss -ltn
+free -h
+df -h .
+sudo -n true
+apt-cache policy docker.io docker-compose-v2 docker-compose
+```
+
+沙箱内未发现运行时，随后经系统授权在宿主重复检查。实际结果：Debian 13 amd64，4 CPU，约 7.7 GiB 内存、5.2 GiB 可用，8 GiB swap，工作盘约 936 GiB 可用；Docker/Podman/Codex CLI 不在 PATH，Docker socket 不存在，服务 inactive。8088 端口未占用。
+
+`sudo -n true` 返回 `sudo: a password is required`。当前执行权限允许检查宿主，但不会自动赋予 root，无法非交互安装系统软件。没有尝试收集或代输用户密码。
+
+APT 缓存中 Docker 包候选为 `docker.io 26.1.5+dfsg1-9+deb13u1`、`docker-compose 2.26.1-4`，均未安装；`docker-compose-v2` 无候选。采用 Debian 软件源包作为本地实验运行时，不额外增加 Docker 软件源；实际安装版本在更新索引后再次记录。
+
+网络检查：
+
+```bash
+curl -I --connect-timeout 10 --max-time 20 https://registry-1.docker.io/v2/
+```
+
+沙箱因无法连接本机代理 `127.0.0.1:7897` 失败；经授权在宿主重试，收到 registry 的 HTTP 401 认证挑战，证明注册表端点可达，不代表镜像拉取已经成功。Docker daemon 的代理配置独立于终端，实际 pull 若失败需继续诊断，不能直接套用终端网络结论。
+
+### 3. 配置骨架与版本依据
+
+| 文件/对象 | 本步内容 | 验证状态 |
+| --- | --- | --- |
+| `compose.yaml` | 独立项目 `bi008`；元数据库、Web 和按需 init 服务；Web 仅绑定 `127.0.0.1:8088`；元数据库不发布宿主端口 | `docker-compose config --quiet` 已通过 |
+| `superset/Dockerfile` | `apache/superset:6.1.0`＋`psycopg2-binary==2.9.10`，使用镜像内虚拟环境安装 | 派生镜像构建、Superset 与驱动导入通过 |
+| 元数据库镜像 | `postgres:17.6-bookworm`，作为固定实验候选，不代表最新补丁或生产推荐版本 | 镜像拉取和 PostgreSQL 版本检查通过，真实数据库连接留待 S3 |
+| `superset/superset_config.py` | PostgreSQL URI、强制本地密钥、关闭首轮查询结果缓存、同步查询，保留 CSRF | 本地及容器内配置加载通过；Web 启动留待 S3 |
+| `scripts/prepare_env.py` | 生成随机本地凭据，文件权限 0600，拒绝覆盖已有文件 | 首次生成和再次执行保留原文件的路径均已运行 |
+| `.gitignore`、`.env.example` | 忽略真实凭据，只共享变量名 | `git check-ignore .env` 已通过 |
+
+Superset **6.1.0** 默认镜像是 lean，不能根据 Next 文档认为其自带数据库驱动。[6.1.0 镜像文档](https://superset.apache.org/admin-docs/6.1.0/installation/docker-builds/)、[固定版本 Dockerfile](https://github.com/apache/superset/blob/6.1.0/Dockerfile)。MySQL、Trino 驱动在相应步骤加入并实测；MCP 依赖也不假定已安装。
+
+配置为元数据库限制 512 MiB、Web 限制 1536 MiB、初始化任务限制 1536 MiB。它们是本机小数据实验预算，不是测得的容量保证；后续 Trino/Wren 采用分阶段启动，先测资源再调整。当前没有常驻实验服务。
+
+### 4. 本地验证的实际操作
+
+在本实验目录执行：
+
+```bash
+python3 scripts/prepare_env.py
+python3 scripts/prepare_env.py
+git check-ignore .env
+git diff --check
+```
+
+首次生成 `.env`；再次执行提示已有文件且不覆盖。真实密码未输出，未提交。另用 Python 标准库完成语法检查、0600 权限和随机值长度检查、数据库密码特殊字符编码检查、占位密钥拒绝检查和缓存配置检查，均通过。这些检查不替代镜像构建、连接测试或 Compose 校验。
+
+环境未安装 PyYAML，因此没有以第三方 YAML 解析替代 Compose 验证；运行时安装后已使用真实 Compose 完成配置验证。没有进行数据库初始化、业务造数或 UI 操作。
+
+### 5. Docker 安装（已完成）
+
+最初因 sudo 密码交互无法继续；随后用户明确授权使用其凭据，由 Agent 在交互终端完成安装。密码不写入任何项目文件或本文。实际执行：
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io docker-compose
+sudo systemctl enable --now docker
+```
+
+安装后实际验证：
+
+```bash
+sudo docker version
+docker-compose version
+```
+
+这里使用 Debian 包提供的 `docker-compose` 命令。暂不将用户加入 docker 组；后续使用 sudo 操作 daemon，权限问题与安装完成情况分别处理。
+
+实际安装 Docker Engine `26.1.5+dfsg1`（Debian 包 `26.1.5+dfsg1-9+deb13u1`），Compose `2.26.1-4`，Docker 服务 active 且已 enable。`docker-compose config --quiet` 已返回成功，`sudo docker image ls` 初始为空。继续同一个 S1 的镜像与驱动验证，不进入 S2。
+
+本步新增配置尚未得到 review，未提交。上一轮规划与 wiki 的提交为 `d61faeb`，没有 push。验证结束没有运行中的实验容器；Compose 创建的空网络和元数据库卷保留。不要删除现有 `.env`，以免后续误换元数据库密码和 Superset 密钥。
+
+
+### 6. Docker daemon 网络诊断与修复（2026-10-17）
+
+首次 `sudo docker pull postgres:17.6-bookworm` 直连 Docker Hub 超时；终端经代理测试得到预期的 HTTP 401 认证挑战。检查时 `/etc/systemd/system/docker.service.d` 不存在，因此新增独立 drop-in，没有覆盖其他配置。
+
+依据 [Docker daemon 代理配置](https://docs.docker.com/engine/daemon/proxy/)，使用本机已有代理地址，为 Docker 服务配置 HTTP/HTTPS 代理。源文件是 `host/docker-proxy.conf`，本机安装位置为 `/etc/systemd/system/docker.service.d/bi008-proxy.conf`。这是本机网络配置，换机器需调整代理地址；Docker 镜像拉取现在依赖该代理进程可用。
+
+在实验目录实际执行：
+
+```bash
+sudo install -D -m 644 host/docker-proxy.conf /etc/systemd/system/docker.service.d/bi008-proxy.conf
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+sudo docker pull postgres:17.6-bookworm
+sudo docker pull apache/superset:6.1.0
+```
+
+重启时没有已有业务容器。第一次经代理请求镜像清单遇到 EOF，重试后开始下载镜像层。最终拉取与构建结果见后续记录，不能仅凭开始下载视为通过。
+
+如需回退这项本机代理配置，可将该 drop-in 移出 `.conf` 后缀并执行 `daemon-reload`、重启 Docker；无需删除镜像或数据卷。回退后直连是否可用取决于本机网络。未来存在业务容器时，重启 Docker 需要考虑服务中断。
+
+
+### 7. 可重复的 S1 验证入口
+
+新增 `scripts/verify_s1.sh`，从实验目录执行：
+
+```bash
+sudo bash scripts/verify_s1.sh --local-proxy
+```
+
+脚本依次校验 Compose、检查运行时、下载缺失的固定镜像（失败最多重试三次）、构建 Superset、用一次性容器检查 PostgreSQL 版本、Superset/驱动导入和配置加载，再打印镜像 ID 与摘要。它不会执行元数据库迁移、创建管理员或造数。一次性容器结束后删除，本次 Compose 实际创建并保留了 `bi008_default` 网络和空的 `bi008_metadata` 卷，未启动数据库。
+
+`--local-proxy` 使用 `host/compose.build-proxy.yaml`，仅构建阶段使用宿主网络和本机代理；运行中的 Web 和数据库仍使用 Compose 网络。其他机器不需要此代理时省略该参数。不要通过 `docker-compose config` 打印完整配置，因为它会展开本地凭据；只使用 `config --quiet` 校验。
+
+已通过：`bash -n scripts/verify_s1.sh`、基础 Compose 与代理构建覆盖文件的 `config --quiet`。一次检查误在仓库根运行、未指定配置路径，提示 `no configuration file provided`，切换实验目录后通过。
+
+下载期间曾遇到仓库清单 EOF，随后本机代理连接短暂被拒绝，正在下载的镜像因而失败；再次检查代理恢复了 HTTP 401 认证挑战，已通过验证脚本重试。没有修改代理软件本身或使用第三方镜像源。
+
+
+### 8. S1 最终验收（2026-10-17，待 review）
+
+`sudo bash scripts/verify_s1.sh --local-proxy` 最终退出码为 0。两次 EOF 重试后完成下载，派生镜像中的驱动安装约 22 秒。实际关键输出：
+
+```text
+Docker server: 26.1.5+dfsg1
+Docker Compose version 2.26.1-4
+postgres (PostgreSQL) 17.6 (Debian 17.6-2.pgdg12+1)
+PASS: Superset 6.1.0, psycopg2-binary 2.9.10, configuration loaded.
+S1 image probes passed. No business data or BI application was initialized.
+```
+
+镜像 ID、仓库摘要、检查范围和未测项已保存为 [evidence/s1-runtime.json](evidence/s1-runtime.json)。本地派生镜像未推送仓库，所以没有 RepoDigest，记录本地 Image ID；基础镜像记录实际 RepoDigest。当前配置使用固定版本 tag，摘要是本次构建证据而非自动锁文件；跨机器要求完全相同基础镜像时，需使用证据中的 digest 引用，并对重建结果再次检查。
+
+`docker-compose ps --all` 仅输出表头，证明一次性检查后没有项目容器残留。空网络与空元数据库卷保留，不执行破坏性清理。没有启动 Superset Web、迁移元数据库、创建管理员、初始化业务数据或验证浏览器操作，因此当前没有可访问的 BI 页面。
+
+本步可以回答：
+
+- **哪些组件已准备好？** Docker 运行时、PostgreSQL 基础镜像、带 PostgreSQL 驱动的 Superset 镜像和本地配置。
+- **什么证明它们可执行？** 真正启动过一次性容器，读取 PostgreSQL 版本并导入 Superset/驱动、加载配置；不是仅检查文件存在。
+- **失败时先检查什么？** 镜像下载看 daemon 代理；构建依赖看构建代理；配置加载看 `.env` 是否存在与变量是否齐全；数据库连接要在后续初始化后单独验证。
+
+review 文件：README、agent.md 的路线更新，以及 compose、Dockerfile、配置、凭据生成脚本、S1 验证脚本、host 代理配置和运行证据。真实 `.env` 被忽略；`.codex/` 是用户的配置与技能文件，不纳入本步提交。S1 尚未提交，下一步 S2 的数据源与造数仍未开始。

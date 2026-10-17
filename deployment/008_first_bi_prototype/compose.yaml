@@ -1,0 +1,69 @@
+# S1: config, image build and disposable runtime probes verified on 2026-10-17.
+# Database initialization and the BI application lifecycle are later steps.
+name: bi008
+
+x-superset: &superset
+  image: bi008-superset:6.1.0
+  build:
+    context: ./superset
+  environment:
+    SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+    SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:?Run scripts/prepare_env.py first}
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/prepare_env.py first}
+  volumes:
+    - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+  depends_on:
+    metadata:
+      condition: service_healthy
+
+services:
+  metadata:
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/prepare_env.py first}
+    volumes:
+      - metadata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U superset -d superset']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 512m
+
+  superset-init:
+    <<: *superset
+    profiles: [init]
+    environment:
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:?Run scripts/prepare_env.py first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/prepare_env.py first}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD:?Run scripts/prepare_env.py first}
+    command: [superset, db, upgrade]
+    mem_limit: 1536m
+
+  superset:
+    <<: *superset
+    ports:
+      - 127.0.0.1:8088:8088
+    command:
+      - gunicorn
+      - --bind=0.0.0.0:8088
+      - --workers=1
+      - --threads=4
+      - --timeout=120
+      - superset.app:create_app()
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8088/health', timeout=5)"
+      interval: 15s
+      timeout: 10s
+      retries: 20
+    mem_limit: 1536m
+
+volumes:
+  metadata:

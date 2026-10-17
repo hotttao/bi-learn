@@ -1,0 +1,10 @@
+# Optional Linux workstation override: only build uses the host proxy/network.
+# Runtime services retain the isolated Compose network and loopback web port.
+services:
+  superset:
+    build:
+      network: host
+      args:
+        HTTP_PROXY: http://127.0.0.1:7897
+        HTTPS_PROXY: http://127.0.0.1:7897
+        NO_PROXY: localhost,127.0.0.1,::1
