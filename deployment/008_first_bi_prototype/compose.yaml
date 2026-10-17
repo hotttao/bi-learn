@@ -17,6 +17,50 @@ x-superset: &superset
       condition: service_healthy
 
 services:
+  mysql-source:
+    profiles: [sources]
+    image: mysql:8.4.6
+    environment:
+      MYSQL_DATABASE: sales
+      MYSQL_ROOT_HOST: localhost
+      MYSQL_ROOT_PASSWORD: ${MYSQL_SOURCE_ROOT_PASSWORD:?Run scripts/prepare_env.py first}
+      MYSQL_READER_PASSWORD: ${MYSQL_SOURCE_READER_PASSWORD:?Run scripts/prepare_env.py first}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+08:00
+      - --innodb-buffer-pool-size=128M
+      - --max-connections=30
+    volumes:
+      - mysql_source:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysql --protocol=socket -uroot --batch --skip-column-names -e "SELECT 1" >/dev/null'
+      interval: 5s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+    mem_limit: 768m
+
+  crm-source:
+    profiles: [sources]
+    image: postgres:17.6-bookworm
+    environment:
+      POSTGRES_DB: crm
+      POSTGRES_USER: crm_owner
+      POSTGRES_PASSWORD: ${CRM_OWNER_PASSWORD:?Run scripts/prepare_env.py first}
+      CRM_READER_PASSWORD: ${CRM_READER_PASSWORD:?Run scripts/prepare_env.py first}
+    command: [postgres, -c, timezone=Asia/Shanghai, -c, max_connections=30]
+    volumes:
+      - crm_source:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U crm_owner -d crm']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    mem_limit: 384m
+
   metadata:
     image: postgres:17.6-bookworm
     environment:
@@ -67,3 +111,5 @@ services:
 
 volumes:
   metadata:
+  mysql_source:
+  crm_source:

@@ -1,0 +1,77 @@
+{
+  "verified_at_utc": "2026-10-17T12:45:10.066187+00:00",
+  "versions": {
+    "mysql": "8.4.6",
+    "postgres": "17.6 (Debian 17.6-2.pgdg12+1)"
+  },
+  "images": [
+    {
+      "tags": [
+        "mysql:8.4.6"
+      ],
+      "id": "sha256:c7fa03bf950b7fca40d7e1cae1ed638fadbc63b679ff74f1efb7d626e4c042ea",
+      "digests": [
+        "mysql@sha256:869218921e61d6c3c89820955d63cca42971f0e3e6c1e2792247bbd944ebc6e9"
+      ]
+    },
+    {
+      "tags": [
+        "postgres:17.6-bookworm"
+      ],
+      "id": "sha256:567d5d704a3e5a4864393b623a0d50eb1b5a4ad134cdac7cf19555cb2d8ffe9e",
+      "digests": [
+        "postgres@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3"
+      ]
+    }
+  ],
+  "reconciliation": {
+    "summary": {
+      "counts": {
+        "orders": 4,
+        "refunds": 4,
+        "customers": 4
+      },
+      "paid": "290.00",
+      "refund": "45.00",
+      "net": "245.00",
+      "by_order": {
+        "1": "70.00",
+        "2": "75.00",
+        "3": "50.00",
+        "4": "50.00"
+      },
+      "by_department": {
+        "A": "145.00",
+        "B": "100.00"
+      },
+      "by_industry": {
+        "软件": "120.00",
+        "零售": "125.00"
+      },
+      "by_day": {
+        "2026-10-01": "120.00",
+        "2026-10-02": "125.00"
+      }
+    },
+    "snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+    "checks": {
+      "mysql_reader_write": "rejected",
+      "mysql_reader_ddl": "rejected",
+      "crm_reader_write": "rejected",
+      "crm_reader_ddl": "rejected",
+      "mysql_wrong_department_refund": "rejected",
+      "mysql_negative_payment": "rejected",
+      "crm_duplicate_customer": "rejected"
+    },
+    "scope": "S2 raw-source reconciliation; cross-database SQL and department isolation NOT tested"
+  },
+  "repeat_initialization": "passed: same complete raw-record fingerprint",
+  "stop_start_persistence": "passed: same complete raw-record fingerprint",
+  "not_tested": [
+    "Superset UI",
+    "cross-source SQL",
+    "department isolation",
+    "MCP",
+    "Wren"
+  ]
+}

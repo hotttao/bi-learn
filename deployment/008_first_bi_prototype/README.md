@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-17：**用户已确认“先接 Superset，再实验 Codex＋Wren 新版”。S0 与 wiki 已提交（`d61faeb`）；S1 环境与配置验证已完成，等待 review：Docker/Compose、镜像构建及一次性容器中的版本/驱动/配置检查通过。S1 新变更未提交，业务数据库与 Superset Web 均未启动。**
+2026-10-17：**S1 已经用户确认并提交（`a0b9333`）。S2 数据源与造数已完成，待 review、未提交：MySQL 与业务 PostgreSQL 均 healthy，三表各 4 行，净收入 245，重复初始化、只读权限及停止/启动持久性检查通过。Superset Web、Trino、MCP 和 Wren 尚未启动。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -110,7 +110,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S0 已按用户确认提交。当前可 review：新增 W1～W3 的计划细化、S1 配置骨架及下面的实际记录。S1 的运行环境验收现已通过，详细结果见第 8 节。停在当前 review 边界；用户确认后才提交本步并进入 S2。
+S1 已于用户确认后提交为 `a0b9333`，没有 push。当前 review 范围是 S2：业务源 Compose 配置、建表与 seed SQL、凭据增量生成、源查询/对账脚本、数据字典和运行证据。先阅读 [DATA-DICTIONARY.md](DATA-DICTIONARY.md)，再看本文末尾 S2 操作记录。用户确认后才提交 S2 并进入 S3 手工 BI。下面保留 S1 当时的操作和 review 状态作为历史记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -266,3 +266,127 @@ S1 image probes passed. No business data or BI application was initialized.
 - **失败时先检查什么？** 镜像下载看 daemon 代理；构建依赖看构建代理；配置加载看 `.env` 是否存在与变量是否齐全；数据库连接要在后续初始化后单独验证。
 
 review 文件：README、agent.md 的路线更新，以及 compose、Dockerfile、配置、凭据生成脚本、S1 验证脚本、host 代理配置和运行证据。真实 `.env` 被忽略；`.codex/` 是用户的配置与技能文件，不纳入本步提交。S1 尚未提交，下一步 S2 的数据源与造数仍未开始。
+
+
+## S2 操作记录：业务数据源、造数与独立对账
+
+日期：2026-10-17。**已完成、待 review、未提交。** 前置 S1 提交为 `a0b9333`。当前两个业务源持续运行，Superset 的元数据库和 Web 没有启动。
+
+### 1. 场景与本步讲解
+
+场景仍为 A/B 两个销售部门：MySQL `sales.orders/refunds` 保存已实付订单和退款；独立 PostgreSQL `crm.public.customers` 保存客户当前行业。每张表各 4 条固定记录，不使用公司真实数据。数据字典、粒度、关系和练习见 [DATA-DICTIONARY.md](DATA-DICTIONARY.md)。
+
+这一步最重要的是区分：**一行订单、一行退款、一行部门内客户是三个不同粒度。** 退款在同一个数据库中，可以用 `(dept_id, order_id)` 外键约束；客户位于另一个数据库，本步先由程序检查跨库逻辑引用。后续 Trino/Wren 的工作，是把这些已确认的关系交给统一查询和语义模型。
+
+金额使用 `DECIMAL(12,2)`，Python 使用 Decimal；日期为 Asia/Shanghai 业务日期。退款发生日期晚于订单日，但本例净收入仍归属原订单日。种子数据和独立答案分开存放。
+
+### 2. 文件与配置
+
+| 文件 | 作用 |
+| --- | --- |
+| `compose.yaml` 的 `sources` profile | `mysql-source` 与 `crm-source` 两个独立实例；无宿主端口映射，各有独立持久卷 |
+| `sql/mysql/001_schema.sql`、`002_seed.sql` | 订单/退款表、约束及固定记录 |
+| `sql/postgres/001_schema.sql`、`002_seed.sql` | 客户复合主键、行业说明及固定记录 |
+| `sql/mysql/order_net.sql` | 退款先汇总，一行一订单的净收入查询；S3 的数据集起点 |
+| `fixtures/expected-baseline.json` | 固定人工答案，独立于被测 SQL |
+| `scripts/prepare_env.py` | 为 S2 追加 4 个缺失密码，保留 S1 已有密钥与密码；重复运行不覆盖 |
+| `scripts/source_db.py` | seed、只读查询、原始记录对账、约束与拒绝测试；无需宿主安装数据库驱动 |
+| `scripts/verify_s2.py` | 启动源、seed 两次、核验数据指纹、停止再启动、生成最终证据 |
+| `evidence/s2-sources.json` | 实测版本、镜像摘要、金额、拒绝结果、初始化与重启验证 |
+
+MySQL 使用固定实验版本 `8.4.6`；业务 PostgreSQL 复用 S1 已下载的 `17.6-bookworm`，以不同容器和卷运行。版本是实验基线，不代表最新版本。后续源连接器兼容性仍需实际验证。参考官方 [MySQL 镜像入口](https://github.com/docker-library/mysql/blob/master/8.4/docker-entrypoint.sh)、[PostgreSQL 镜像入口](https://github.com/docker-library/postgres/blob/master/docker-entrypoint.sh) 和 [MySQL 外键说明](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html)；实际版本和镜像以证据文件为准。
+
+MySQL 内存上限 768 MiB、InnoDB buffer pool 128 MiB；业务 PostgreSQL 上限 384 MiB。它们是小数据实验预算，尚未测生产容量。
+
+### 3. 实际执行过程与故障修复
+
+工作目录为 `deployment/008_first_bi_prototype`。实际执行的主要命令：
+
+```bash
+sudo docker pull mysql:8.4.6
+python3 scripts/prepare_env.py
+python3 scripts/prepare_env.py
+docker-compose --profile sources config --quiet
+sudo python3 scripts/verify_s2.py
+```
+
+镜像下载成功。凭据生成第一次输出新增 4 项，第二次输出新增 0 项，原有值保留；`.env` 没有被提交。
+
+第一次验证在启动等待时失败：PostgreSQL healthy，MySQL unhealthy。通过以下命令读取日志和健康检查结果：
+
+```bash
+sudo docker logs --tail 80 bi008-mysql-source-1
+sudo docker inspect --format '{{json .State.Health}}' bi008-mysql-source-1
+```
+
+日志显示 MySQL 已就绪，健康检查却持续返回 `ERROR 1130: Host '127.0.0.1' is not allowed to connect`。原因是配置将 root 限定为 localhost，检查却显式使用 TCP 地址。将健康检查改为 `--protocol=socket -uroot` 后重跑原验证脚本；Compose 重建 MySQL 容器并复用原卷，没有删除或清空数据。
+
+修复后实际执行顺序：
+
+1. Compose 只启动两个源并等待 healthy，不启动 metadata 或 Superset。
+2. 管理员通过本地连接执行建表/seed；配置 MySQL `bi_reader` 和 PostgreSQL `crm_reader`。
+3. 用 reader 经 TCP 和服务 DNS 读取三张原始表，Python 独立计算，比较固定答案；再核对 MySQL 逐订单 SQL。
+4. 验证 reader 写入和建表被拒绝；验证错误部门退款、负金额、重复客户键被拒绝。
+5. 再执行一次 seed 与全部验证，比较完整原始记录 SHA-256，确认无重复、无静默覆盖。
+6. `stop` 两个源，再 `up -d --wait`，重新验证；数据指纹和全部结果保持一致。
+7. 写入去敏证据，两个源保持运行，供下一步使用。
+
+seed 不会覆盖已有记录。如果未来人工更改了金额，重跑 seed 不会把它偷偷改回基准；需要按实验记录显式恢复后再对账。`CREATE TABLE IF NOT EXISTS` 也不是迁移机制，schema 变化不能靠重跑 seed 同步。两源初始化不具备跨数据库原子事务，失败时修复后重跑并完成整体核验。
+
+### 4. 验收实际结果
+
+验证脚本最终退出码 **0**。运行版本：MySQL **8.4.6**、PostgreSQL **17.6**。最终状态：`bi008-mysql-source-1` 和 `bi008-crm-source-1` 均 healthy，仅显示容器内部端口，没有发布宿主端口。
+
+| 验收项 | 预期 | 实际 |
+| --- | --- | --- |
+| 表行数 | orders/refunds/customers 各 4 | 4 / 4 / 4，通过 |
+| 金额总计 | 实付 290、退款 45、净收入 245 | 290.00 / 45.00 / 245.00，通过 |
+| 逐订单净收入 | 70、75、50、50 | 与 Python 独立计算及 SQL 逐行一致 |
+| 部门分组 | A 145、B 100 | 145.00 / 100.00 |
+| 当前行业分组 | 软件 120、零售 125 | 120.00 / 125.00 |
+| 按订单日 | 10-01 为 120、10-02 为 125 | 120.00 / 125.00 |
+| 重复初始化 | 三表内容不变 | 完整原始记录指纹一致 |
+| stop/up 后持久性 | 三表内容和检查结果不变 | 全部一致 |
+| 两源 reader 的 UPDATE 和建表 | 拒绝 | 4 个拒绝测试通过 |
+| 错部门退款、负实付、重复客户复合键 | 拒绝 | 3 个约束拒绝测试通过 |
+
+PostgreSQL 权限测试先将会话 `default_transaction_read_only` 关闭再尝试 UPDATE/DDL，仍然因权限被拒绝；因此不是仅靠会话开关限制写入。当前 reader 可以看 A/B 全量测试记录，**尚未验证部门隔离**。
+
+本步行业与部门分组由 Python 从两源原始记录计算；**没有执行单条跨库 SQL**。行业对账通过不等于 Trino 或 Wren 已接通。累计退款上限、跨库客户引用由校验程序检查，尚非数据库层写入保证；具体边界见数据字典。
+
+### 5. 跟着做一次
+
+先执行正确查询，观察 4 行订单的净收入：
+
+```bash
+sudo python3 scripts/source_db.py query --source mysql < sql/mysql/order_net.sql
+```
+
+再按数据字典中的错误 JOIN 示例查询，思考为什么订单 1 的 100 元被算了两次。最后到客户表查看重复的 customer_id，解释为什么还需要部门字段。所有练习默认使用 reader，不需要查看或复制实际密码。
+
+只做数据核验，不重新初始化或重启：
+
+```bash
+sudo python3 scripts/source_db.py verify
+```
+
+完整重复 S2 会停止并启动这两个源，适合实验复现；日常查询无需重跑完整脚本。
+
+### 6. 停止、恢复与当前 review 边界
+
+暂时不用时停止业务源，卷内数据保留：
+
+```bash
+sudo docker-compose --profile sources stop mysql-source crm-source
+```
+
+恢复同一组数据：
+
+```bash
+sudo docker-compose --profile sources up -d --wait mysql-source crm-source
+sudo python3 scripts/source_db.py verify
+```
+
+已有卷上可重复执行 seed 补缺失的基准 ID；不会清除额外数据或覆盖修改。如果数据质量/基准不一致，先查差异，不用删除卷解决。管理员密码来自首次建库，后续不要随意重建 `.env`；本步未验证备份恢复或容器卷损坏恢复。
+
+本步已完成概念、配置、造数和运行验收，尚未提交，等待用户 review。review 建议从数据字典、SQL 和独立答案开始，再看脚本与证据。下一步 S3 才初始化 Superset 元数据库、创建管理员、接 MySQL，手工做指标卡、日趋势和日期筛选。`.codex/` 用户配置不属于本步变更。
