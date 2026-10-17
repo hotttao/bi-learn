@@ -1,0 +1,338 @@
+{
+  "verified_at_utc": "2026-10-17T14:13:33.276946+00:00",
+  "contract": "net_revenue@1",
+  "sql_sha256": "e450166e5e71e1bac0b8a6b351159b480bfa09113dae21a534838a8f7b4c1bf8",
+  "version": {
+    "query_id": "20261017_141333_00000_39irw",
+    "columns": [
+      "_col0"
+    ],
+    "rows": [
+      [
+        "481"
+      ]
+    ]
+  },
+  "quality": {
+    "query_id": "20261017_141334_00001_39irw",
+    "columns": [
+      "rule",
+      "failures"
+    ],
+    "rows": [
+      [
+        "duplicate_order",
+        0
+      ],
+      [
+        "invalid_order",
+        0
+      ],
+      [
+        "invalid_customer",
+        0
+      ],
+      [
+        "invalid_refund",
+        0
+      ],
+      [
+        "duplicate_customer",
+        0
+      ],
+      [
+        "orphan_refund",
+        0
+      ],
+      [
+        "excess_refund",
+        0
+      ]
+    ]
+  },
+  "baseline": {
+    "orders": {
+      "query_id": "20261017_141338_00002_39irw",
+      "columns": [
+        "order_id",
+        "dept_id",
+        "customer_id",
+        "order_date",
+        "industry",
+        "paid_amount",
+        "refund_total",
+        "net_amount"
+      ],
+      "rows": [
+        [
+          1,
+          "A",
+          1,
+          "2026-10-01",
+          "软件",
+          "100.00",
+          "30.00",
+          "70.00"
+        ],
+        [
+          2,
+          "A",
+          2,
+          "2026-10-02",
+          "零售",
+          "80.00",
+          "5.00",
+          "75.00"
+        ],
+        [
+          3,
+          "B",
+          1,
+          "2026-10-01",
+          "软件",
+          "50.00",
+          "0.00",
+          "50.00"
+        ],
+        [
+          4,
+          "B",
+          2,
+          "2026-10-02",
+          "零售",
+          "60.00",
+          "10.00",
+          "50.00"
+        ]
+      ]
+    },
+    "total": {
+      "query_id": "20261017_141340_00003_39irw",
+      "columns": [
+        "_col0"
+      ],
+      "rows": [
+        [
+          "245.00"
+        ]
+      ]
+    },
+    "industry": {
+      "query_id": "20261017_141340_00004_39irw",
+      "columns": [
+        "industry",
+        "net"
+      ],
+      "rows": [
+        [
+          "软件",
+          "120.00"
+        ],
+        [
+          "零售",
+          "125.00"
+        ]
+      ]
+    },
+    "daily": {
+      "query_id": "20261017_141341_00005_39irw",
+      "columns": [
+        "order_date",
+        "_col1"
+      ],
+      "rows": [
+        [
+          "2026-10-01",
+          "120.00"
+        ],
+        [
+          "2026-10-02",
+          "125.00"
+        ]
+      ]
+    },
+    "departments": {
+      "query_id": "20261017_141342_00006_39irw",
+      "columns": [
+        "dept_id",
+        "_col1"
+      ],
+      "rows": [
+        [
+          "A",
+          "145.00"
+        ],
+        [
+          "B",
+          "100.00"
+        ]
+      ]
+    }
+  },
+  "fixtures": {
+    "raw_refund_join_wrong_345": {
+      "query_id": "20261017_141342_00007_39irw",
+      "columns": [
+        "_col0"
+      ],
+      "rows": [
+        [
+          "345.00"
+        ]
+      ]
+    },
+    "customer_id_only_wrong_8_rows_490": {
+      "query_id": "20261017_141343_00008_39irw",
+      "columns": [
+        "_col0",
+        "_col1"
+      ],
+      "rows": [
+        [
+          8,
+          "490.00"
+        ]
+      ]
+    },
+    "missing_customer_preserved": {
+      "query_id": "20261017_141343_00009_39irw",
+      "columns": [
+        "industry",
+        "net"
+      ],
+      "rows": [
+        [
+          "未知行业",
+          "70.00"
+        ],
+        [
+          "软件",
+          "50.00"
+        ],
+        [
+          "零售",
+          "125.00"
+        ]
+      ]
+    },
+    "duplicate_dimension_rejected": {
+      "query_id": "20261017_141344_00010_39irw",
+      "result": "Duplicate customer key ('A', 1); refuse dataset publication"
+    },
+    "null_negative_amount_quality_failures": {
+      "query_id": "20261017_141344_00011_39irw",
+      "columns": [
+        "_col0"
+      ],
+      "rows": [
+        [
+          2
+        ]
+      ]
+    },
+    "excess_refund_quality_failure": {
+      "query_id": "20261017_141345_00012_39irw",
+      "columns": [
+        "order_id"
+      ],
+      "rows": [
+        [
+          1
+        ]
+      ]
+    }
+  },
+  "current_industry_update": {
+    "query_id": "20261017_141345_00013_39irw",
+    "columns": [
+      "industry",
+      "net"
+    ],
+    "rows": [
+      [
+        "软件",
+        "50.00"
+      ],
+      [
+        "零售",
+        "195.00"
+      ]
+    ]
+  },
+  "current_industry_total": {
+    "query_id": "20261017_141346_00014_39irw",
+    "columns": [
+      "_col0"
+    ],
+    "rows": [
+      [
+        "245.00"
+      ]
+    ]
+  },
+  "restored": {
+    "query_id": "20261017_141347_00015_39irw",
+    "columns": [
+      "industry",
+      "net"
+    ],
+    "rows": [
+      [
+        "软件",
+        "120.00"
+      ],
+      [
+        "零售",
+        "125.00"
+      ]
+    ]
+  },
+  "source_verification": {
+    "summary": {
+      "counts": {
+        "orders": 4,
+        "refunds": 4,
+        "customers": 4
+      },
+      "paid": "290.00",
+      "refund": "45.00",
+      "net": "245.00",
+      "by_order": {
+        "1": "70.00",
+        "2": "75.00",
+        "3": "50.00",
+        "4": "50.00"
+      },
+      "by_department": {
+        "A": "145.00",
+        "B": "100.00"
+      },
+      "by_industry": {
+        "软件": "120.00",
+        "零售": "125.00"
+      },
+      "by_day": {
+        "2026-10-01": "120.00",
+        "2026-10-02": "125.00"
+      }
+    },
+    "snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+    "checks": {
+      "mysql_reader_write": "rejected",
+      "mysql_reader_ddl": "rejected",
+      "crm_reader_write": "rejected",
+      "crm_reader_ddl": "rejected",
+      "mysql_wrong_department_refund": "rejected",
+      "mysql_negative_payment": "rejected",
+      "crm_duplicate_customer": "rejected"
+    },
+    "scope": "S2 raw-source reconciliation; cross-database SQL and department isolation NOT tested"
+  },
+  "not_verified": [
+    "department authentication/isolation (S5)",
+    "cross-source atomic snapshot",
+    "large-data performance (S8)",
+    "Wren MDL/MCP",
+    "production deployment"
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "verified_at_utc": "2026-10-17T14:16:37.518932+00:00",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/1/",
+  "sql_sha256": "e450166e5e71e1bac0b8a6b351159b480bfa09113dae21a534838a8f7b4c1bf8",
+  "containers": {
+    "trino": {
+      "image_id": "sha256:1629098dd4c6234ffab1e179d8a6da20964942a37f392d378b08b85231cd1079",
+      "status": "healthy",
+      "memory_limit_bytes": 2147483648,
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "18080"
+          }
+        ]
+      }
+    },
+    "superset": {
+      "image_id": "sha256:bf781e00c640a827b0eaabc6d1f49bee6b00191e3cfb0d9b978ddccc23c8361e",
+      "status": "healthy",
+      "memory_limit_bytes": 1610612736,
+      "ports": {
+        "8088/tcp": [
+          {
+            "HostIp": "192.168.2.46",
+            "HostPort": "8088"
+          }
+        ]
+      }
+    },
+    "metadata": {
+      "image_id": "sha256:567d5d704a3e5a4864393b623a0d50eb1b5a4ad134cdac7cf19555cb2d8ffe9e",
+      "status": "healthy",
+      "memory_limit_bytes": 536870912,
+      "ports": {}
+    },
+    "mysql-source": {
+      "image_id": "sha256:c7fa03bf950b7fca40d7e1cae1ed638fadbc63b679ff74f1efb7d626e4c042ea",
+      "status": "healthy",
+      "memory_limit_bytes": 805306368,
+      "ports": {}
+    },
+    "crm-source": {
+      "image_id": "sha256:567d5d704a3e5a4864393b623a0d50eb1b5a4ad134cdac7cf19555cb2d8ffe9e",
+      "status": "healthy",
+      "memory_limit_bytes": 402653184,
+      "ports": {}
+    }
+  },
+  "python_versions": "{'apache-superset': '6.1.0', 'trino': '0.337.0', 'SQLAlchemy': '1.4.54'}",
+  "memory_observation": [
+    {
+      "name": "bi008-trino-1",
+      "memory": "1.181GiB / 2GiB"
+    },
+    {
+      "name": "bi008-superset-1",
+      "memory": "286.7MiB / 1.5GiB"
+    },
+    {
+      "name": "bi008-metadata-1",
+      "memory": "125.4MiB / 512MiB"
+    },
+    {
+      "name": "bi008-mysql-source-1",
+      "memory": "382.8MiB / 768MiB"
+    },
+    {
+      "name": "bi008-crm-source-1",
+      "memory": "20.45MiB / 384MiB"
+    }
+  ],
+  "source_restored": {
+    "order_2_paid": "80.00",
+    "A_1_industry": "软件"
+  },
+  "browser": {
+    "verified_at_utc": "2026-10-17T14:15:42.438Z",
+    "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/1/",
+    "baseline": {
+      "kpi": 245,
+      "daily": [
+        120,
+        125
+      ],
+      "industry": {
+        "软件": 120,
+        "零售": 125
+      }
+    },
+    "date_filter": {
+      "kpi": 120,
+      "daily": [
+        120
+      ],
+      "industry": {
+        "软件": 120
+      }
+    },
+    "restored": {
+      "kpi": 245,
+      "daily": [
+        120,
+        125
+      ],
+      "industry": {
+        "软件": 120,
+        "零售": 125
+      }
+    },
+    "reopened": {
+      "kpi": 245,
+      "daily": [
+        120,
+        125
+      ],
+      "industry": {
+        "软件": 120,
+        "零售": 125
+      }
+    }
+  },
+  "not_verified": [
+    "department authentication/isolation (S5)",
+    "cross-source atomic snapshot",
+    "large-data performance (S8)",
+    "Wren MDL/MCP",
+    "production deployment",
+    "S3 chart drag/reorder remains manual"
+  ]
+}

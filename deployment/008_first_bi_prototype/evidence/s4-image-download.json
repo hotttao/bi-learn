@@ -1,0 +1,18 @@
+{
+  "source": "https://docker.1ms.run",
+  "official_tag_api": "https://hub.docker.com/v2/repositories/trinodb/trino/tags/481",
+  "official_amd64_manifest_digest": "sha256:4b56ba858f31c4420df762015b63b0c0bcf712109d6401356732af43581c9cd3",
+  "config_digest": "sha256:1629098dd4c6234ffab1e179d8a6da20964942a37f392d378b08b85231cd1079",
+  "compressed_layer_digests": [
+    "sha256:a6d40c051af5d11c6b46a42ede2aed8d9d2aaed9edb6063b26eccf91511ab656",
+    "sha256:4f2a245faacd0191979010616995626d6310e9460d17b2c46b98b2d900dbdf7b",
+    "sha256:91203224398936aa7aac409828814d4f9dada0db6aabc11bf0a23f3b9834671c",
+    "sha256:43f5dbfe2d663dd9215a075f01280c5d1636986d04b9e278960e0c9b997838db",
+    "sha256:6340555bfd0d4ea589833f709db408aa97ee1f33baac7db14fc41883dc227f8d",
+    "sha256:16b985be887895ce531029762a01855886a622eb4f6b9326b42faa5628df5f22",
+    "sha256:a69ae91f92331bf6ca9702e0df79dbbaec4bd64932456c755277afdcd7a25766",
+    "sha256:77854ad7a5e6433e3c9d2d47d4e97243326f72c4b8f44ae77ab397512cba6e26",
+    "sha256:6161f40ee306f9b588b2ebc04bdf10e8158ced88196a824234d7fcf0c7886083"
+  ],
+  "all_compressed_and_expanded_digests_checked": true
+}

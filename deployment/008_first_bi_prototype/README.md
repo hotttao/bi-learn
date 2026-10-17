@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-17：**S2 已确认并提交（`1183f69`）。用户确认继续，S3 核心验收已完成并确认：Superset 已监听 `192.168.2.46:8088`，净收入 245、单日筛选 120、尺寸保存及重开、源更新后 255→恢复 245 均经真实 Chrome 验证。图表拖动换位尚未自动验证，列为手工 review 项。准备进入 S4；MCP 和 Wren 尚未进入。**
+2026-10-17：**S3 已确认并提交（`4f2c973`），Superset 入口仍为 `192.168.2.46:8088`。S4 已获用户确认：Trino 跨库对账、关系反例、语义契约和行业图均通过实测。S3 图表换位仍保留未验证项。MCP 与 Wren 尚未进入。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -110,7 +110,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S1 已提交为 `a0b9333`，S2 已提交为 `1183f69`，没有 push。已确认的 S3 范围：Superset 初始化、MySQL 驱动、原生数据集/图表/看板、局域网监听、Chrome 验证及教程。建议先打开 [亲手操作教程](S3-WALKTHROUGH.md) 和实际看板，再看本文末尾 S3 操作记录。图表拖动换位仍需手工确认；其他核心结果已有证据。用户回复“继续”后提交 S3，进入 S4。以下保留各步当时的状态作为历史记录。
+S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973` 已提交，没有 push。当前工作为 S4，交付范围见本文末尾；教程见 [S4-WALKTHROUGH.md](S4-WALKTHROUGH.md)。S3 图表拖动换位未验证的限制继续保留。以下保留各步当时的记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -522,3 +522,141 @@ sudo docker-compose up -d --wait metadata superset
 元数据库卷和 `.env` 需要保留；不要通过删除卷处理登录或图表错误。runtime 重跑包含数据库迁移和权限同步，日常恢复不需要重跑。完整 browser 阶段会调整尺寸并短暂更改合成订单，适合复现实验；普通看板刷新无需执行它。
 
 用户回复“继续”，确认本步并推进 S4。保留图表拖动换位的手工未验证项，不声称所有原生编辑交互通过。S3 提交仅包含本目录，后面的 Wren 实验没有提前执行；`.codex/` 用户配置未改动。
+
+## S4 操作记录：跨库关系与语义契约
+
+### 1. 目的、前置状态与文件
+
+用户回复“继续”后提交 S3，提交为 `4f2c973`，未 push。S3 图表拖动换位继续作为未验证项，不阻塞独立的跨源查询实验。本步不进入 Wren 或 MCP。
+
+先理解三件事：Trino catalog 提供物理读取入口，SQL 决定如何关联，语义契约解释为什么这样关联。仅配置 connector 不会自动生成可靠业务语义。新增文件为 `trino/`、`sql/trino/orders_enriched_v1.sql`、`semantic/net_revenue.v1.json`、S4 脚本、证据和 [亲手操作教程](S4-WALKTHROUGH.md)。
+
+### 2. 版本、资源与入口
+
+Trino 固定 `trinodb/trino:481`，SQLAlchemy 驱动固定 `trino[sqlalchemy]==0.337.0`。核对依据：[481 容器文档](https://trinodb.github.io/docs.trino.io/481/installation/containers.html)、[MySQL connector](https://trinodb.github.io/docs.trino.io/481/connector/mysql.html)、[PostgreSQL connector](https://trinodb.github.io/docs.trino.io/481/connector/postgresql.html)、[驱动兼容说明](https://pypi.org/project/trino/0.337.0/)。未采用浮动 latest，未升级现有 MySQL/PostgreSQL。
+
+Trino 容器限 2 GiB，JVM 最大堆 1 GiB，单节点查询内存 256 MB、堆预留 256 MB、查询最长运行 60 秒。这只是 4 条订单的实验预算，不代表生产容量。宿主发布 `127.0.0.1:18080`，Superset 内部访问 `trino:8080`；Superset LAN 入口保持 `192.168.2.46:8088`。
+
+两个 catalog 使用 S2 的 `bi_reader`、`crm_reader`。属性文件采用 `${ENV:...}` 引用，Compose 从忽略的 `.env` 注入，未把真实密码写进 catalog。[Trino 环境变量密钥引用](https://trinodb.github.io/docs.trino.io/481/security/secrets.html)
+
+S4 没有配置 Trino 用户认证或部门访问策略；HTTP 用户名只是查询标签。只能作为本机部署实验，不能用来证明普通用户隔离，也不应将 Trino 端口改绑 LAN 后直接供团队使用。部门权限在 S5 单独验证。
+
+### 3. 实际构建与下载故障
+
+在本目录执行：
+
+```bash
+sudo docker-compose -f compose.yaml -f host/compose.build-proxy.yaml --profile sources --profile federation build superset
+sudo docker-compose --profile sources --profile federation up -d --no-deps --wait superset
+```
+
+首次 uv 通过默认 PyPI 通道长时间没有进展，主动中止。验证清华 PyPI 镜像可直连后，增加通用 `PYPI_INDEX_URL` 构建参数（默认官方 PyPI），仅在本机 override 指定镜像；重试 Python 安装约 4.6 秒。Superset Web 已用含 Trino 驱动的镜像重建；数据卷及 S3 原生资产保留。
+
+官方 `docker pull trinodb/trino:481` 下载很慢；尝试镜像代理仍受代理通道影响，中止这两次未完成的拉取。未重启 Docker daemon，未修改宿主全局代理。使用 `scripts/fetch_trino_image.py` 从镜像代理取字节，官方校验基准来自 Docker Hub 的 [481 tag 接口](https://hub.docker.com/v2/repositories/trinodb/trino/tags/481)：
+
+- 官方多架构 index：`sha256:5b5e0a97f599a30a2e23c7c7061e4e4d546a914b4fad2a2a002998140ceb4006`。
+- amd64 manifest：`sha256:4b56ba858f31c4420df762015b63b0c0bcf712109d6401356732af43581c9cd3`。
+- image config：`sha256:1629098dd4c6234ffab1e179d8a6da20964942a37f392d378b08b85231cd1079`。
+
+镜像代理前端可直连，下载 CDN 直连超时；改为仅 CDN 使用本机代理。大层使用分段下载；每个压缩层核对 manifest 的 SHA-256，解压层核对 config 的 diff_id，再生成 Docker load 归档。归档、分段及令牌均不提交；脚本只保存去敏后的 digest 证据。默认复现仍可直接官方 pull，无需走备用下载脚本。
+
+镜像导入成功。首次容器 API 已 ACTIVE，但 Compose 一直等待健康状态；检查发现健康探针的 YAML/ shell 单引号没有闭合，探针退出 2。改用 YAML 折叠字符串，增加 `sh -n -c` 检查，并仅重建 Trino 容器；没有改动或重建业务数据卷。后续同时核查 API `starting=false` 和 Docker healthy，避免仅看到端口可访问就误判就绪。
+
+### 4. 启动、查询和发布命令
+
+以下命令用于继续执行/复现；具体实测状态以本节后面的结果为准：
+
+```bash
+# 官方 pull 已完成时跳过备用下载与 load。
+python3 scripts/fetch_trino_image.py
+sudo docker load -i .local/trino-image/image.tar
+sudo docker-compose --profile sources --profile federation up -d --wait trino
+
+# 只读查询不需要 Docker 权限；完整实验含短暂 CRM 修改，需要部署身份。
+python3 scripts/verify_s4.py --query < sql/trino/orders_enriched_v1.sql
+sudo python3 scripts/verify_s4.py
+python3 scripts/s4_assets.py
+node scripts/verify_s4_browser.mjs
+```
+
+`verify_s4.py` 保存查询 ID、原始订单粒度结果、合计/部门/行业/日期对账、质量检查与反例。金额从 Trino JSON 按字符串解析，再用 Decimal 对账。缺失和重复维度、空值/负值、超额退款使用查询内 fixture，不写入源表；已有数据库约束仍由 S2 检查重新验证。
+
+唯一的源修改是 A/1 当前行业“软件→零售→软件”，在 finally 中恢复。实验不承诺跨源一致快照；不要并发修改基准源。异常中断后应先检查 CRM 实际值，再按实验记录决定恢复，不能覆盖其他人的有意业务修改。
+
+`net_revenue.v1.json` 记录粒度、复合键、基数、退款时间归属、当前行业、别名与质量规则。发布脚本读取指标表达式并执行质量检查，发现重复客户或错误粒度拒绝发布。契约不是 Wren 原生模型；负责人/审核人仍为空，只作为本地实验，不能声称公司业务已发布。
+
+Superset 新增独立 Trino 连接、`008_orders_enriched_v1` 虚拟数据集和行业图。保留 S3 两张 MySQL 图作为独立基准；只在原看板追加行业图的一行，保留已有布局节点和日期筛选。API 没有被假定具备跨请求事务或 CAS，发布前读回检测已有变化，不能保证消除全部并发窗口。
+
+### 5. 已实际通过的查询与异常用例
+
+Trino 启动后，完整执行 `verify_s4.py`；所有断言通过。详见 [s4-queries.json](evidence/s4-queries.json)，每条 Trino 查询保留 query ID。没有把失败反例发布为数据集。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 引擎版本 | `SELECT version()` 为 481 |
+| 正确跨库数据集 | 4 行、4 个订单 ID，净收入 245.00 |
+| 部门与日期 | A 145.00、B 100.00；10-01 120.00、10-02 125.00 |
+| 当前行业 | 软件 120.00、零售 125.00 |
+| 错误：直接 JOIN 退款 | 345.00，证明订单实付被重复计算 |
+| 错误：客户关联漏部门 | 8 行、490.00，证明同 ID 跨部门放大 |
+| 缺失 A/1 客户 fixture | 未知行业 70.00、软件 50.00、零售 125.00，订单收入保留 |
+| 重复客户 fixture | 客户复合键检查抛错，拒绝发布 |
+| 空/负实付 fixture | 检出 2 条无效记录 |
+| 累计超额退款 fixture | 检出订单 1 违规；未把它写进源表 |
+| A/1 当前行业改为零售 | 软件 50.00、零售 195.00，总额仍为 245.00 |
+| 恢复 A/1 当前行业 | 软件 120.00、零售 125.00 |
+| 源数据复核 | S2 的 7 项拒绝检查通过，指纹仍为 `f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8` |
+
+发布前对真实三表运行 7 类质量检查：订单重复、客户复合键重复、订单必要字段/金额、退款必要字段/金额、客户必要字段、孤儿退款、累计超额退款；均为 0。缺失客户是允许保留为未知行业的规则，不和孤儿退款混为同一类错误。S2 的固定基准核验额外要求已知客户和整套 seed 完全符合预期，不是通用缺失客户处理策略。
+
+### 6. 原生 BI 资产、页面与最终状态
+
+`s4_assets.py` 成功创建以下资产，并通过 API 读回及查询对账：
+
+| 资产 | 实际 ID/定义 |
+| --- | --- |
+| Trino 数据连接 | 2，`008 Trino federation (source readers)` |
+| 跨源虚拟数据集 | 2，`008_orders_enriched_v1`，一行一订单 |
+| 指标 | net_revenue，`SUM(net_amount)`，对应 net_revenue@1 |
+| 行业图 | 3，`008 按当前行业净收入`，ECharts Bar Chart |
+| 看板 | 复用 1；保留 S3 两图及布局，只追加一行行业图 |
+
+资产 ID、SQL SHA-256、质量查询及 API 返回见 [s4-assets.json](evidence/s4-assets.json)。原 S3 图继续读 MySQL，新图经 Trino 跨两库，图表结果一致是本步对账证据之一，不代表两个语义定义会自动同步。
+
+真实 Chrome 验证了登录、三图渲染、日期筛选与离开重开：
+
+- 整月：指标卡 245、趋势 120/125、行业 120/125。
+- 截止 `2026-10-02`：指标卡 120、趋势仅 10-01 的 120、行业仅软件 120。
+- 恢复整月并离开重开：回到 245、120/125、120/125。
+
+首张截图捕捉到 ECharts 入场动画的中间帧，柱高尚未稳定；核查真实图表响应正确后，在数据断言通过时增加 1.5 秒动画等待，重跑浏览器验证并重新截图。未因此修改指标或源数据。结果见 [s4-browser.json](evidence/s4-browser.json)、[整月截图](evidence/s4-dashboard.png)、[日期筛选截图](evidence/s4-date-filter.png)。
+
+最终状态由 `sudo python3 scripts/finish_s4.py` 重新核对，见 [s4-final-state.json](evidence/s4-final-state.json)。五个容器均 healthy，Trino 仅绑定本机 18080，Superset 保持 LAN 8088；订单 2 实付恢复为 80.00，A/1 行业为软件。实际驱动 `trino 0.337.0` 与 `SQLAlchemy 1.4.54`，Superset 6.1.0。运行内存采样仅用于确认本机资源可容纳，不作为大数据性能结论。
+
+镜像来源及完整性证据见 [s4-image-download.json](evidence/s4-image-download.json)。导入后的 Trino image ID 与官方 config digest 一致。包含新驱动的 Superset image ID 为 `sha256:bf781e00c640a827b0eaabc6d1f49bee6b00191e3cfb0d9b978ddccc23c8361e`；未升级数据库或迁移业务数据。
+
+### 7. 维护方式、亲手练习与停止恢复
+
+现在可先读教程，在 SQL Lab 重现两个错误 JOIN，解释为什么 345、490 都是错的；再操作日期筛选，观察三图对账。行业变更已由部署脚本做过并恢复，普通查看看板不需要管理员修改源表。
+
+本步的数据路径为“Superset→Trino→两个业务源”；正确性的证据是订单粒度、独立固定答案、错误反例、源变更/恢复和页面请求共同一致。若结果不对，先核对退款聚合与客户复合键，再查数据质量、时间范围和当前行业语义，最后检查图表配置。
+
+目前仍是人工触发的“契约＋SQL＋质量检查＋BI 发布”链路，没有变更监听、血缘自动影响分析或 Wren 同步。数据表增加时维护业务域、稳定实体键、允许关联路径、负责人及回归；数据量增加时再测扫描、汇总与查询代价。维护业务语义不等于给 Agent 填更多 schema，暂时也没有必要为三张表引入 OWL/图数据库。
+
+停止 Trino 不删除业务、元数据库或数据卷：
+
+```bash
+sudo docker-compose --profile sources --profile federation stop trino
+```
+
+恢复原型：
+
+```bash
+sudo docker-compose --profile sources --profile federation up -d --wait mysql-source crm-source metadata trino superset
+```
+
+此步骤不删除卷；BI 资产在 metadata，业务记录在各源卷，Trino 数据目录主要存运行文件，不保存一份自动同步的业务副本。
+
+**S4 已完成，用户回复“没问题，继续”确认本步并授权提交及进入 W1。** 未验证范围包括部门认证/隔离、跨源原子快照、大数据性能、MCP 和 Wren；S3 图表拖动换位限制仍保留。本步确认并提交后，下一步为 W1：以同一数据基线建立 Wren 新版语义模型及查询实验，不开发新的 Agent。
+
+交付自查：Python AST、Node 语法、Compose 基础/构建 override 校验、JSON 解析与证据一致性、Markdown 本地链接/围栏、全部本步文本的真实密码扫描及空白检查通过；`git diff --check` 通过。最终记录中的浏览器报告与独立浏览器证据一致；只提交过已确认的 S3，S4 仍未提交，`.codex/` 未改动或纳入提交。

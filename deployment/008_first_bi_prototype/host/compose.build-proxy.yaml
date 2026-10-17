@@ -1,5 +1,5 @@
 # Optional Linux workstation override: only build uses the host proxy/network.
-# Runtime services retain the isolated Compose network and loopback web port.
+# Runtime services retain the Compose network and configured web bind address.
 services:
   superset:
     build:
@@ -11,4 +11,5 @@ services:
         http_proxy: http://127.0.0.1:7897
         https_proxy: http://127.0.0.1:7897
         no_proxy: localhost,127.0.0.1,::1,mirrors.tuna.tsinghua.edu.cn
+        PYPI_INDEX_URL: https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
         DEBIAN_MIRROR: https://mirrors.tuna.tsinghua.edu.cn

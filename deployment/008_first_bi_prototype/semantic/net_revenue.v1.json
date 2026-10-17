@@ -1,0 +1,31 @@
+{
+  "id": "net_revenue",
+  "version": 1,
+  "status": "experimental",
+  "owner": null,
+  "reviewer": null,
+  "aliases": ["净收入", "净销售额"],
+  "ambiguous_names": ["收入"],
+  "grain": ["order_id"],
+  "sql_file": "sql/trino/orders_enriched_v1.sql",
+  "expression": "SUM(net_amount)",
+  "row_expression": "paid_amount - refund_total",
+  "unit": "CNY_yuan",
+  "time_dimension": "order_date",
+  "timezone": "Asia/Shanghai",
+  "refund_time_rule": "attribute_to_original_order_date",
+  "dimensions": ["order_date", "dept_id", "industry"],
+  "sources": ["mysql.sales.orders", "mysql.sales.refunds", "crm.public.customers"],
+  "relationships": [
+    {"from": "orders", "to": "refunds", "keys": ["dept_id", "order_id"], "raw_cardinality": "1:N", "execution": "aggregate_refunds_before_left_join", "joined_cardinality": "1:0..1"},
+    {"from": "orders", "to": "customers", "keys": ["dept_id", "customer_id"], "cardinality": "N:0..1", "execution": "left_join", "missing": "未知行业", "duplicates": "reject_publication"}
+  ],
+  "industry_semantics": "current; updates regroup historical orders",
+  "quality_checks": ["unique_order_id", "unique_dept_customer", "required_fields_not_null", "nonnegative_amounts", "refund_reference_matches_department", "refund_total_lte_paid"],
+  "verification_command": "sudo python3 scripts/verify_s4.py",
+  "verification_evidence": "evidence/s4-queries.json",
+  "asset_mapping": "evidence/s4-assets.json",
+  "security": "dept_id is a future authorization dimension; S4 does not enforce department isolation",
+  "snapshot": "no atomic snapshot across sources",
+  "publication": "local experiment only; not an official Wren model or MCP schema"
+}

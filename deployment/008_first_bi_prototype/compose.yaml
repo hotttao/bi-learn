@@ -1,5 +1,5 @@
-# S1: config, image build and disposable runtime probes verified on 2026-10-17.
-# Database initialization and the BI application lifecycle are later steps.
+# 008 local BI experiment. Source databases and Trino use explicit profiles.
+# This S4 configuration does not implement authenticated department isolation.
 name: bi008
 
 x-superset: &superset
@@ -18,6 +18,34 @@ x-superset: &superset
       condition: service_healthy
 
 services:
+  trino:
+    profiles: [federation]
+    # Official amd64 manifest: sha256:4b56ba858f31c4420df762015b63b0c0bcf712109d6401356732af43581c9cd3
+    image: trinodb/trino:481
+    environment:
+      MYSQL_READER_PASSWORD: ${MYSQL_SOURCE_READER_PASSWORD:?Run scripts/prepare_env.py first}
+      CRM_READER_PASSWORD: ${CRM_READER_PASSWORD:?Run scripts/prepare_env.py first}
+    ports:
+      - 127.0.0.1:18080:8080
+    volumes:
+      - ./trino:/etc/trino:ro
+      - trino_data:/data/trino
+    depends_on:
+      mysql-source:
+        condition: service_healthy
+      crm-source:
+        condition: service_healthy
+    mem_limit: 2g
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsS http://localhost:8080/v1/info | grep -q '"starting":false'
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
   mysql-source:
     profiles: [sources]
     image: mysql:8.4.6
@@ -111,6 +139,7 @@ services:
     mem_limit: 1536m
 
 volumes:
+  trino_data:
   metadata:
   mysql_source:
   crm_source:

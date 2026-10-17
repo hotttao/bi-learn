@@ -1,0 +1,65 @@
+{
+  "verified_at_utc": "2026-10-17T14:14:09.032871+00:00",
+  "database_id": 2,
+  "dataset_id": 2,
+  "chart_id": 3,
+  "dashboard_id": 1,
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/1/",
+  "contract": "net_revenue@1",
+  "sql_sha256": "e450166e5e71e1bac0b8a6b351159b480bfa09113dae21a534838a8f7b4c1bf8",
+  "industry_api": [
+    {
+      "industry": "软件",
+      "net_revenue": 120.0
+    },
+    {
+      "industry": "零售",
+      "net_revenue": 125.0
+    }
+  ],
+  "one_day_api": [
+    {
+      "industry": "软件",
+      "net_revenue": 120.0
+    }
+  ],
+  "quality": {
+    "query_id": "20261017_141402_00019_39irw",
+    "columns": [
+      "rule",
+      "failures"
+    ],
+    "rows": [
+      [
+        "duplicate_order",
+        0
+      ],
+      [
+        "invalid_order",
+        0
+      ],
+      [
+        "duplicate_customer",
+        0
+      ],
+      [
+        "invalid_customer",
+        0
+      ],
+      [
+        "invalid_refund",
+        0
+      ],
+      [
+        "orphan_refund",
+        0
+      ],
+      [
+        "excess_refund",
+        0
+      ]
+    ]
+  },
+  "existing_layout_preserved": true,
+  "s3_charts": "unchanged: MySQL baseline; industry chart uses Trino"
+}
