@@ -1,0 +1,141 @@
+{
+  "url": "http://192.168.2.46:8088",
+  "health": "healthy",
+  "published_ports": {
+    "8088/tcp": [
+      {
+        "HostIp": "192.168.2.46",
+        "HostPort": "8088"
+      }
+    ]
+  },
+  "image_id": "sha256:37d661b200997df2d353dec49e4842542733605dd9ec7cdd23ee790d4a15bc28",
+  "order_2_paid_amount": "80.00",
+  "browser": {
+    "verified_at_utc": "2026-10-17T13:14:46.047Z",
+    "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/1/",
+    "baseline": {
+      "kpi": 245,
+      "daily": [
+        120,
+        125
+      ]
+    },
+    "native_date_filter": {
+      "start_inclusive": "2026-10-01",
+      "end_exclusive": "2026-10-02",
+      "kpi": 120,
+      "daily": [
+        120
+      ]
+    },
+    "layout": {
+      "verified_at_utc": "2026-10-17T13:28:56.187Z",
+      "resize_saved": true,
+      "reopen_preserved": true,
+      "position": {
+        "CHART-008-KPI": {
+          "children": [],
+          "id": "CHART-008-KPI",
+          "meta": {
+            "chartId": 1,
+            "height": 50,
+            "sliceName": "008 净收入",
+            "uuid": "5e4be922-c974-4086-98cc-f995fb80b8a8",
+            "width": 4
+          },
+          "parents": [
+            "ROOT_ID",
+            "GRID_ID",
+            "ROW-008"
+          ],
+          "type": "CHART"
+        },
+        "CHART-008-TREND": {
+          "children": [],
+          "id": "CHART-008-TREND",
+          "meta": {
+            "chartId": 2,
+            "height": 50,
+            "sliceName": "008 按日净收入",
+            "uuid": "1e70b218-9b0c-4de8-8a4e-d7bf7dfe1ffa",
+            "width": 8
+          },
+          "parents": [
+            "ROOT_ID",
+            "GRID_ID",
+            "ROW-008"
+          ],
+          "type": "CHART"
+        },
+        "DASHBOARD_VERSION_KEY": "v2",
+        "GRID_ID": {
+          "children": [
+            "ROW-008"
+          ],
+          "id": "GRID_ID",
+          "parents": [
+            "ROOT_ID"
+          ],
+          "type": "GRID"
+        },
+        "HEADER_ID": {
+          "id": "HEADER_ID",
+          "meta": {
+            "text": "008 净收入入门看板"
+          },
+          "type": "HEADER"
+        },
+        "ROOT_ID": {
+          "children": [
+            "GRID_ID"
+          ],
+          "id": "ROOT_ID",
+          "type": "ROOT"
+        },
+        "ROW-008": {
+          "children": [
+            "CHART-008-KPI",
+            "CHART-008-TREND"
+          ],
+          "id": "ROW-008",
+          "meta": {
+            "background": "BACKGROUND_TRANSPARENT"
+          },
+          "parents": [
+            "ROOT_ID",
+            "GRID_ID"
+          ],
+          "type": "ROW"
+        }
+      },
+      "chart_drag": "not_verified_by_automation; manual review exercise remains"
+    },
+    "refresh": {
+      "changed_paid_amount": 90,
+      "kpi": 255,
+      "daily": [
+        120,
+        135
+      ],
+      "restored": {
+        "paid_amount": 80,
+        "kpi": 245,
+        "daily": [
+          120,
+          125
+        ]
+      }
+    }
+  },
+  "host_requests_version": "2.32.3",
+  "headless_browser": "Google Chrome 155.0.8059.84",
+  "not_verified": [
+    "chart position drag in browser automation",
+    "access from a second LAN device",
+    "department isolation",
+    "cross-source SQL",
+    "MCP",
+    "Wren"
+  ]
+}

@@ -25,5 +25,5 @@ FEATURE_FLAGS = {"GLOBAL_ASYNC_QUERIES": False}
 WTF_CSRF_ENABLED = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
-# Local loopback HTTP only; revisit HTTPS before shared access.
+# HTTP on the explicitly selected experiment LAN address.
 SESSION_COOKIE_SECURE = False

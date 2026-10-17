@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-17：**S1 已经用户确认并提交（`a0b9333`）。S2 数据源与造数已完成，待 review、未提交：MySQL 与业务 PostgreSQL 均 healthy，三表各 4 行，净收入 245，重复初始化、只读权限及停止/启动持久性检查通过。Superset Web、Trino、MCP 和 Wren 尚未启动。**
+2026-10-17：**S2 已确认并提交（`1183f69`）。用户确认继续，S3 核心验收已完成并确认：Superset 已监听 `192.168.2.46:8088`，净收入 245、单日筛选 120、尺寸保存及重开、源更新后 255→恢复 245 均经真实 Chrome 验证。图表拖动换位尚未自动验证，列为手工 review 项。准备进入 S4；MCP 和 Wren 尚未进入。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -110,7 +110,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S1 已于用户确认后提交为 `a0b9333`，没有 push。当前 review 范围是 S2：业务源 Compose 配置、建表与 seed SQL、凭据增量生成、源查询/对账脚本、数据字典和运行证据。先阅读 [DATA-DICTIONARY.md](DATA-DICTIONARY.md)，再看本文末尾 S2 操作记录。用户确认后才提交 S2 并进入 S3 手工 BI。下面保留 S1 当时的操作和 review 状态作为历史记录。
+S1 已提交为 `a0b9333`，S2 已提交为 `1183f69`，没有 push。已确认的 S3 范围：Superset 初始化、MySQL 驱动、原生数据集/图表/看板、局域网监听、Chrome 验证及教程。建议先打开 [亲手操作教程](S3-WALKTHROUGH.md) 和实际看板，再看本文末尾 S3 操作记录。图表拖动换位仍需手工确认；其他核心结果已有证据。用户回复“继续”后提交 S3，进入 S4。以下保留各步当时的状态作为历史记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -390,3 +390,135 @@ sudo python3 scripts/source_db.py verify
 已有卷上可重复执行 seed 补缺失的基准 ID；不会清除额外数据或覆盖修改。如果数据质量/基准不一致，先查差异，不用删除卷解决。管理员密码来自首次建库，后续不要随意重建 `.env`；本步未验证备份恢复或容器卷损坏恢复。
 
 本步已完成概念、配置、造数和运行验收，尚未提交，等待用户 review。review 建议从数据字典、SQL 和独立答案开始，再看脚本与证据。下一步 S3 才初始化 Superset 元数据库、创建管理员、接 MySQL，手工做指标卡、日趋势和日期筛选。`.codex/` 用户配置不属于本步变更。
+
+
+## S3 操作记录：Superset 原生净收入看板
+
+日期：2026-10-17。状态：**核心验收通过，待 review，未提交；图表拖动换位待手工确认。** 前置 S2 提交为 `1183f69`。本步没有接 Trino、MCP 或 Wren。
+
+### 1. 访问入口与教学顺序
+
+用户指定监听 `192.168.*` 局域网地址。通过 `ip -4 -o addr show scope global`、路由和 `hostname -I` 确认本机地址为 **192.168.2.46**，将 `.env` 的 `SUPERSET_BIND_HOST` 和 Compose 端口映射改为该地址。
+
+- 登录入口：http://192.168.2.46:8088
+- 实际看板：http://192.168.2.46:8088/superset/dashboard/1/
+- 用户：`admin`；密码从本机 `.env` 的 `SUPERSET_ADMIN_PASSWORD` 读取，未写入 Git。
+- 亲手复现：[S3-WALKTHROUGH.md](S3-WALKTHROUGH.md)。
+
+容器内 Gunicorn 仍监听 `0.0.0.0:8088`，宿主仅发布到指定 LAN 地址；不是将宿主所有网卡都开放。`docker port` 实测为 `8088/tcp -> 192.168.2.46:8088`，`ss -ltn` 也确认该绑定，LAN 地址的 `/health` 返回 HTTP 200。Chrome 在本机经这个 LAN 地址完成验证；未从第二台设备单独验证连通性。该 IP 来自 DHCP，变化时需修改绑定配置并重建 Web 容器。
+
+### 2. 这一步理解哪些对象
+
+本步先直连 MySQL，不复制 CRM 数据，也不伪装跨库查询：
+
+```text
+浏览器 → Superset Web → MySQL 只读连接 → 订单/退款
+                ↓
+       独立元数据库：用户、数据集、图表、看板和布局
+```
+
+数据集 `008_order_net_v1` 保存一行一订单的 SQL 与字段；指标 `net_revenue` 保存 `SUM(net_amount)`；图表保存类型、指标与时间维度；看板保存图表引用、布局与原生筛选配置。源数据更新不需要重建这些资产，只需重新查询。
+
+本次由脚本调用 Superset 原生 REST API 创建资产，再由真实 Chrome 验证显示与交互。**没有将脚本创建说成用户已亲手操作。** 教程提供 SQL Lab、数据集编辑、创建两图、添加时间筛选和修改布局的练习，建议使用个人后缀另建练习资产，保留基线。
+
+### 3. 实际部署与初始化
+
+工作目录：`deployment/008_first_bi_prototype`。新增部署入口 `scripts/deploy_s3.py`，按阶段执行：
+
+```bash
+sudo python3 scripts/deploy_s3.py --phase runtime
+python3 scripts/deploy_s3.py --phase assets
+sudo python3 scripts/deploy_s3.py --phase browser
+sudo python3 scripts/deploy_s3.py --phase finish
+```
+
+runtime 实际执行：
+
+1. 校验 Compose，并使用本机代理覆盖配置构建派生 Superset 镜像。
+2. 启动/检查 metadata、mysql-source、crm-source。
+3. 用一次性 init 容器运行 `superset db upgrade`，建立持久元数据库表结构。
+4. 运行 `superset init` 同步权限角色。
+5. 运行 `superset/bootstrap_admin.py`，通过应用安全管理器创建 admin；密码取环境变量，不放在进程参数。重跑发现用户已存在时保留原密码。
+6. 启动 Superset Web，等待 healthy。元数据库、两个业务源和 Web 共四个常驻容器；初始化容器结束即删除。
+
+元数据库使用 S1 的 `bi008_metadata` 卷，与两个业务卷独立。没有加载官方示例数据。
+
+### 4. 驱动与网络问题的实际处理
+
+首次加入 `PyMySQL[rsa]==1.1.1` 后，MySQL 连接创建成功，但虚拟数据集 POST 返回 500。查看 Superset 日志发现 `superset/db_engine_specs/mysql.py` 的类型识别仍导入 `MySQLdb`，缺少模块导致失败。保留实际 SQLAlchemy 的 PyMySQL 连接，另外安装 `mysqlclient==2.2.7` 供类型识别使用，并增加编译/客户端头文件依赖。修复后虚拟数据集元数据读取、SQL 查询和页面图表均成功。
+
+派生镜像的 Python 驱动固定为 PostgreSQL `psycopg2-binary==2.9.10`、MySQL `PyMySQL[rsa]==1.1.1` 和 `mysqlclient==2.2.7`。原始镜像仍为 `apache/superset:6.1.0`。S3 镜像 ID 与 S1 不同，记录在最终证据中。
+
+APT 更新一度下载较慢。先补齐大小写代理变量，再验证清华 Debian 镜像直连正常，将它仅配置到 `host/compose.build-proxy.yaml` 的 `DEBIAN_MIRROR` 参数及 NO_PROXY。通用 Dockerfile 默认仍使用 Debian 官方源。两次主动中止慢构建后重试；最终系统依赖安装约 16.5 秒、Python 驱动安装约 23.5 秒。未删除业务或元数据库卷。
+
+在 MySQL 驱动构建期间，单独执行过 `sudo docker-compose up -d --no-deps superset`，先落实用户要求的 LAN 绑定；最终 runtime 又使用完整驱动镜像重建 Web。数据库连接地址始终是容器网络内 `mysql-source:3306`，不会因浏览器入口改为 LAN 而变化。
+
+版本核查依据：[6.1.0 图表 API schema](https://github.com/apache/superset/blob/6.1.0/superset/charts/schemas.py)、[数据集 API schema](https://github.com/apache/superset/blob/6.1.0/superset/datasets/schemas.py)、[看板 API schema](https://github.com/apache/superset/blob/6.1.0/superset/dashboards/schemas.py)。配置与 API 均以实际部署版本运行结果为准。
+
+### 5. 原生资产与 API 对账
+
+`assets` 阶段使用登录 API 获取临时令牌和 CSRF，再创建实验专属名称的资产，读回并记录 ID。实际 SQL 继续来自 `sql/mysql/order_net.sql`，未复制另一份收入公式。
+
+| 资产 | 实际 ID/定义 |
+| --- | --- |
+| 只读数据连接 | 1，`008 MySQL sales (read-only)`；用户 bi_reader；关闭 DML/CTAS/CVAS |
+| 虚拟数据集 | 1，`008_order_net_v1`；默认时间列 order_date |
+| 指标 | net_revenue，`SUM(net_amount)`，人民币元 |
+| 指标卡 | 1，`008 净收入`，Big Number Total |
+| 日趋势 | 2，`008 按日净收入`，ECharts Line Chart |
+| 看板 | 1，`008 净收入入门看板`，原生可编辑资产 |
+| 原生日期筛选 | 订单日期，作用于两图，默认 `[2026-10-01, 2026-11-01)` |
+
+API 查询整月得 245，单日 `[2026-10-01, 2026-10-02)` 得 120。资产记录见 [s3-assets.json](evidence/s3-assets.json)。同名资产存在时脚本复用，不直接覆盖已有图表参数或非空看板布局；它不是通用资产迁移或跨调用事务机制。
+
+### 6. Chrome 页面验证与结果
+
+宿主已有 Google Chrome。Python venv 创建因未安装 ensurepip 失败，未为此修改系统包；改用 Node 安装 `playwright-core@1.56.1` 到被忽略的 `.local/browser/`，驱动本机 Chrome。验收脚本是 `scripts/verify_s3_browser.mjs`，浏览器测试结果见 [s3-browser.json](evidence/s3-browser.json)。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 登录与原生页面 | admin 登录成功，看板显示两张图 |
+| 整月指标卡 | 页面 245.00；真实图表查询结果 245 |
+| 日趋势 | 实际图表请求返回 120、125，与指标卡可对账 |
+| 日期筛选 | 在界面打开范围编辑器，改结束日并 Apply，再点击 Apply filters；指标卡 120，趋势仅第一天 120；恢复整月后 245 |
+| 调整图表尺寸并保存 | 界面拖动 resize handle，点击 Save，API 读回布局变化 |
+| 离开再重开 | 先离开到 welcome，再重开；布局字符串一致，指标卡仍 245 |
+| 数据更新与刷新 | 管理员将订单 2 的 paid_amount 从 80 改为 90；重载页面后 255，趋势 120/135 |
+| 恢复源数据 | 将订单 2 恢复 80；重载后 245，趋势 120/125 |
+| 图表位置拖动换位 | **自动化未通过，待用户手工 review**；不计为通过 |
+
+日期控件的无障碍名称是“订单日期”，而非所显示的日期范围；首次按日期文本定位超时，改用原生 `time-range-trigger` 后成功。补充拖动测试尝试了指针和 HTML5 事件：能进入拖动状态，但未出现有效放置目标，读回顺序未改变；没有把“Save 成功”误认为换位成功，也没有据此判定产品缺陷。随后仅重复尺寸/重开检查，并把当前图表高度恢复到可读布局，证据明确保留手工项。
+
+源更新测试在 finally 中恢复订单 2，避免异常中断留下 90。测试后再次运行 `source_db.py verify`，净收入 245、三表各 4 行、所有拒绝测试通过，原始记录指纹仍与 S2 一致。最终 finish 阶段再次读取订单 2 为 80.00，并检查 LAN HTTP/容器状态，未再改源数据。
+
+截图：
+
+- [整月看板，245](evidence/s3-dashboard.png)
+- [原生日期筛选，120](evidence/s3-date-filter.png)
+- [源更新后刷新，255](evidence/s3-refresh-255.png)
+
+最终绑定、镜像 ID、浏览器版本和已验证范围见 [s3-final-state.json](evidence/s3-final-state.json)。截图仅含合成业务数据。浏览器临时资料、下载的源码诊断材料和会话页面保存在忽略目录，不提交 Git；没有提交实际密码或认证令牌。
+
+### 7. 现在跟着做什么
+
+打开看板，先核对 245 和两天趋势；按教程把日期限制为第一天，观察两图一起变化，再恢复整月。进入 Edit dashboard，亲手拖动一张图到另一位置、保存并重开，确认这项尚未自动完成的交互，再反馈 review 结果。你也可以另建练习看板，避免改动实验基线。
+
+本步应能回答三个问题：数据集与图表分别保存什么？退款为什么要先汇总？为什么保存布局不会冻结数据？实际操作路线见教程，而不是只阅读验证脚本。
+
+### 8. 停止、恢复与 review 边界
+
+日常停止 Web，不影响业务源和卷：
+
+```bash
+sudo docker-compose stop superset
+```
+
+恢复已初始化的 Web 和元数据库：
+
+```bash
+sudo docker-compose up -d --wait metadata superset
+```
+
+元数据库卷和 `.env` 需要保留；不要通过删除卷处理登录或图表错误。runtime 重跑包含数据库迁移和权限同步，日常恢复不需要重跑。完整 browser 阶段会调整尺寸并短暂更改合成订单，适合复现实验；普通看板刷新无需执行它。
+
+用户回复“继续”，确认本步并推进 S4。保留图表拖动换位的手工未验证项，不声称所有原生编辑交互通过。S3 提交仅包含本目录，后面的 Wren 实验没有提前执行；`.codex/` 用户配置未改动。

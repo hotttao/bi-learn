@@ -12,6 +12,7 @@ x-superset: &superset
     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/prepare_env.py first}
   volumes:
     - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+    - ./superset/bootstrap_admin.py:/app/pythonpath/bootstrap_admin.py:ro
   depends_on:
     metadata:
       condition: service_healthy
@@ -90,7 +91,7 @@ services:
   superset:
     <<: *superset
     ports:
-      - 127.0.0.1:8088:8088
+      - ${SUPERSET_BIND_HOST:-192.168.2.46}:8088:8088
     command:
       - gunicorn
       - --bind=0.0.0.0:8088
