@@ -1,0 +1,625 @@
+{
+  "get_dataset_info": {
+    "id": 2,
+    "table_name": "008_orders_enriched_v1",
+    "schema": "sales",
+    "database_name": "008 Trino federation (source readers)",
+    "description": "net_revenue@1；一行一订单；退款先汇总；客户关联含部门；当前行业，无匹配为未知行业；CNY元。S4未实现部门隔离。",
+    "certified_by": null,
+    "certification_details": null,
+    "changed_by": "BI Research",
+    "changed_on": "2026-10-17T14:14:06.239704",
+    "changed_on_humanized": "12 hours ago",
+    "created_by": "BI Research",
+    "created_on": "2026-10-17T14:14:06.119225",
+    "created_on_humanized": "12 hours ago",
+    "tags": [],
+    "owners": [
+      {
+        "id": 1,
+        "username": "admin",
+        "first_name": "BI",
+        "last_name": "Research",
+        "email": "bi008@example.invalid",
+        "active": true,
+        "roles": [
+          "Admin"
+        ]
+      }
+    ],
+    "is_virtual": true,
+    "database_id": 2,
+    "uuid": "17e84f28-2a46-4cfd-a7f6-f245668bd08d",
+    "schema_perm": "[008 Trino federation (source readers)].[mysql].[sales]",
+    "url": "http://192.168.2.46:8088/tablemodelview/edit/2",
+    "sql": "-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id",
+    "main_dttm_col": "order_date",
+    "offset": 0,
+    "cache_timeout": null,
+    "params": null,
+    "template_params": null,
+    "extra": null,
+    "columns": [
+      {
+        "column_name": "order_id",
+        "verbose_name": null,
+        "type": "BIGINT",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "dept_id",
+        "verbose_name": null,
+        "type": "CHAR(1)",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "customer_id",
+        "verbose_name": null,
+        "type": "BIGINT",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "order_date",
+        "verbose_name": null,
+        "type": "DATE",
+        "is_dttm": true,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "industry",
+        "verbose_name": null,
+        "type": "VARCHAR",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "paid_amount",
+        "verbose_name": null,
+        "type": "DECIMAL(12, 2)",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "refund_total",
+        "verbose_name": null,
+        "type": "DECIMAL(38, 2)",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      },
+      {
+        "column_name": "net_amount",
+        "verbose_name": null,
+        "type": "DECIMAL(38, 2)",
+        "is_dttm": false,
+        "groupby": true,
+        "filterable": true,
+        "description": null
+      }
+    ],
+    "metrics": [
+      {
+        "metric_name": "net_revenue",
+        "verbose_name": "净收入",
+        "expression": "SUM(net_amount)",
+        "description": null,
+        "d3format": ",.2f"
+      }
+    ],
+    "is_favorite": null
+  },
+  "get_chart_type_schema": {
+    "chart_type": "xy",
+    "schema": {
+      "$defs": {
+        "AxisConfig": {
+          "properties": {
+            "title": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Title"
+            },
+            "scale": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "linear",
+                    "log"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "linear",
+              "title": "Scale"
+            },
+            "format": {
+              "anyOf": [
+                {
+                  "maxLength": 50,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "e.g. '$,.2f'",
+              "title": "Format"
+            }
+          },
+          "title": "AxisConfig",
+          "type": "object"
+        },
+        "ColumnRef": {
+          "properties": {
+            "name": {
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_\\s\\-\\.]*$",
+              "title": "Name",
+              "type": "string"
+            },
+            "label": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Label"
+            },
+            "dtype": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Dtype"
+            },
+            "aggregate": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "SUM",
+                    "COUNT",
+                    "AVG",
+                    "MIN",
+                    "MAX",
+                    "COUNT_DISTINCT",
+                    "STDDEV",
+                    "VAR",
+                    "MEDIAN",
+                    "PERCENTILE"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "description": "SQL aggregate function",
+              "title": "Aggregate"
+            },
+            "saved_metric": {
+              "default": false,
+              "description": "If true, 'name' refers to a saved metric from the dataset (use get_dataset_info to see available metrics). When set, 'aggregate' is ignored.",
+              "title": "Saved Metric",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "title": "ColumnRef",
+          "type": "object"
+        },
+        "FilterConfig": {
+          "properties": {
+            "column": {
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_][a-zA-Z0-9_\\s\\-\\.]*$",
+              "title": "Column",
+              "type": "string"
+            },
+            "op": {
+              "description": "LIKE/ILIKE use % wildcards. IN/NOT IN take a list.",
+              "enum": [
+                "=",
+                ">",
+                "<",
+                ">=",
+                "<=",
+                "!=",
+                "LIKE",
+                "ILIKE",
+                "NOT LIKE",
+                "IN",
+                "NOT IN"
+              ],
+              "title": "Op",
+              "type": "string"
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                },
+                {
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "type": "array"
+                }
+              ],
+              "description": "For IN/NOT IN, provide a list.",
+              "title": "Value"
+            }
+          },
+          "required": [
+            "column",
+            "op",
+            "value"
+          ],
+          "title": "FilterConfig",
+          "type": "object"
+        },
+        "LegendConfig": {
+          "properties": {
+            "show": {
+              "default": true,
+              "title": "Show",
+              "type": "boolean"
+            },
+            "position": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "top",
+                    "bottom",
+                    "left",
+                    "right"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "right",
+              "title": "Position"
+            }
+          },
+          "title": "LegendConfig",
+          "type": "object"
+        },
+        "TimeGrain": {
+          "enum": [
+            "PT1S",
+            "PT5S",
+            "PT30S",
+            "PT1M",
+            "PT5M",
+            "PT10M",
+            "PT15M",
+            "PT30M",
+            "PT0.5H",
+            "PT1H",
+            "PT6H",
+            "P1D",
+            "P1W",
+            "1969-12-28T00:00:00Z/P1W",
+            "1969-12-29T00:00:00Z/P1W",
+            "P1W/1970-01-03T00:00:00Z",
+            "P1W/1970-01-04T00:00:00Z",
+            "P1M",
+            "P3M",
+            "P0.25Y",
+            "P1Y"
+          ],
+          "title": "TimeGrain",
+          "type": "string"
+        }
+      },
+      "properties": {
+        "chart_type": {
+          "const": "xy",
+          "default": "xy",
+          "title": "Chart Type",
+          "type": "string"
+        },
+        "x": {
+          "$ref": "#/$defs/ColumnRef",
+          "description": "X-axis column"
+        },
+        "y": {
+          "description": "Y-axis metrics (unique labels)",
+          "items": {
+            "$ref": "#/$defs/ColumnRef"
+          },
+          "minItems": 1,
+          "title": "Y",
+          "type": "array"
+        },
+        "kind": {
+          "default": "line",
+          "enum": [
+            "line",
+            "bar",
+            "area",
+            "scatter"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "time_grain": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TimeGrain"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "PT1S, PT1M, PT1H, P1D, P1W, P1M, P3M, P1Y"
+        },
+        "orientation": {
+          "anyOf": [
+            {
+              "enum": [
+                "vertical",
+                "horizontal"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Bar orientation (only for kind='bar')",
+          "title": "Orientation"
+        },
+        "stacked": {
+          "default": false,
+          "title": "Stacked",
+          "type": "boolean"
+        },
+        "group_by": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ColumnRef"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Series breakdown columns",
+          "title": "Group By"
+        },
+        "x_axis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AxisConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "y_axis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AxisConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "legend": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LegendConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/FilterConfig"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Structured filters (column/op/value). Do NOT use adhoc_filters or raw SQL expressions.",
+          "title": "Filters"
+        },
+        "row_limit": {
+          "default": 10000,
+          "description": "Max data points",
+          "maximum": 50000,
+          "minimum": 1,
+          "title": "Row Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "XYChartConfig",
+      "type": "object"
+    },
+    "examples": [
+      {
+        "chart_type": "xy",
+        "kind": "line",
+        "x": {
+          "name": "order_date"
+        },
+        "y": [
+          {
+            "name": "revenue",
+            "aggregate": "SUM"
+          }
+        ],
+        "time_grain": "P1D"
+      },
+      {
+        "chart_type": "xy",
+        "kind": "bar",
+        "x": {
+          "name": "category"
+        },
+        "y": [
+          {
+            "name": "sales",
+            "aggregate": "SUM"
+          }
+        ]
+      }
+    ]
+  },
+  "generate_chart": {
+    "chart": null,
+    "previews": {},
+    "capabilities": null,
+    "semantics": null,
+    "explore_url": null,
+    "embed_code": null,
+    "api_endpoints": {},
+    "form_data": {
+      "viz_type": "echarts_timeseries_bar",
+      "metrics": [
+        "net_revenue"
+      ],
+      "x_axis": "industry",
+      "x_axis_sort_series_type": "name",
+      "x_axis_sort_series_ascending": true,
+      "time_grain_sqla": null,
+      "granularity_sqla": null,
+      "adhoc_filters": [
+        {
+          "clause": "WHERE",
+          "expressionType": "SIMPLE",
+          "subject": "order_date",
+          "operator": ">=",
+          "comparator": "2026-10-01"
+        },
+        {
+          "clause": "WHERE",
+          "expressionType": "SIMPLE",
+          "subject": "order_date",
+          "operator": "<",
+          "comparator": "2026-11-01"
+        }
+      ],
+      "row_limit": 1000,
+      "y_axis_format": ",.2f",
+      "orientation": "vertical"
+    },
+    "form_data_key": null,
+    "performance": {
+      "query_duration_ms": 361,
+      "estimated_cost": null,
+      "cache_status": "error",
+      "optimization_suggestions": []
+    },
+    "accessibility": null,
+    "success": false,
+    "error": {
+      "error_type": "compile_error",
+      "message": "Chart query failed to execute. The chart configuration is invalid.",
+      "details": "Error: TrinoUserError(type=USER_ERROR, name=TYPE_MISMATCH, message=\"line 31:14: Cannot apply operator: date <= varchar(10)\", query_id=20261018_025956_00173_ujdet)",
+      "validation_errors": [],
+      "dataset_context": null,
+      "query_info": null,
+      "suggestions": [
+        "Check that all columns exist in the dataset",
+        "Verify aggregate functions are compatible with column types",
+        "Ensure filters reference valid columns",
+        "Try simplifying the chart configuration"
+      ],
+      "help_url": null,
+      "error_code": "CHART_COMPILE_FAILED"
+    },
+    "warnings": [],
+    "schema_version": "2.0",
+    "api_version": "v1"
+  }
+}

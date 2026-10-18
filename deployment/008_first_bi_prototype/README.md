@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S4 已提交（`61c9d59`），W1 已确认并提交（`7e6d467`）。W2 已确认并提交（`35db4e5`）；当前 W3“语义变更维护”已实现并完成实验，待本步 review，未提交。部门隔离暂缓。Superset 仍为 `192.168.2.46:8088`，原有资产未变。**
+2026-10-18：**S4 `61c9d59`、W1 `7e6d467`、W2 `35db4e5`、W3与教程整理 `8aa1f0e` 已确认并提交。当前S6官方MCP固定调用已实现并验证，待本步review，未提交、未进入S7；部门隔离暂缓。Superset仍为 `192.168.2.46:8088`，S6专用看板为 `/superset/dashboard/2/`。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -112,7 +112,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973`、S4 `61c9d59` 已提交，没有 push。W1、W2 后续已分别确认并提交为 `7e6d467`、`35db4e5`。当前 review 为 W3，先读 [W3 教程](walkthroughs/005_W3-WALKTHROUGH.md) 和本文末尾 W3 记录。以下保留各步当时的记录。
+S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973`、S4 `61c9d59` 已提交，没有 push。W1、W2 后续已分别确认并提交为 `7e6d467`、`35db4e5`。W3与教程整理后续已确认并提交为 `8aa1f0e`。当前review为S6，先读 [S6教程](walkthroughs/006_S6-WALKTHROUGH.md) 和本文末尾记录。以下保留各步当时的记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -942,3 +942,83 @@ sudo python3 scripts/source_db.py verify > evidence/w3-source-baseline.json
 教程目录整理：按用户要求将5份WALKTHROUGH集中到`walkthroughs/`，依S3、S4、W1、W2、W3顺序编号001～005，新增阅读目录并更新教程内部、README、指令文件与wiki引用。仅调整文档组织，未提交。
 
 2026-10-18 后续确认：用户要求“提交代码，进行下一步”，确认W3与教程目录整理，授权提交并进入S6；S5部门隔离继续暂缓。S6完成后仍需单独review。
+
+
+## S6 Superset官方MCP固定调用实际记录（2026-10-18）
+
+**状态：本步完成，待review，未提交S6、未进入S7。** 用户确认后，先提交W3和教程整理为 `8aa1f0e`，再按原计划跳过暂缓的S5进入S6。根目录`.codex/`未纳入提交，没有push。
+
+教学目标：理解“语义模型查询”和“保存原生BI资产”是两类工具。Wren不会自动维护Superset图表，本步验证官方Superset MCP是否能完成预览、保存、加入指定看板、读回及恢复。完整教程：[006_S6-WALKTHROUGH.md](walkthroughs/006_S6-WALKTHROUGH.md)。
+
+### 1. 实际操作与文件
+
+| 顺序 | 实际操作 | 输出/结论 |
+| --- | --- | --- |
+| 1 | 核对在线官方6.1.0文档与现有容器文件、包版本 | 实际代码位于superset/mcp_service；已带官方工具，但精简镜像缺fastmcp。五个原容器healthy |
+| 2 | 创建独立superset_mcp镜像和mcp Compose profile | fastmcp固定3.1.0，新增40个锁定包、保留166个已有依赖；Web镜像与容器不升级 |
+| 3 | 启动官方superset mcp run | 容器内监听5008，宿主只映射127.0.0.1:5008/mcp；使用现有admin开发身份、RBAC开启，部门隔离暂缓 |
+| 4 | 运行discover_s6.py | 实际Streamable HTTP握手、health与24个完整工具/输入schema；未将配置文件存在当成调用成功 |
+| 5 | 运行s6_probe.py预览原数据集2 | 日期比较触发Trino DATE/varchar TYPE_MISMATCH，保留失败；未保存错误图表 |
+| 6 | 运行s6_assets.py | 官方工具创建固定十月窗口虚拟数据集3；预览不创建永久图表；保存图表4/5，创建看板2并加入行业图 |
+| 7 | 演练重复调用与保存记录丢失 | 重复加入返回already错误、布局不变；保存后未记ID时按实际资产找回，同一ID，没有重放create |
+| 8 | 锁定40个新增包后重新构建/重建MCP容器，并重跑完整固定流程 | 复用原数据集3、图表4/5、看板2，没有再次持久创建；保留首次与重跑两份证据 |
+| 9 | 运行verify_s6_browser.mjs | 真实Chrome打开未保存预览和看板，数据正确；离开重开；原生编辑方向、保存覆盖、重开确认horizontal |
+| 10 | 运行restore_s6_chart.py | 官方get_chart_info/update_chart/get_chart_data读取并恢复vertical；更新本地核验记录，便于后续识别人工差异 |
+| 11 | 重新源验证并finish_s6.py读回 | S2完整指纹、正常Wren MDL、S4 SQL与原图表1/2/3保持不变 |
+
+新增实现：`superset_mcp/`、Compose的superset-mcp服务、发现/固定调用/浏览器/恢复/最终检查脚本；未新增Agent框架。MCP所有资产写操作来自官方工具，REST仅独立读回与精确名称恢复，浏览器编辑走原生UI。
+
+实际命令均在本原型目录执行：
+
+```bash
+sudo docker-compose --profile mcp build superset-mcp
+sudo docker-compose --profile mcp up -d --no-deps --wait superset-mcp
+.local/wren-venv/bin/python scripts/discover_s6.py
+.local/wren-venv/bin/python scripts/s6_probe.py
+.local/wren-venv/bin/python scripts/s6_assets.py
+node scripts/verify_s6_browser.mjs
+.local/wren-venv/bin/python scripts/restore_s6_chart.py
+sudo python3 scripts/source_db.py verify > evidence/s6-source-baseline.json
+.local/wren-venv/bin/python scripts/finish_s6.py
+```
+
+首次创建证据单独保留为s6-creation.json，s6-assets.json为整条流程重跑后的结果。运行中记录放在忽略目录.local/s6-progress.json，避免失败覆盖已完成的证据；操作记录和本机锁也不提交。
+
+### 2. 实际失败和处理
+
+- 初次Compose文本插入误命中Trino的depends_on，YAML解析失败；恢复原文件后按服务层级插入，校验后构建。没有应用无效配置。
+- uv freeze包含editable的file:///app，不能作为constraint；改为读取已安装分发的命名版本，保留原166包，并将新增40包锁定。构建和uv pip check通过。
+- 原生MCP日期比较生成SQL在本Trino DATE列上失败。改用官方create_virtual_dataset，复用S4 SQL并在外层使用显式DATE窗口，再创建图表。**任意日期筛选仍未通过**，不将此替代方案写成上游已修复。
+- 浏览器测试按精确可访问名称找Save超时；实际图标影响名称，改按可见按钮文字定位并重跑，完成编辑保存与重开。不是原生资产不可编辑。
+
+数据集3只服务固定 `[2026-10-01,2026-11-01)`；源SQL复用S4的单份订单净额定义，汇总SUM(net_amount)与原指标net_revenue一致。这不是Wren→Superset自动同步，也不是W3的新口径195。
+
+### 3. 验证证据与状态
+
+| 项目 | 结果 | 证据 |
+| --- | --- | --- |
+| 版本/来源/依赖 | Superset6.1.0、FastMCP3.1.0、服务SDK1.30.0；保留166基础包 | [runtime](evidence/s6-runtime.json)、[依赖锁](superset_mcp/requirements.lock) |
+| 官方协议与工具 | Streamable HTTP、24个工具及真实输入schema | [discovery](evidence/s6-discovery.json) |
+| 部署和端口 | 独立MCP镜像，宿主仅127.0.0.1:5008 | [service](evidence/s6-service.json) |
+| 日期能力失败 | DATE/varchar比较错误，success=false | [probe](evidence/s6-probe.json) |
+| 首次原生资产流程 | 数据集3、图表4/5、看板2，含所有工具参数/返回 | [creation](evidence/s6-creation.json) |
+| 重跑与重复加入 | 资产ID不变，未再持久create；重复add不改布局 | [assets](evidence/s6-assets.json) |
+| 实际UI | 预览/看板渲染、245/120/125、编辑保存和重开 | [browser](evidence/s6-browser.json)、[看板截图](evidence/s6-dashboard.png)、[编辑截图](evidence/s6-ui-edited.png) |
+| 官方更新恢复 | horizontal→vertical，同一chart ID，数据不变 | [restore](evidence/s6-ui-restore.json) |
+| 源和原资产不变 | S2指纹、Wren模型、S4数据集与原图表1/2/3保持 | [source](evidence/s6-source-baseline.json)、[final](evidence/s6-final-state.json) |
+
+可以打开 `http://192.168.2.46:8088/superset/dashboard/2/` 亲手复核。MCP默认图表布局与字号来自Superset原生工具，没有定制美化。本步已实际验证asset可在原编辑器修改并保存，不把API返回成功当成UI通过。
+
+### 4. 维护、恢复与限制
+
+资产名和请求、参数指纹用于本地重试协调。请求变了或已保存params出现人工修改时，脚本停止，不能静默覆盖。该机制不是服务端幂等键，也不解决多主机并发。“保存结果本地未记录”的模拟没有断开网络，真实网络失败仍未验证。
+
+停止MCP只需 `sudo docker-compose --profile mcp stop superset-mcp`；恢复使用up --no-deps --wait。元数据库里的资产保留，Web和源库继续运行；宿主全部重启后仍按原步骤恢复基础服务。本步没有增加自动启动策略。LAN地址从.env的SUPERSET_BIND_HOST注入MCP浏览器友好URL。
+
+尚未通过：部门隔离（用户暂缓）、任意日期条件、生产并发/真实断连、Wren到Superset自动同步、自然语言Codex资产操作（S7）。当前MCP为本机开发admin入口，不能将本步称为团队授权服务。
+
+另修复上一阶段review产物遗漏：全局target/忽略规则漏掉了W3编译快照，现用三个版本目录中的compiled-mdl.json纳入review，哈希均与原实测MCP契约相同；verify_w3.py的快照生成同步改名。未改W3模型或重跑新业务实验。
+
+交付自查：Compose构建/依赖检查、真实MCP握手、固定调用重跑、原生浏览器渲染/保存/重开、恢复和源/资产核查均通过；Python/Node语法、JSON/TOML、Markdown本地链接/围栏、实际凭据扫描和空白检查通过。W3编译快照补充与原契约哈希一致。未提交S6、未push、未进入S7，未纳入用户根目录.codex配置。
+
+2026-10-18 后续确认：用户要求“继续下一步”，确认S6并授权提交、进入S7。S7成果仍需单独review，部门隔离继续暂缓。

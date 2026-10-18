@@ -1,0 +1,1110 @@
+{
+  "verified_at_utc": "2026-10-18T03:05:21.289290+00:00",
+  "transport": "native Streamable HTTP MCP",
+  "scope": "local admin development identity; department isolation deferred",
+  "calls": [
+    {
+      "tool": "health_check",
+      "arguments": {},
+      "result": {
+        "status": "healthy",
+        "timestamp": "2026-10-18T03:05:21.403083",
+        "service": "Superset MCP Service",
+        "version": "6.1.0",
+        "python_version": "3.10.21",
+        "platform": "Linux",
+        "uptime_seconds": 22.7
+      }
+    },
+    {
+      "tool": "get_instance_info",
+      "arguments": {},
+      "result": {
+        "instance_summary": {
+          "total_dashboards": 2,
+          "total_charts": 5,
+          "total_datasets": 3,
+          "total_databases": 2,
+          "total_users": 1,
+          "total_roles": 5,
+          "total_tags": 0,
+          "avg_charts_per_dashboard": 2.5
+        },
+        "recent_activity": {
+          "dashboards_created_last_30_days": 2,
+          "charts_created_last_30_days": 5,
+          "datasets_created_last_30_days": 3,
+          "dashboards_modified_last_7_days": 2,
+          "charts_modified_last_7_days": 5,
+          "datasets_modified_last_7_days": 3
+        },
+        "dashboard_breakdown": {
+          "published": 2,
+          "unpublished": 0,
+          "certified": 1,
+          "with_charts": 2,
+          "without_charts": 0
+        },
+        "database_breakdown": {
+          "by_type": {
+            "mysql+pymysql": 1,
+            "trino": 1
+          }
+        },
+        "popular_content": {
+          "top_tags": [],
+          "top_creators": []
+        },
+        "current_user": {
+          "id": 1,
+          "username": "admin",
+          "first_name": "BI",
+          "last_name": "Research",
+          "email": "bi008@example.invalid",
+          "active": true,
+          "roles": [
+            "Admin"
+          ]
+        },
+        "feature_availability": {
+          "accessible_menus": [
+            "Action Log",
+            "Alerts & Report",
+            "Annotation Layers",
+            "CSS Templates",
+            "Charts",
+            "Dashboards",
+            "Data",
+            "Databases",
+            "Datasets",
+            "Extensions",
+            "Home",
+            "List Groups",
+            "List Roles",
+            "List Users",
+            "Manage",
+            "Plugins",
+            "Query Search",
+            "Row Level Security",
+            "SQL Editor",
+            "SQL Lab",
+            "Saved Queries",
+            "Security",
+            "Tags",
+            "Tasks",
+            "Themes",
+            "User Registrations"
+          ]
+        },
+        "timestamp": "2026-10-18T03:05:21.572384Z"
+      }
+    },
+    {
+      "tool": "get_dataset_info",
+      "arguments": {
+        "request": {
+          "identifier": 3,
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "id": 3,
+        "table_name": "008_s6_orders_october_v1",
+        "schema": null,
+        "database_name": "008 Trino federation (source readers)",
+        "description": "S6 only: S4 net_revenue@1 SQL, fixed [2026-10-01,2026-11-01). Native DATE filter workaround, not Wren synchronization.",
+        "certified_by": null,
+        "certification_details": null,
+        "changed_by": "BI Research",
+        "changed_on": "2026-10-18T03:02:06.852870",
+        "changed_on_humanized": "3 minutes ago",
+        "created_by": "BI Research",
+        "created_on": "2026-10-18T03:02:06.828202",
+        "created_on_humanized": "3 minutes ago",
+        "tags": [],
+        "owners": [
+          {
+            "id": 1,
+            "username": "admin",
+            "first_name": "BI",
+            "last_name": "Research",
+            "email": "bi008@example.invalid",
+            "active": true,
+            "roles": [
+              "Admin"
+            ]
+          }
+        ],
+        "is_virtual": true,
+        "database_id": 2,
+        "uuid": "8239d2bf-21ca-47ed-b1de-5a87c6297be1",
+        "schema_perm": null,
+        "url": "http://192.168.2.46:8088/tablemodelview/edit/3",
+        "sql": "SELECT * FROM (\n-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) source_orders\nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+        "main_dttm_col": "order_date",
+        "offset": 0,
+        "cache_timeout": null,
+        "params": null,
+        "template_params": null,
+        "extra": null,
+        "columns": [
+          {
+            "column_name": "order_id",
+            "verbose_name": null,
+            "type": "BIGINT",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "dept_id",
+            "verbose_name": null,
+            "type": "CHAR(1)",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "customer_id",
+            "verbose_name": null,
+            "type": "BIGINT",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "order_date",
+            "verbose_name": null,
+            "type": "DATE",
+            "is_dttm": true,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "industry",
+            "verbose_name": null,
+            "type": "VARCHAR",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "paid_amount",
+            "verbose_name": null,
+            "type": "DECIMAL(12, 2)",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "refund_total",
+            "verbose_name": null,
+            "type": "DECIMAL(38, 2)",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          },
+          {
+            "column_name": "net_amount",
+            "verbose_name": null,
+            "type": "DECIMAL(38, 2)",
+            "is_dttm": false,
+            "groupby": true,
+            "filterable": true,
+            "description": null
+          }
+        ],
+        "metrics": [
+          {
+            "metric_name": "count",
+            "verbose_name": "COUNT(*)",
+            "expression": "COUNT(*)",
+            "description": null,
+            "d3format": null
+          }
+        ],
+        "is_favorite": null
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "arguments": {
+        "request": {
+          "dataset_id": 3,
+          "config": {
+            "chart_type": "xy",
+            "kind": "bar",
+            "x": {
+              "name": "industry"
+            },
+            "y": [
+              {
+                "name": "net_amount",
+                "aggregate": "SUM",
+                "label": "net_revenue"
+              }
+            ],
+            "orientation": "vertical",
+            "y_axis": {
+              "format": ",.2f"
+            },
+            "row_limit": 1000
+          },
+          "chart_name": "008 S6 行业净收入",
+          "save_chart": false,
+          "generate_preview": true,
+          "preview_formats": [
+            "url",
+            "table",
+            "vega_lite"
+          ],
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "chart": null,
+        "previews": {
+          "table": {
+            "type": "table",
+            "table_data": "Table Preview\n================================================================================\nindustry | net_revenue\n---------+------------\n软件       | 120.00     \n零售       | 125.00     \n\nTotal: 2 rows × 2 columns",
+            "row_count": 2,
+            "supports_sorting": true
+          },
+          "vega_lite": {
+            "type": "vega_lite",
+            "specification": {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "data": {
+                "values": [
+                  {
+                    "industry": "软件",
+                    "net_revenue": "120.00"
+                  },
+                  {
+                    "industry": "零售",
+                    "net_revenue": "125.00"
+                  }
+                ]
+              },
+              "mark": "bar",
+              "encoding": {
+                "x": {
+                  "field": "industry",
+                  "type": "nominal",
+                  "title": "industry"
+                }
+              },
+              "width": "container",
+              "height": 400,
+              "selection": {
+                "highlight": {
+                  "type": "single",
+                  "on": "mouseover",
+                  "empty": "none"
+                }
+              }
+            },
+            "data_url": null,
+            "supports_streaming": false
+          }
+        },
+        "capabilities": {
+          "supports_interaction": true,
+          "supports_real_time": true,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "interactive",
+            "vega_lite",
+            "ascii",
+            "table"
+          ],
+          "data_types": [
+            "time_series",
+            "categorical",
+            "metric"
+          ]
+        },
+        "semantics": {
+          "primary_insight": "Compares values across categories or time periods",
+          "data_story": "This echarts_timeseries_bar chart analyzes industry, net_amount",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing",
+            "Analyze seasonal patterns or cyclical trends"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=VaxyeuZB5TE",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "echarts_timeseries_bar",
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            }
+          ],
+          "x_axis": "industry",
+          "x_axis_sort_series_type": "name",
+          "x_axis_sort_series_ascending": true,
+          "time_grain_sqla": null,
+          "granularity_sqla": null,
+          "row_limit": 1000,
+          "y_axis_format": ",.2f",
+          "orientation": "vertical"
+        },
+        "form_data_key": "VaxyeuZB5TE",
+        "performance": {
+          "query_duration_ms": 566,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing net_revenue by Industry",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_info",
+      "arguments": {
+        "request": {
+          "form_data_key": "VaxyeuZB5TE"
+        }
+      },
+      "result": {
+        "id": null,
+        "slice_name": null,
+        "viz_type": "echarts_timeseries_bar",
+        "datasource_name": null,
+        "datasource_type": null,
+        "url": null,
+        "description": null,
+        "cache_timeout": null,
+        "changed_by": null,
+        "changed_by_name": null,
+        "changed_on": null,
+        "changed_on_humanized": null,
+        "created_by": null,
+        "created_on": null,
+        "created_on_humanized": null,
+        "certified_by": null,
+        "certification_details": null,
+        "uuid": null,
+        "tags": [],
+        "owners": [],
+        "form_data": {
+          "viz_type": "echarts_timeseries_bar",
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            }
+          ],
+          "x_axis": "industry",
+          "x_axis_sort_series_type": "name",
+          "x_axis_sort_series_ascending": true,
+          "time_grain_sqla": null,
+          "granularity_sqla": null,
+          "row_limit": 1000,
+          "y_axis_format": ",.2f",
+          "orientation": "vertical",
+          "datasource": "3__table"
+        },
+        "form_data_key": "VaxyeuZB5TE",
+        "is_unsaved_state": true
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "arguments": {
+        "request": {
+          "form_data_key": "VaxyeuZB5TE",
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "echarts_timeseries_bar",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "245.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "245.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (echarts_timeseries_bar). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "add_chart_to_existing_dashboard",
+      "arguments": {
+        "request": {
+          "dashboard_id": 2,
+          "chart_id": 5
+        }
+      },
+      "result": {
+        "dashboard": null,
+        "dashboard_url": null,
+        "position": null,
+        "error": "Chart 5 is already in dashboard 2",
+        "permission_denied": false
+      }
+    },
+    {
+      "tool": "get_chart_info",
+      "arguments": {
+        "request": {
+          "identifier": 5
+        }
+      },
+      "result": {
+        "id": 5,
+        "slice_name": "008 S6 行业净收入",
+        "viz_type": "echarts_timeseries_bar",
+        "datasource_name": "008_s6_orders_october_v1",
+        "datasource_type": "table",
+        "url": "http://192.168.2.46:8088/explore/?slice_id=5",
+        "description": null,
+        "cache_timeout": null,
+        "changed_by": "BI Research",
+        "changed_by_name": "BI Research",
+        "changed_on": "2026-10-18T03:03:34.686525",
+        "changed_on_humanized": "a minute ago",
+        "created_by": "BI Research",
+        "created_on": "2026-10-18T03:02:13.051918",
+        "created_on_humanized": "3 minutes ago",
+        "certified_by": null,
+        "certification_details": null,
+        "uuid": "bf5ce654-7681-44ab-b447-44b0a73ed285",
+        "tags": [],
+        "owners": [
+          {
+            "id": 1,
+            "username": "admin",
+            "first_name": "BI",
+            "last_name": "Research",
+            "email": "bi008@example.invalid",
+            "active": true,
+            "roles": [
+              "Admin"
+            ]
+          }
+        ],
+        "form_data": {
+          "viz_type": "echarts_timeseries_bar",
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            }
+          ],
+          "x_axis": "industry",
+          "x_axis_sort_series_type": "name",
+          "x_axis_sort_series_ascending": true,
+          "time_grain_sqla": null,
+          "granularity_sqla": null,
+          "row_limit": 1000,
+          "y_axis_format": ",.2f",
+          "orientation": "vertical"
+        },
+        "form_data_key": null,
+        "is_unsaved_state": false
+      }
+    },
+    {
+      "tool": "get_dashboard_info",
+      "arguments": {
+        "request": {
+          "identifier": 2,
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "id": 2,
+        "dashboard_title": "008 S6 MCP 固定调用实验",
+        "slug": "",
+        "description": "S6 official MCP experiment; CNY net_revenue@1; fixed October 2026; S4 semantic SQL baseline.",
+        "css": null,
+        "certified_by": null,
+        "certification_details": null,
+        "published": true,
+        "is_managed_externally": false,
+        "external_url": null,
+        "created_on": "2026-10-18T03:02:14.425569",
+        "changed_on": "2026-10-18T03:02:14.703705",
+        "created_by": "admin",
+        "changed_by": "admin",
+        "uuid": "4495652c-0482-44f8-8944-33d3af1c96c1",
+        "url": "http://192.168.2.46:8088/superset/dashboard/2/",
+        "created_on_humanized": "3 minutes ago",
+        "changed_on_humanized": "3 minutes ago",
+        "chart_count": 2,
+        "owners": [
+          {
+            "id": 1,
+            "username": "admin",
+            "first_name": "BI",
+            "last_name": "Research",
+            "email": "bi008@example.invalid",
+            "active": true,
+            "roles": [
+              "Admin"
+            ]
+          }
+        ],
+        "tags": [],
+        "roles": [],
+        "charts": [
+          {
+            "id": 4,
+            "slice_name": "008 S6 净收入",
+            "viz_type": "big_number_total",
+            "datasource_name": "008_s6_orders_october_v1",
+            "url": "http://192.168.2.46:8088/explore/?slice_id=4",
+            "description": null
+          },
+          {
+            "id": 5,
+            "slice_name": "008 S6 行业净收入",
+            "viz_type": "echarts_timeseries_bar",
+            "datasource_name": "008_s6_orders_october_v1",
+            "url": "http://192.168.2.46:8088/explore/?slice_id=5",
+            "description": null
+          }
+        ],
+        "native_filters": [],
+        "cross_filters_enabled": false,
+        "omitted_fields": {
+          "position_json": "Omitted (~1 KB) — Internal layout tree with component positions/hierarchy. Not useful for analysis or LLM context.",
+          "json_metadata": "Omitted (~401 B), useful parts extracted — native_filters and cross_filters_enabled extracted into dedicated fields above."
+        },
+        "permalink_key": null,
+        "filter_state": null,
+        "is_permalink_state": false
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "arguments": {
+        "request": {
+          "identifier": 4,
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "chart_id": 4,
+        "chart_name": "008 S6 净收入",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "245.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "245.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Chart '008 S6 净收入' (big_number_total). Contains 1 rows across 1 columns. Sample data includes: net_revenue",
+        "insights": [
+          "Fresh data retrieved from database"
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [
+          "bar chart",
+          "scatter plot"
+        ],
+        "performance": {
+          "query_duration_ms": 164,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "arguments": {
+        "request": {
+          "identifier": 5,
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "chart_id": 5,
+        "chart_name": "008 S6 行业净收入",
+        "chart_type": "echarts_timeseries_bar",
+        "columns": [
+          {
+            "name": "industry",
+            "display_name": "Industry",
+            "data_type": "string",
+            "sample_values": [
+              "软件",
+              "零售"
+            ],
+            "null_count": 0,
+            "unique_count": 2,
+            "statistics": null,
+            "semantic_type": null
+          },
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "numeric",
+            "sample_values": [
+              120.0,
+              125.0
+            ],
+            "null_count": 0,
+            "unique_count": 2,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "industry": "软件",
+            "net_revenue": 120.0
+          },
+          {
+            "industry": "零售",
+            "net_revenue": 125.0
+          }
+        ],
+        "row_count": 2,
+        "total_rows": 2,
+        "data_freshness": null,
+        "summary": "Chart '008 S6 行业净收入' (echarts_timeseries_bar). Contains 2 rows across 2 columns. Sample data includes: industry, net_revenue",
+        "insights": [
+          "Fresh data retrieved from database"
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [
+          "bar chart",
+          "scatter plot"
+        ],
+        "performance": {
+          "query_duration_ms": 224,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    }
+  ],
+  "reconciliation": [],
+  "health": {
+    "status": "healthy",
+    "timestamp": "2026-10-18T03:05:21.403083",
+    "service": "Superset MCP Service",
+    "version": "6.1.0",
+    "python_version": "3.10.21",
+    "platform": "Linux",
+    "uptime_seconds": 22.7
+  },
+  "identity": {
+    "id": 1,
+    "username": "admin",
+    "first_name": "BI",
+    "last_name": "Research",
+    "email": "bi008@example.invalid",
+    "active": true,
+    "roles": [
+      "Admin"
+    ]
+  },
+  "dataset": {
+    "id": 3,
+    "name": "008_s6_orders_october_v1",
+    "source_dataset_id": 2,
+    "s4_sql_sha256": "e450166e5e71e1bac0b8a6b351159b480bfa09113dae21a534838a8f7b4c1bf8",
+    "scope_sql_sha256": "27a53ae70d119cff3c5e9f39dee51227f10f311a921db03ba54ea2790511473f",
+    "sql": "SELECT * FROM (\n-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) source_orders\nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+    "automatic_wren_sync": false
+  },
+  "preview": {
+    "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=VaxyeuZB5TE",
+    "form_data_key": "VaxyeuZB5TE",
+    "no_chart_created": true,
+    "rendered_in_browser": false,
+    "previews": {
+      "table": {
+        "type": "table",
+        "table_data": "Table Preview\n================================================================================\nindustry | net_revenue\n---------+------------\n软件       | 120.00     \n零售       | 125.00     \n\nTotal: 2 rows × 2 columns",
+        "row_count": 2,
+        "supports_sorting": true
+      },
+      "vega_lite": {
+        "type": "vega_lite",
+        "specification": {
+          "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+          "data": {
+            "values": [
+              {
+                "industry": "软件",
+                "net_revenue": "120.00"
+              },
+              {
+                "industry": "零售",
+                "net_revenue": "125.00"
+              }
+            ]
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {
+              "field": "industry",
+              "type": "nominal",
+              "title": "industry"
+            }
+          },
+          "width": "container",
+          "height": 400,
+          "selection": {
+            "highlight": {
+              "type": "single",
+              "on": "mouseover",
+              "empty": "none"
+            }
+          }
+        },
+        "data_url": null,
+        "supports_streaming": false
+      }
+    }
+  },
+  "preview_data": {
+    "chart_id": 0,
+    "chart_name": "Unsaved chart",
+    "chart_type": "echarts_timeseries_bar",
+    "columns": [
+      {
+        "name": "net_revenue",
+        "display_name": "Net Revenue",
+        "data_type": "string",
+        "sample_values": [
+          "245.00"
+        ],
+        "null_count": 0,
+        "unique_count": 1,
+        "statistics": null,
+        "semantic_type": null
+      }
+    ],
+    "data": [
+      {
+        "net_revenue": "245.00"
+      }
+    ],
+    "row_count": 1,
+    "total_rows": 1,
+    "data_freshness": null,
+    "summary": "Unsaved chart (echarts_timeseries_bar). Contains 1 rows across 1 columns.",
+    "insights": [
+      "This is an unsaved chart queried from cached form_data."
+    ],
+    "data_quality": {
+      "completeness": 1.0
+    },
+    "recommended_visualizations": [],
+    "performance": {
+      "query_duration_ms": 0,
+      "estimated_cost": null,
+      "cache_status": "fresh_query",
+      "optimization_suggestions": []
+    },
+    "cache_status": {
+      "cache_hit": false,
+      "cache_type": "none",
+      "cache_age_seconds": null,
+      "cache_key": null,
+      "refreshed": true
+    },
+    "csv_data": null,
+    "excel_data": null,
+    "format": null,
+    "schema_version": "2.0",
+    "api_version": "v1"
+  },
+  "native_duplicate_add": {
+    "returned_error": "Chart 5 is already in dashboard 2",
+    "layout_unchanged": true
+  },
+  "data": {
+    "kpi": {
+      "chart_id": 4,
+      "chart_name": "008 S6 净收入",
+      "chart_type": "big_number_total",
+      "columns": [
+        {
+          "name": "net_revenue",
+          "display_name": "Net Revenue",
+          "data_type": "string",
+          "sample_values": [
+            "245.00"
+          ],
+          "null_count": 0,
+          "unique_count": 1,
+          "statistics": null,
+          "semantic_type": null
+        }
+      ],
+      "data": [
+        {
+          "net_revenue": "245.00"
+        }
+      ],
+      "row_count": 1,
+      "total_rows": 1,
+      "data_freshness": null,
+      "summary": "Chart '008 S6 净收入' (big_number_total). Contains 1 rows across 1 columns. Sample data includes: net_revenue",
+      "insights": [
+        "Fresh data retrieved from database"
+      ],
+      "data_quality": {
+        "completeness": 1.0
+      },
+      "recommended_visualizations": [
+        "bar chart",
+        "scatter plot"
+      ],
+      "performance": {
+        "query_duration_ms": 164,
+        "estimated_cost": null,
+        "cache_status": "fresh_query",
+        "optimization_suggestions": []
+      },
+      "cache_status": {
+        "cache_hit": false,
+        "cache_type": "none",
+        "cache_age_seconds": null,
+        "cache_key": null,
+        "refreshed": true
+      },
+      "csv_data": null,
+      "excel_data": null,
+      "format": null,
+      "schema_version": "2.0",
+      "api_version": "v1"
+    },
+    "industry": {
+      "chart_id": 5,
+      "chart_name": "008 S6 行业净收入",
+      "chart_type": "echarts_timeseries_bar",
+      "columns": [
+        {
+          "name": "industry",
+          "display_name": "Industry",
+          "data_type": "string",
+          "sample_values": [
+            "软件",
+            "零售"
+          ],
+          "null_count": 0,
+          "unique_count": 2,
+          "statistics": null,
+          "semantic_type": null
+        },
+        {
+          "name": "net_revenue",
+          "display_name": "Net Revenue",
+          "data_type": "numeric",
+          "sample_values": [
+            120.0,
+            125.0
+          ],
+          "null_count": 0,
+          "unique_count": 2,
+          "statistics": null,
+          "semantic_type": null
+        }
+      ],
+      "data": [
+        {
+          "industry": "软件",
+          "net_revenue": 120.0
+        },
+        {
+          "industry": "零售",
+          "net_revenue": 125.0
+        }
+      ],
+      "row_count": 2,
+      "total_rows": 2,
+      "data_freshness": null,
+      "summary": "Chart '008 S6 行业净收入' (echarts_timeseries_bar). Contains 2 rows across 2 columns. Sample data includes: industry, net_revenue",
+      "insights": [
+        "Fresh data retrieved from database"
+      ],
+      "data_quality": {
+        "completeness": 1.0
+      },
+      "recommended_visualizations": [
+        "bar chart",
+        "scatter plot"
+      ],
+      "performance": {
+        "query_duration_ms": 224,
+        "estimated_cost": null,
+        "cache_status": "fresh_query",
+        "optimization_suggestions": []
+      },
+      "cache_status": {
+        "cache_hit": false,
+        "cache_type": "none",
+        "cache_age_seconds": null,
+        "cache_key": null,
+        "refreshed": true
+      },
+      "csv_data": null,
+      "excel_data": null,
+      "format": null,
+      "schema_version": "2.0",
+      "api_version": "v1"
+    }
+  },
+  "repeat_ensure": {
+    "same_chart_ids": true,
+    "new_create_calls": 0
+  },
+  "dashboard_id": 2,
+  "chart_ids": {
+    "kpi": 4,
+    "industry": 5
+  },
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/2/",
+  "baseline_dashboard_unchanged": true,
+  "not_verified": [
+    "department isolation (deferred)",
+    "arbitrary date filter generation on Trino",
+    "Wren→Superset synchronization",
+    "production concurrency and true network failure recovery"
+  ]
+}

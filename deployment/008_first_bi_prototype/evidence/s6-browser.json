@@ -1,0 +1,78 @@
+{
+  "verified_at_utc": "2026-10-18T03:07:26.263Z",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/2/",
+  "unsaved_preview": {
+    "url": "http://192.168.2.46:8088/explore/?form_data_key=VaxyeuZB5TE",
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ]
+  },
+  "saved_dashboard": {
+    "kpi": 245,
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ]
+  },
+  "reopened": {
+    "kpi": 245,
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ]
+  },
+  "saved_explore": {
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ],
+    "save_visible": true
+  },
+  "ui_edit": {
+    "orientation": "horizontal",
+    "saved": true,
+    "reopened": true,
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ],
+    "restored_by_mcp_later": true
+  },
+  "editor_controls": [
+    {
+      "test": "format-painter",
+      "text": ""
+    }
+  ]
+}

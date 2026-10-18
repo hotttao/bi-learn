@@ -1,0 +1,32 @@
+[
+  {
+    "service": "crm-source",
+    "state": "running",
+    "health": "healthy"
+  },
+  {
+    "service": "metadata",
+    "state": "running",
+    "health": "healthy"
+  },
+  {
+    "service": "mysql-source",
+    "state": "running",
+    "health": "healthy"
+  },
+  {
+    "service": "superset",
+    "state": "running",
+    "health": "healthy"
+  },
+  {
+    "service": "superset-mcp",
+    "state": "running",
+    "health": "healthy"
+  },
+  {
+    "service": "trino",
+    "state": "running",
+    "health": "healthy"
+  }
+]

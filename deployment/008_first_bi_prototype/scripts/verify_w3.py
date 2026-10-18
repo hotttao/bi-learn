@@ -287,6 +287,9 @@ async def main():
         destination=ROOT/'evidence/w3-models'/label
         if destination.exists():shutil.rmtree(destination)
         shutil.copytree(source,destination,ignore=shutil.ignore_patterns('runtime','release.json','.gitignore'))
+        # Repository-wide target/ is ignored; expose the verified compiled review copy.
+        (destination/'compiled-mdl.json').write_bytes((source/'target/mdl.json').read_bytes())
+        shutil.rmtree(destination/'target')
     save(ROOT/'evidence/w3-verification.json',report)
     print('W3 passed: hidden key drift: total stays 245 but industry adds to 490, detected, fixed 245; unchanged-schema policy v2 195; stale sessions/mixed contexts refused; rollback 245 and recovery 195.')
 

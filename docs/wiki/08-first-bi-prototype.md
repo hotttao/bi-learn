@@ -2,7 +2,7 @@
 
 日期：2026-10-16。本文收敛前面的调研，给出执行顺序；尚未部署或完成验收。
 
-2026-10-18 执行进度：S1～S4、W1和W2已完成并提交；当前W3“语义变更维护”已实现，待review，重点是业务关系、口径和上下文同步，部门隔离暂缓。下文四关保留为最初学习路径，当前步骤与顺序以 [008 README](../../deployment/008_first_bi_prototype/README.md) 为准；最新教学见 [W3教程](../../deployment/008_first_bi_prototype/walkthroughs/005_W3-WALKTHROUGH.md)。
+2026-10-18 执行进度：S1～S4、W1和W2已完成并提交；W3“语义变更维护”与教程整理已提交为8aa1f0e，当前S6官方Superset MCP固定调用已实现、待review，部门隔离暂缓。下文四关保留为最初学习路径，当前步骤与顺序以 [008 README](../../deployment/008_first_bi_prototype/README.md) 为准；最新教学见 [S6教程](../../deployment/008_first_bi_prototype/walkthroughs/006_S6-WALKTHROUGH.md)。
 
 **先做方案二的缩减版：Superset＋单节点 Trino。先手工完成 BI，再接官方 MCP，最后接 Agent。**
 

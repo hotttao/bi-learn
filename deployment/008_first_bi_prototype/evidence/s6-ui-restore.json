@@ -1,0 +1,357 @@
+{
+  "chart_id": 5,
+  "before_orientation": "horizontal",
+  "calls": [
+    {
+      "tool": "get_chart_info",
+      "request": {
+        "identifier": 5
+      },
+      "result": {
+        "id": 5,
+        "slice_name": "008 S6 行业净收入",
+        "viz_type": "echarts_timeseries_bar",
+        "datasource_name": "008_s6_orders_october_v1",
+        "datasource_type": "table",
+        "url": "http://192.168.2.46:8088/explore/?slice_id=5",
+        "description": null,
+        "cache_timeout": null,
+        "changed_by": "BI Research",
+        "changed_by_name": "BI Research",
+        "changed_on": "2026-10-18T03:07:44.089991",
+        "changed_on_humanized": "32 seconds ago",
+        "created_by": "BI Research",
+        "created_on": "2026-10-18T03:02:13.051918",
+        "created_on_humanized": "6 minutes ago",
+        "certified_by": null,
+        "certification_details": null,
+        "uuid": "bf5ce654-7681-44ab-b447-44b0a73ed285",
+        "tags": [],
+        "owners": [
+          {
+            "id": 1,
+            "username": "admin",
+            "first_name": "BI",
+            "last_name": "Research",
+            "email": "bi008@example.invalid",
+            "active": true,
+            "roles": [
+              "Admin"
+            ]
+          }
+        ],
+        "form_data": {
+          "datasource": "3__table",
+          "viz_type": "echarts_timeseries_bar",
+          "slice_id": 5,
+          "matrixify_enable": false,
+          "matrixify_mode_columns": "disabled",
+          "matrixify_dimension_selection_mode_columns": "members",
+          "matrixify_dimension_columns": {
+            "dimension": "",
+            "values": []
+          },
+          "matrixify_topn_value_columns": 10,
+          "matrixify_all_sort_by_columns": "a_to_z",
+          "matrixify_topn_order_columns": true,
+          "matrixify_show_column_headers": true,
+          "matrixify_fit_columns_dynamically": true,
+          "matrixify_mode_rows": "disabled",
+          "matrixify_dimension_selection_mode_rows": "members",
+          "matrixify_dimension_rows": {
+            "dimension": "",
+            "values": []
+          },
+          "matrixify_topn_value_rows": 10,
+          "matrixify_all_sort_by_rows": "a_to_z",
+          "matrixify_topn_order_rows": true,
+          "matrixify_show_row_labels": true,
+          "matrixify_row_height": 300,
+          "matrixify_charts_per_row": 4,
+          "matrixify_cell_title_template": "",
+          "x_axis": "industry",
+          "xAxisForceCategorical": false,
+          "x_axis_sort_asc": true,
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "datasourceWarning": false,
+              "expressionType": "SIMPLE",
+              "hasCustomLabel": true,
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null
+            }
+          ],
+          "groupby": [],
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "No filter",
+              "expressionType": "SIMPLE"
+            }
+          ],
+          "group_others_when_limit_reached": false,
+          "order_desc": true,
+          "row_limit": 1000,
+          "truncate_metric": true,
+          "show_empty_columns": true,
+          "comparison_type": "values",
+          "annotation_layers": [],
+          "forecastEnabled": false,
+          "forecastPeriods": 10,
+          "forecastInterval": 0.8,
+          "orientation": "horizontal",
+          "x_axis_title": "",
+          "x_axis_title_margin": 0,
+          "y_axis_title": "",
+          "y_axis_title_margin": 15,
+          "y_axis_title_position": "Left",
+          "sort_series_type": "sum",
+          "sort_series_ascending": false,
+          "color_scheme": "supersetColors",
+          "time_shift_color": true,
+          "show_value": false,
+          "only_total": true,
+          "percentage_threshold": 0,
+          "color_by_primary_axis": false,
+          "minorTicks": false,
+          "zoomable": false,
+          "show_legend": true,
+          "legendType": "scroll",
+          "legendOrientation": "top",
+          "x_axis_time_format": "smart_date",
+          "x_axis_number_format": "~g",
+          "xAxisLabelRotation": 0,
+          "xAxisLabelInterval": "auto",
+          "y_axis_format": ",.2f",
+          "logAxis": false,
+          "minorSplitLine": false,
+          "truncateYAxis": false,
+          "y_axis_bounds": [
+            null,
+            null
+          ],
+          "truncateXAxis": true,
+          "force_max_interval": false,
+          "rich_tooltip": true,
+          "showTooltipTotal": true,
+          "showTooltipPercentage": false,
+          "tooltipSortByMetric": false,
+          "tooltipTimeFormat": "smart_date",
+          "echart_options": "{}",
+          "extra_form_data": {},
+          "dashboards": [
+            2
+          ]
+        },
+        "form_data_key": null,
+        "is_unsaved_state": false
+      }
+    },
+    {
+      "tool": "update_chart",
+      "request": {
+        "identifier": 5,
+        "config": {
+          "chart_type": "xy",
+          "kind": "bar",
+          "x": {
+            "name": "industry"
+          },
+          "y": [
+            {
+              "name": "net_amount",
+              "aggregate": "SUM",
+              "label": "net_revenue"
+            }
+          ],
+          "orientation": "vertical",
+          "y_axis": {
+            "format": ",.2f"
+          },
+          "row_limit": 1000
+        },
+        "generate_preview": false
+      },
+      "result": {
+        "chart": {
+          "id": 5,
+          "slice_name": "008 S6 行业净收入",
+          "viz_type": "echarts_timeseries_bar",
+          "datasource_name": null,
+          "datasource_type": null,
+          "url": "http://192.168.2.46:8088/explore/?slice_id=5",
+          "description": null,
+          "cache_timeout": null,
+          "changed_by": null,
+          "changed_by_name": null,
+          "changed_on": null,
+          "changed_on_humanized": null,
+          "created_by": null,
+          "created_on": null,
+          "created_on_humanized": null,
+          "certified_by": null,
+          "certification_details": null,
+          "uuid": "bf5ce654-7681-44ab-b447-44b0a73ed285",
+          "tags": [],
+          "owners": [],
+          "form_data": null,
+          "form_data_key": null,
+          "is_unsaved_state": false
+        },
+        "previews": {
+          "url": {
+            "type": "url",
+            "preview_url": "http://192.168.2.46:8088/explore/?slice_id=5",
+            "width": 800,
+            "height": 600,
+            "supports_interaction": false
+          }
+        },
+        "capabilities": {
+          "supports_interaction": true,
+          "supports_real_time": true,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "interactive",
+            "vega_lite",
+            "ascii",
+            "table"
+          ],
+          "data_types": [
+            "time_series",
+            "categorical",
+            "metric"
+          ]
+        },
+        "semantics": {
+          "primary_insight": "Compares values across categories or time periods",
+          "data_story": "This echarts_timeseries_bar chart analyzes industry, net_amount",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing",
+            "Analyze seasonal patterns or cyclical trends"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?slice_id=5",
+        "embed_code": null,
+        "api_endpoints": {
+          "data": "http://192.168.2.46:8088/api/v1/chart/5/data/",
+          "export": "http://192.168.2.46:8088/api/v1/chart/5/export/"
+        },
+        "form_data": {},
+        "form_data_key": null,
+        "performance": {
+          "query_duration_ms": 33,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Updated chart showing 008 S6 行业净收入",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "identifier": 5,
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 5,
+        "chart_name": "008 S6 行业净收入",
+        "chart_type": "echarts_timeseries_bar",
+        "columns": [
+          {
+            "name": "industry",
+            "display_name": "Industry",
+            "data_type": "string",
+            "sample_values": [
+              "软件",
+              "零售"
+            ],
+            "null_count": 0,
+            "unique_count": 2,
+            "statistics": null,
+            "semantic_type": null
+          },
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "numeric",
+            "sample_values": [
+              120.0,
+              125.0
+            ],
+            "null_count": 0,
+            "unique_count": 2,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "industry": "软件",
+            "net_revenue": 120.0
+          },
+          {
+            "industry": "零售",
+            "net_revenue": 125.0
+          }
+        ],
+        "row_count": 2,
+        "total_rows": 2,
+        "data_freshness": null,
+        "summary": "Chart '008 S6 行业净收入' (echarts_timeseries_bar). Contains 2 rows across 2 columns. Sample data includes: industry, net_revenue",
+        "insights": [
+          "Fresh data retrieved from database"
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [
+          "bar chart",
+          "scatter plot"
+        ],
+        "performance": {
+          "query_duration_ms": 226,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    }
+  ],
+  "restored_orientation": "vertical"
+}

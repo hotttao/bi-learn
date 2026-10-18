@@ -21,7 +21,7 @@
 
 ## 当前研究优先级
 
-W2已确认并提交，当前按原计划完成W3语义变更维护后等待review；部门隔离暂缓，不作为本阶段前置。保留基本只读与模型范围校验。不要把“暂缓隔离”写成隔离通过，也不要提前推进后续步骤。W3的独立发布包与正常wren项目分开；195不是原245基线的新答案，详见 [W3教程](walkthroughs/005_W3-WALKTHROUGH.md)。
+W3与教程整理已确认并提交为8aa1f0e；当前步骤为S6官方Superset MCP固定调用，完成后等待review，不提前进入S7；部门隔离暂缓，不作为本阶段前置。保留基本只读与模型范围校验。不要把“暂缓隔离”写成隔离通过，也不要提前推进后续步骤。W3的独立发布包与正常wren项目分开；195不是原245基线的新答案，详见 [W3教程](walkthroughs/005_W3-WALKTHROUGH.md)。
 
 ## 架构与权限边界
 
@@ -88,3 +88,9 @@ S7 建立 20～30 个有编号的代表问题，覆盖：同义指标、时间�
 只用未限定的 MDL 模型名与可见 CTE，不输入物理 catalog/schema。日期窗口使用显式 DATE 字面量；当前 cube 日期范围已知不支持，无区间分组可用。金额返回精确字符串，继续用 Decimal 核算。规则或模型 revision 不一致时停止查询，走构建、回归、review 和重启流程，不绕过入口。
 
 这是本地合成数据的语义实验，没有部门授权，也没有 Superset 资产写入；S6/S7 的 Superset MCP 要独立发现和验收。开发会话的 sudo 权限不得被用于普通分析身份。用户只说“收入”且未给时间时先澄清，不自动把净收入当财务确认收入。
+
+## S6 官方Superset MCP入口
+
+本机http://127.0.0.1:5008/mcp，24个实际工具/输入schema见evidence/s6-discovery.json。当前仅固定调用验收，未为Codex启用资产操作；S7再接入。多数工具使用request包装；generate_chart需save_chart=true才保存，update_chart需generate_preview=false才直接保存。动态日期过滤在当前Trino源上有已复现问题，S6数据集3仅固定十月窗口，不可冒充任意时间范围。详见 [006教程](walkthroughs/006_S6-WALKTHROUGH.md)。
+
+S7接入时先使用已核验数据集/指标允许清单，不能把本步发现的24个工具全部无筛选开放。Superset MCP并未自动绑定Wren；不要让分析Agent通过execute_sql或create_virtual_dataset自行重定义业务关系与指标。S6建固定窗口数据集是部署者的受控实验，不代表Agent可任意造口径。语义版本变化后应重新核验消费映射，不静默沿用旧BI资产。

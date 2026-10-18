@@ -1,0 +1,15 @@
+{
+  "service": "superset-mcp",
+  "image_id": "sha256:5186701e96f2a1cc9892fcec63aecbce28c30f35088dccec369b87b08f1ffa21",
+  "image_name": "bi008-superset-mcp:6.1.0-fastmcp3.1.0",
+  "ports": {
+    "5008/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "5008"
+      }
+    ],
+    "8088/tcp": null
+  },
+  "health": "healthy"
+}

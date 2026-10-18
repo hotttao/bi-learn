@@ -46,6 +46,32 @@ services:
       retries: 30
       start_period: 30s
 
+  superset-mcp:
+    <<: *superset
+    profiles: [mcp]
+    image: bi008-superset-mcp:6.1.0-fastmcp3.1.0
+    build:
+      context: ./superset_mcp
+    environment:
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_mcp_config.py
+      BI008_WEB_ORIGIN: http://${SUPERSET_BIND_HOST:-192.168.2.46}:8088/
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY:?Run scripts/prepare_env.py first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/prepare_env.py first}
+    volumes:
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - ./superset_mcp/superset_mcp_config.py:/app/pythonpath/superset_mcp_config.py:ro
+    ports:
+      - 127.0.0.1:5008:5008
+    command: [superset, mcp, run, --host, 0.0.0.0, --port, '5008']
+    healthcheck:
+      test: [CMD, python, -c, "import socket; socket.create_connection(('127.0.0.1',5008),timeout=3).close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    mem_limit: 1536m
+
+
   mysql-source:
     profiles: [sources]
     image: mysql:8.4.6

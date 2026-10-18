@@ -1,0 +1,38 @@
+{
+  "verified_at_utc": "2026-10-18T03:12:49.391603+00:00",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/2/",
+  "dataset_id": 3,
+  "chart_ids": {
+    "kpi": 4,
+    "industry": 5
+  },
+  "total": "245.00",
+  "industry": {
+    "软件": "120.00",
+    "零售": "125.00"
+  },
+  "repeated_pipeline_created_no_assets": true,
+  "native_duplicate_add_refused_without_layout_change": {
+    "returned_error": "Chart 5 is already in dashboard 2",
+    "layout_unchanged": true
+  },
+  "real_browser_preview_rendered": true,
+  "real_browser_edit_saved_and_reopened": true,
+  "original_orientation_restored": true,
+  "normal_dashboard_url": "http://192.168.2.46:8088/superset/dashboard/1/",
+  "normal_chart_ids": [
+    1,
+    2,
+    3
+  ],
+  "s4_dataset_sql_unchanged": true,
+  "source_snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "wren_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "scope": "S6 fixed calls only; natural-language Codex asset operations reserved for S7",
+  "not_verified": [
+    "department isolation (deferred)",
+    "arbitrary date filter generation on Trino",
+    "Wren→Superset synchronization",
+    "production concurrency and true network failure recovery"
+  ]
+}
