@@ -2,7 +2,7 @@
 
 日期：2026-10-16。本文根据前期工具调研，重新围绕“如何长期维护业务关系、指标及其变化”整理选型。能力说明来自已查阅的官方资料，组合方案和实验顺序属于工程建议；尚未部署验证，不代表已修改或批准部署计划。
 
-2026-10-18 实验更新：当前已完成 Superset/Trino 基线、Wren 建模及 Codex/MCP；W3 独立语义维护演练已提交；S6 已提交，当前 S7 完成本轮验收（待 review），并验证自选日期与实时源变化。下文工具能力比较保留原调研日期，实际实现以 [008 操作记录](../../deployment/008_first_bi_prototype/README.md) 为准。部门隔离暂缓。
+2026-10-18 实验更新：Superset/Trino、Wren 建模、Codex/MCP、W3～S8 均已提交；S9 文件 Wiki＋Skill 增量读取语义已验证，待 review、未提交。参考 LLM Wiki，通过文件读取语义，只保留 Wren 查询 MCP；见 [文件方案与实测取舍](11-file-wiki-semantic-context.md)。下文工具能力比较保留原调研日期，实际实现以 [008 操作记录](../../deployment/008_first_bi_prototype/README.md) 为准。部门隔离、自动语义同步、并发编辑保护仍暂缓。
 
 相关文档：[存量业务接入](09-existing-business-semantic-onboarding.md)、[语义层总体调研](agent-semantic-research.md)、[首个 BI 原型](08-first-bi-prototype.md)。
 

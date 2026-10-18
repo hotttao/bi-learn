@@ -1,0 +1,231 @@
+{
+  "verified_at_utc": "2026-10-18T11:44:10.923532+00:00",
+  "question": "historical_industry",
+  "rep": 1,
+  "elapsed_seconds": 69.095,
+  "numeric_correct": true,
+  "metadata_mcp_calls": 0,
+  "read_models": [
+    "crm_industry_history",
+    "sales_orders",
+    "sales_refunds"
+  ],
+  "file_commands": [
+    {
+      "id": "item_1",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat .agents/skills/bi008-semantic-context/SKILL.md'",
+      "aggregated_output": "---\nname: bi008-semantic-context\ndescription: 按主题增量读取本地已审核的销售分析语义，查询净收入、当前或下单时行业、客户标签；通过 Wren 执行查询，不用元数据 MCP 或向量检索。\n---\n\n先读工作区的 `wiki/index.md`，按用户问题选择主题页。主题页会链接基础指标、所需原生 Wren YAML 及证据来源；只沿相关链接读取，不遍历全部 models，不读无关主题。页面或字段缺失时停止并说明缺口，含糊的“行业”要澄清时点，财务确认收入或毛利不能用净收入替代。\n\nWren YAML 是字段/结构依据，主题页解释关系用途，基础指标页定义业务口径。规则冲突时报告，不择一猜测；查询前版本预检由启动器与服务端执行。这里只使用合成实验发布包，不代表公司业务已审核。\n\n业务数据必须通过 bi008_s9_query 执行。对每条 SQL 分别真实调用 dry_plan，收到成功结果后再 dry_run，收到成功结果后才 run_sql；不能省略 dry_plan，也不能并行发这三步。只用未限定模型名、可见 CTE 和 DATE 字面量；金额为精确字符串。不调用元数据 MCP，不用 CLI/HTTP 绕过查询工具。\n\n本次分析只读：用 cat/sed/rg/ls 阅读工作区文件，不写 Wiki、不执行脚本，不查工作区外文件或其他实验答案。Skill 负责读取和分析流程，不自动编译 Markdown，也不代替后端查询校验或授权。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wiki/index.md'",
+      "aggregated_output": "# 销售分析语义索引\n\n状态：已审核的本地合成实验，不是公司正式定义。读取相关主题及其依赖即可，不读取全量模型。当前数据发布与查询模型绑定见 `release.json`，由启动器和查询服务预检。\n\n| 用户要分析什么 | 主题入口 | 所需知识 |\n| --- | --- | --- |\n| 净收入/净销售额总额、业务日期趋势 | [净收入基础指标](metrics/net-revenue.md) | 订单粒度、退款聚合、日期边界 |\n| 按客户当前行业 | [当前行业关系](relationships/current-industry.md) | 基础指标＋客户联合键，当前归属 |\n| 按下单时客户行业 | [历史行业关系](relationships/historical-industry.md) | 基础指标＋客户联合键与有效期 |\n| 按客户标签 | [可重叠标签关系](relationships/overlapping-tags.md) | 基础指标＋标签成员，组间不可加 |\n\n仅说“行业”时澄清当前还是下单时；仅说“收入”时澄清是否净收入。财务确认收入、毛利及其他未登记维度没有已审核定义，不默认为净收入总额。\n\n[维护约定](SCHEMA.md) 供维护 Wiki 时阅读，普通问数无需加载。[来源与变更记录](log.md) 记录人工整理依据，不存查询结果或预期答案。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wiki/metrics/net-revenue.md wiki/relationships/historical-industry.md'",
+      "aggregated_output": "# 净收入 net_revenue@1\n\n已审核范围：S8 独立合成销售数据。受控同义词“净销售额”，人民币元；订单实付减累计已记录退款，不是财务确认收入或毛利。\n\n先读原生 Wren 文件：[订单](../../wren/models/sales_orders/metadata.yml)、[退款](../../wren/models/sales_refunds/metadata.yml)。字段以 YAML 为准。\n\n`sales_orders` 每行一订单，order_id 全局唯一。退款先按 dept_id、order_id 汇总，再 LEFT JOIN 订单；无退款为零，得到一行一订单的 paid_amount 减退款。不要把原始退款明细或订单行直接关联后重复累计实付。客户身份是 dept_id＋customer_id。\n\n日期为 Asia/Shanghai 的订单业务 DATE，退款归属原订单日，区间起含止不含。缺失维度保留订单。基础不重复总额从一行一订单净额求和，不从多标签关联后的行求和。\n\n依据：[原始审核规则](../../raw/reviewed-sales-rules.md)。该来源只读；本文是其按主题组织的派生说明，不是新的独立指标定义。\n# 下单时客户行业\n\n先读 [净收入基础指标](../metrics/net-revenue.md) 及其链接的订单/退款模型，再读 [原生行业历史模型](../../wren/models/crm_industry_history/metadata.yml)。\n\n角色：订单发生时的行业归属。用 dept_id、customer_id 联合关联历史，要求 order_date>=valid_from AND order_date<valid_to。有效期起含止不含；无匹配保留为“未知行业”，不能改用当前行业替代。有重叠区间时拒绝发布，不能任选一行；可先执行只读质量核查。\n\n依据：[审核规则来源](../../raw/reviewed-sales-rules.md)。本能力仅属于本独立实验发布包，不改变主项目当前行业语义。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wren/models/sales_orders/metadata.yml wren/models/sales_refunds/metadata.yml wren/models/crm_industry_history/metadata.yml raw/reviewed-sales-rules.md'",
+      "aggregated_output": "name: sales_orders\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: orders\ncolumns:\n- name: order_id\n  type: BIGINT\n- name: dept_id\n  type: VARCHAR\n- name: customer_id\n  type: BIGINT\n- name: order_date\n  type: DATE\n- name: paid_amount\n  type: DECIMAL\nname: sales_refunds\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: refunds\ncolumns:\n- name: refund_id\n  type: BIGINT\n- name: dept_id\n  type: VARCHAR\n- name: order_id\n  type: BIGINT\n- name: refund_amount\n  type: DECIMAL\nname: crm_industry_history\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: industry_history\ncolumns:\n- name: dept_id\n  type: VARCHAR\n- name: customer_id\n  type: BIGINT\n- name: valid_from\n  type: DATE\n- name: valid_to\n  type: DATE\n- name: industry\n  type: VARCHAR\n# 已审核的 S8 合成销售分析规则\n净收入 net_revenue@1，受控别名净销售额，是订单实付减累计已记录退款，人民币元，不是 finance_revenue_entries 的财务确认收入。没有规则时不能凭表名确认指标口径。\nsales_orders 每行一订单，order_id 全局唯一；退款先按 dept_id、order_id 聚合，再 LEFT JOIN 订单；不得直接 JOIN 多笔退款或 order_lines 后重复累计实付。无退款为零。\n客户身份必须由 dept_id、customer_id 两列确定，不能单用 customer_id；缺失客户保留订单，行业归为“未知行业”。\n当前行业来自 crm_customers；下单时行业来自 crm_industry_history，按同一客户身份并使用 order_date >= valid_from AND order_date < valid_to。有效期重叠必须拒绝发布；没有匹配时保留订单归为未知行业。\n客户标签 crm_customer_tags 是允许重叠的多对多关系；先得到一行一订单净额，再关联标签。无标签保留为“无标签”。每组统计其成员订单完整净额，不分摊；不同标签组不能相加作为总净收入，另查去重前基础订单净额。\n业务日期 Asia/Shanghai，退款归属原订单日，显式 DATE 边界起含止不含。这里只是合成实验，未实现部门授权。其他目录模型是上下文噪声，不是已审核的销售事实，不替换 sales_orders/销售退款关系。\n",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "calls": [
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH history_check AS (\n  SELECT dept_id, customer_id, valid_from, valid_to,\n    MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to\n  FROM crm_industry_history\n)\nSELECT COUNT(*) AS overlap_count\nFROM history_check\nWHERE valid_from < previous_valid_to"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH crm_industry_history AS (SELECT \"wren_src_crm_industry_history\".dept_id AS dept_id, \"wren_src_crm_industry_history\".customer_id AS customer_id, \"wren_src_crm_industry_history\".valid_from AS valid_from, \"wren_src_crm_industry_history\".valid_to AS valid_to FROM (SELECT crm_industry_history.customer_id, crm_industry_history.dept_id, crm_industry_history.valid_from, crm_industry_history.valid_to FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.valid_from AS valid_from, __source.valid_to AS valid_to FROM crm.bi008_s8_relations.industry_history AS __source) AS crm_industry_history) AS \"wren_src_crm_industry_history\"), history_check AS (SELECT dept_id, customer_id, valid_from, valid_to, MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to FROM crm_industry_history) SELECT COUNT(*) AS overlap_count FROM history_check WHERE valid_from < previous_valid_to"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH crm_industry_history AS (SELECT \"wren_src_crm_industry_history\".dept_id AS dept_id, \"wren_src_crm_industry_history\".customer_id AS customer_id, \"wren_src_crm_industry_history\".valid_from AS valid_from, \"wren_src_crm_industry_history\".valid_to AS valid_to FROM (SELECT crm_industry_history.customer_id, crm_industry_history.dept_id, crm_industry_history.valid_from, crm_industry_history.valid_to FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.valid_from AS valid_from, __source.valid_to AS valid_to FROM crm.bi008_s8_relations.industry_history AS __source) AS crm_industry_history) AS \"wren_src_crm_industry_history\"), history_check AS (SELECT dept_id, customer_id, valid_from, valid_to, MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to FROM crm_industry_history) SELECT COUNT(*) AS overlap_count FROM history_check WHERE valid_from < previous_valid_to"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH history_check AS (\n  SELECT dept_id, customer_id, valid_from, valid_to,\n    MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to\n  FROM crm_industry_history\n)\nSELECT COUNT(*) AS overlap_count\nFROM history_check\nWHERE valid_from < previous_valid_to"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH history_check AS (\n  SELECT dept_id, customer_id, valid_from, valid_to,\n    MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to\n  FROM crm_industry_history\n)\nSELECT COUNT(*) AS overlap_count\nFROM history_check\nWHERE valid_from < previous_valid_to"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"overlap_count\"\n  ],\n  \"rows\": [\n    {\n      \"overlap_count\": 0\n    }\n  ],\n  \"row_count\": 1,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH refunds_by_order AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n    o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refunds_by_order r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_net AS (\n  SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(o.net_amount) AS net_amount\n  FROM order_net o\n  LEFT JOIN crm_industry_history h ON o.dept_id = h.dept_id AND o.customer_id = h.customer_id\n    AND o.order_date >= h.valid_from AND o.order_date < h.valid_to\n  GROUP BY COALESCE(h.industry, '未知行业')\n)\nSELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net\nUNION ALL\nSELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Error executing tool dry_plan: [INVALID_SQL] Schema error: No field named sales_orders.net_amount. Did you mean 'sales_orders.paid_amount'?\nValid fields are sales_orders.order_id, sales_orders.dept_id, sales_orders.customer_id, sales_orders.order_date, sales_orders.paid_amount. phase=SQL_PLANNING"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "failed"
+    },
+    {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH refunds_by_order AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n    o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refunds_by_order r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_net AS (\n  SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount\n  FROM order_net n\n  LEFT JOIN crm_industry_history h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id\n    AND n.order_date >= h.valid_from AND n.order_date < h.valid_to\n  GROUP BY COALESCE(h.industry, '未知行业')\n)\nSELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net\nUNION ALL\nSELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".order_date AS order_date, \"wren_src_sales_orders\".paid_amount AS paid_amount FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_industry_history AS (SELECT \"wren_src_crm_industry_history\".industry AS industry, \"wren_src_crm_industry_history\".valid_to AS valid_to, \"wren_src_crm_industry_history\".valid_from AS valid_from, \"wren_src_crm_industry_history\".dept_id AS dept_id, \"wren_src_crm_industry_history\".customer_id AS customer_id FROM (SELECT crm_industry_history.customer_id, crm_industry_history.dept_id, crm_industry_history.industry, crm_industry_history.valid_from, crm_industry_history.valid_to FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry, __source.valid_from AS valid_from, __source.valid_to AS valid_to FROM crm.bi008_s8_relations.industry_history AS __source) AS crm_industry_history) AS \"wren_src_crm_industry_history\"), refunds_by_order AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refunds_by_order AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), industry_net AS (SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount FROM order_net AS n LEFT JOIN crm_industry_history AS h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id AND n.order_date >= h.valid_from AND n.order_date < h.valid_to GROUP BY COALESCE(h.industry, '未知行业')) SELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net UNION ALL SELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".order_date AS order_date, \"wren_src_sales_orders\".paid_amount AS paid_amount FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_industry_history AS (SELECT \"wren_src_crm_industry_history\".industry AS industry, \"wren_src_crm_industry_history\".valid_to AS valid_to, \"wren_src_crm_industry_history\".valid_from AS valid_from, \"wren_src_crm_industry_history\".dept_id AS dept_id, \"wren_src_crm_industry_history\".customer_id AS customer_id FROM (SELECT crm_industry_history.customer_id, crm_industry_history.dept_id, crm_industry_history.industry, crm_industry_history.valid_from, crm_industry_history.valid_to FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry, __source.valid_from AS valid_from, __source.valid_to AS valid_to FROM crm.bi008_s8_relations.industry_history AS __source) AS crm_industry_history) AS \"wren_src_crm_industry_history\"), refunds_by_order AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refunds_by_order AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), industry_net AS (SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount FROM order_net AS n LEFT JOIN crm_industry_history AS h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id AND n.order_date >= h.valid_from AND n.order_date < h.valid_to GROUP BY COALESCE(h.industry, '未知行业')) SELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net UNION ALL SELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_10",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH refunds_by_order AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n    o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refunds_by_order r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_net AS (\n  SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount\n  FROM order_net n\n  LEFT JOIN crm_industry_history h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id\n    AND n.order_date >= h.valid_from AND n.order_date < h.valid_to\n  GROUP BY COALESCE(h.industry, '未知行业')\n)\nSELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net\nUNION ALL\nSELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_11",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH refunds_by_order AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n    o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refunds_by_order r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_net AS (\n  SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount\n  FROM order_net n\n  LEFT JOIN crm_industry_history h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id\n    AND n.order_date >= h.valid_from AND n.order_date < h.valid_to\n  GROUP BY COALESCE(h.industry, '未知行业')\n)\nSELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net\nUNION ALL\nSELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"result_type\",\n    \"label\",\n    \"amount\"\n  ],\n  \"rows\": [\n    {\n      \"result_type\": \"total\",\n      \"label\": \"不重复总额\",\n      \"amount\": \"865.00\"\n    },\n    {\n      \"result_type\": \"industry\",\n      \"label\": \"未知行业\",\n      \"amount\": \"80.00\"\n    },\n    {\n      \"result_type\": \"industry\",\n      \"label\": \"零售\",\n      \"amount\": \"95.00\"\n    },\n    {\n      \"result_type\": \"industry\",\n      \"label\": \"软件\",\n      \"amount\": \"450.00\"\n    },\n    {\n      \"result_type\": \"industry\",\n      \"label\": \"服务\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"result_type\": \"industry\",\n      \"label\": \"制造\",\n      \"amount\": \"140.00\"\n    }\n  ],\n  \"row_count\": 6,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "answered",
+    "total": "865.00",
+    "groups": [
+      {
+        "label": "软件",
+        "amount": "450.00"
+      },
+      {
+        "label": "制造",
+        "amount": "140.00"
+      },
+      {
+        "label": "服务",
+        "amount": "100.00"
+      },
+      {
+        "label": "零售",
+        "amount": "95.00"
+      },
+      {
+        "label": "未知行业",
+        "amount": "80.00"
+      }
+    ],
+    "reason": "合成实验数据，单位：人民币元。统计订单业务日期为2026-01-01至2026-12-31；净销售额为订单实付减累计已记录退款。按下单日匹配客户历史行业，无匹配归入未知行业；已核查历史有效期无重叠。不重复总额从一行一订单净额独立汇总，与各行业合计一致。",
+    "sql": [
+      "WITH history_check AS (SELECT dept_id, customer_id, valid_from, valid_to, MAX(valid_to) OVER (PARTITION BY dept_id, customer_id ORDER BY valid_from, valid_to ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS previous_valid_to FROM crm_industry_history) SELECT COUNT(*) AS overlap_count FROM history_check WHERE valid_from < previous_valid_to",
+      "WITH refunds_by_order AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders o LEFT JOIN refunds_by_order r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'), industry_net AS (SELECT COALESCE(h.industry, '未知行业') AS industry, SUM(n.net_amount) AS net_amount FROM order_net n LEFT JOIN crm_industry_history h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id AND n.order_date >= h.valid_from AND n.order_date < h.valid_to GROUP BY COALESCE(h.industry, '未知行业')) SELECT 'industry' AS result_type, industry AS label, CAST(net_amount AS VARCHAR) AS amount FROM industry_net UNION ALL SELECT 'total' AS result_type, '不重复总额' AS label, CAST(SUM(net_amount) AS VARCHAR) AS amount FROM order_net"
+    ]
+  },
+  "usage": {
+    "input_tokens": 228861,
+    "cached_input_tokens": 204800,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1701,
+    "reasoning_output_tokens": 130
+  }
+}

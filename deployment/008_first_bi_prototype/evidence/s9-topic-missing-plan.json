@@ -1,0 +1,233 @@
+{
+  "scope": "retained topic-MCP branch, historical_industry trial 1; final numeric answer correct but workflow acceptance failed because dry_plan was omitted",
+  "accepted": false,
+  "calls": [
+    {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "get_runtime_contract",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"project\": \"bi008_semantics\",\n  \"metric\": \"net_revenue@1\",\n  \"mdl_sha256\": \"39eb9e878bb3625d571bf0ad73397ff4b6112e6d0c8582336bd059135213af9f\",\n  \"source_revision\": \"da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312\",\n  \"source_matches_startup\": true,\n  \"wrenai\": \"0.16.0\",\n  \"mcp\": \"1.26.0\",\n  \"strict_mode\": true,\n  \"fallback\": false,\n  \"table_references\": \"unqualified MDL models or visible CTEs only\",\n  \"money_json\": \"Decimal as exact decimal string\",\n  \"allow_write\": false,\n  \"cube_date_range\": \"unsupported; use run_sql with explicit DATE literals\",\n  \"department_isolation\": \"NOT implemented; local synthetic-data experiment\",\n  \"transport\": \"stdio\",\n  \"superset_sync\": \"not implemented\",\n  \"topic_registry_sha256\": \"b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d\",\n  \"context_strategy\": \"reviewed_topic_closure\",\n  \"selected_topics\": [],\n  \"allowed_models\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "list_topics",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"topics\": [\n    {\n      \"id\": \"net_revenue\",\n      \"name\": \"净收入基础订单\"\n    },\n    {\n      \"id\": \"current_industry\",\n      \"name\": \"按客户当前行业分析净收入\"\n    },\n    {\n      \"id\": \"historical_industry\",\n      \"name\": \"按下单时客户行业分析净收入\"\n    },\n    {\n      \"id\": \"overlapping_tags\",\n      \"name\": \"按可重叠客户标签分析净收入\"\n    }\n  ],\n  \"selection\": \"get_context(question) selects a conservative curated topic; ambiguous questions return no schema\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "get_context",
+      "arguments": {
+        "question": "统计2026年全年的净销售额，按下单时客户行业分组，并给出不重复总额。"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"strategy\": \"reviewed_topic_closure\",\n  \"status\": \"ready\",\n  \"topic_ids\": [\n    \"net_revenue\",\n    \"historical_industry\"\n  ],\n  \"model_names\": [\n    \"crm_industry_history\",\n    \"sales_orders\",\n    \"sales_refunds\"\n  ],\n  \"schema\": \"Catalog: wren, Schema: public\\n\\n### Model: crm_industry_history\\n  Columns:\\n    - dept_id (VARCHAR)\\n    - customer_id (BIGINT)\\n    - valid_from (DATE)\\n    - valid_to (DATE)\\n    - industry (VARCHAR)\\n\\n### Model: sales_orders\\n  Columns:\\n    - order_id (BIGINT)\\n    - dept_id (VARCHAR)\\n    - customer_id (BIGINT)\\n    - order_date (DATE)\\n    - paid_amount (DECIMAL)\\n\\n### Model: sales_refunds\\n  Columns:\\n    - refund_id (BIGINT)\\n    - dept_id (VARCHAR)\\n    - order_id (BIGINT)\\n    - refund_amount (DECIMAL)\\n\",\n  \"instructions\": \"仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。\",\n  \"registry_sha256\": \"b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d\",\n  \"source_revision\": \"da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312\",\n  \"schema_utf8_bytes\": 499,\n  \"scope\": \"curated topic selection and model-reference checks; not department authorization or vector retrieval\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "crm_industry_history"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"crm_industry_history\",\n  \"columns\": [\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"valid_from\",\n      \"type\": \"DATE\",\n      \"description\": null\n    },\n    {\n      \"name\": \"valid_to\",\n      \"type\": \"DATE\",\n      \"description\": null\n    },\n    {\n      \"name\": \"industry\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "sales_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"sales_orders\",\n  \"columns\": [\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"order_date\",\n      \"type\": \"DATE\",\n      \"description\": null\n    },\n    {\n      \"name\": \"paid_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "sales_refunds"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"sales_refunds\",\n  \"columns\": [\n    {\n      \"name\": \"refund_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"refund_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "SELECT o.order_id, COUNT(*) AS industry_matches\nFROM sales_orders o\nJOIN crm_industry_history h ON o.dept_id = h.dept_id AND o.customer_id = h.customer_id AND o.order_date >= h.valid_from AND o.order_date < h.valid_to\nWHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\nGROUP BY o.order_id\nHAVING COUNT(*) > 1"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT o.order_id, COUNT(*) AS industry_matches\nFROM sales_orders o\nJOIN crm_industry_history h ON o.dept_id = h.dept_id AND o.customer_id = h.customer_id AND o.order_date >= h.valid_from AND o.order_date < h.valid_to\nWHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\nGROUP BY o.order_id\nHAVING COUNT(*) > 1"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"order_id\",\n    \"industry_matches\"\n  ],\n  \"rows\": [],\n  \"row_count\": 0,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH refunds AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refunds r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_orders AS (\n  SELECT b.order_id, b.net_sales, COALESCE(h.industry, '未知行业') AS industry\n  FROM base_orders b\n  LEFT JOIN crm_industry_history h ON b.dept_id = h.dept_id AND b.customer_id = h.customer_id\n    AND b.order_date >= h.valid_from AND b.order_date < h.valid_to\n)\nSELECT 'group' AS row_type, industry AS label, SUM(net_sales) AS amount\nFROM industry_orders\nGROUP BY industry\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, SUM(net_sales) AS amount\nFROM base_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_10",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH refunds AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refunds r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_orders AS (\n  SELECT b.order_id, b.net_sales, COALESCE(h.industry, '未知行业') AS industry\n  FROM base_orders b\n  LEFT JOIN crm_industry_history h ON b.dept_id = h.dept_id AND b.customer_id = h.customer_id\n    AND b.order_date >= h.valid_from AND b.order_date < h.valid_to\n)\nSELECT 'group' AS row_type, industry AS label, SUM(net_sales) AS amount\nFROM industry_orders\nGROUP BY industry\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, SUM(net_sales) AS amount\nFROM base_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"row_type\",\n    \"label\",\n    \"amount\"\n  ],\n  \"rows\": [\n    {\n      \"row_type\": \"total\",\n      \"label\": \"不重复总额\",\n      \"amount\": \"865.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"服务\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"制造\",\n      \"amount\": \"140.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"软件\",\n      \"amount\": \"450.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"未知行业\",\n      \"amount\": \"80.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"零售\",\n      \"amount\": \"95.00\"\n    }\n  ],\n  \"row_count\": 6,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "answered",
+    "total": "865.00",
+    "groups": [
+      {
+        "label": "服务",
+        "amount": "100.00"
+      },
+      {
+        "label": "制造",
+        "amount": "140.00"
+      },
+      {
+        "label": "软件",
+        "amount": "450.00"
+      },
+      {
+        "label": "未知行业",
+        "amount": "80.00"
+      },
+      {
+        "label": "零售",
+        "amount": "95.00"
+      }
+    ],
+    "reason": "单位：人民币元。仅为合成数据，不代表公司结论。统计订单日期为2026-01-01（含）至2027-01-01（不含）的订单；净销售额为实付金额减已记录退款，退款归属原订单日。退款先按部门、订单汇总；行业按部门、客户及下单日期匹配历史有效期，未匹配保留为未知行业。检查未发现本期订单匹配多个行业记录。总额从一行一订单的基础订单独立汇总，不重复计数；此口径不等于财务确认收入或毛利。",
+    "sql": [
+      "SELECT o.order_id, COUNT(*) AS industry_matches\nFROM sales_orders o\nJOIN crm_industry_history h ON o.dept_id = h.dept_id AND o.customer_id = h.customer_id AND o.order_date >= h.valid_from AND o.order_date < h.valid_to\nWHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\nGROUP BY o.order_id\nHAVING COUNT(*) > 1",
+      "WITH refunds AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refunds r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'\n), industry_orders AS (\n  SELECT b.order_id, b.net_sales, COALESCE(h.industry, '未知行业') AS industry\n  FROM base_orders b\n  LEFT JOIN crm_industry_history h ON b.dept_id = h.dept_id AND b.customer_id = h.customer_id\n    AND b.order_date >= h.valid_from AND b.order_date < h.valid_to\n)\nSELECT 'group' AS row_type, industry AS label, SUM(net_sales) AS amount\nFROM industry_orders\nGROUP BY industry\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, SUM(net_sales) AS amount\nFROM base_orders"
+    ]
+  }
+}

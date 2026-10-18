@@ -1,0 +1,224 @@
+{
+  "verified_at_utc": "2026-10-18T11:30:05.727485+00:00",
+  "question": "current_industry",
+  "rep": 1,
+  "elapsed_seconds": 62.184,
+  "calls": [
+    {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "get_runtime_contract",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"project\": \"bi008_semantics\",\n  \"metric\": \"net_revenue@1\",\n  \"mdl_sha256\": \"39eb9e878bb3625d571bf0ad73397ff4b6112e6d0c8582336bd059135213af9f\",\n  \"source_revision\": \"da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312\",\n  \"source_matches_startup\": true,\n  \"wrenai\": \"0.16.0\",\n  \"mcp\": \"1.26.0\",\n  \"strict_mode\": true,\n  \"fallback\": false,\n  \"table_references\": \"unqualified MDL models or visible CTEs only\",\n  \"money_json\": \"Decimal as exact decimal string\",\n  \"allow_write\": false,\n  \"cube_date_range\": \"unsupported; use run_sql with explicit DATE literals\",\n  \"department_isolation\": \"NOT implemented; local synthetic-data experiment\",\n  \"transport\": \"stdio\",\n  \"superset_sync\": \"not implemented\",\n  \"topic_registry_sha256\": \"b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d\",\n  \"context_strategy\": \"reviewed_topic_closure\",\n  \"selected_topics\": [],\n  \"allowed_models\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "list_topics",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"topics\": [\n    {\n      \"id\": \"net_revenue\",\n      \"name\": \"净收入基础订单\"\n    },\n    {\n      \"id\": \"current_industry\",\n      \"name\": \"按客户当前行业分析净收入\"\n    },\n    {\n      \"id\": \"historical_industry\",\n      \"name\": \"按下单时客户行业分析净收入\"\n    },\n    {\n      \"id\": \"overlapping_tags\",\n      \"name\": \"按可重叠客户标签分析净收入\"\n    }\n  ],\n  \"selection\": \"get_context(question) selects a conservative curated topic; ambiguous questions return no schema\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "get_context",
+      "arguments": {
+        "question": "统计2026年全年的净销售额，按客户当前行业分组，并给出不重复总额。"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"strategy\": \"reviewed_topic_closure\",\n  \"status\": \"ready\",\n  \"topic_ids\": [\n    \"net_revenue\",\n    \"current_industry\"\n  ],\n  \"model_names\": [\n    \"crm_customers\",\n    \"sales_orders\",\n    \"sales_refunds\"\n  ],\n  \"schema\": \"Catalog: wren, Schema: public\\n\\n### Model: crm_customers\\n  Columns:\\n    - dept_id (VARCHAR)\\n    - customer_id (BIGINT)\\n    - industry (VARCHAR)\\n\\n### Model: sales_orders\\n  Columns:\\n    - order_id (BIGINT)\\n    - dept_id (VARCHAR)\\n    - customer_id (BIGINT)\\n    - order_date (DATE)\\n    - paid_amount (DECIMAL)\\n\\n### Model: sales_refunds\\n  Columns:\\n    - refund_id (BIGINT)\\n    - dept_id (VARCHAR)\\n    - order_id (BIGINT)\\n    - refund_amount (DECIMAL)\\n\",\n  \"instructions\": \"仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。\",\n  \"registry_sha256\": \"b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d\",\n  \"source_revision\": \"da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312\",\n  \"schema_utf8_bytes\": 446,\n  \"scope\": \"curated topic selection and model-reference checks; not department authorization or vector retrieval\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "crm_customers"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"crm_customers\",\n  \"columns\": [\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"industry\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "sales_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"sales_orders\",\n  \"columns\": [\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"order_date\",\n      \"type\": \"DATE\",\n      \"description\": null\n    },\n    {\n      \"name\": \"paid_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "sales_refunds"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"sales_refunds\",\n  \"columns\": [\n    {\n      \"name\": \"refund_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"VARCHAR\",\n      \"description\": null\n    },\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": null\n    },\n    {\n      \"name\": \"refund_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": null\n    }\n  ],\n  \"primary_key\": null,\n  \"ref_sql\": null,\n  \"relationships\": []\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), industry_groups AS (\n  SELECT COALESCE(c.industry, '未知行业') AS industry,\n         SUM(b.net_sales) AS amount\n  FROM base_orders b\n  LEFT JOIN crm_customers c\n    ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id\n  GROUP BY COALESCE(c.industry, '未知行业')\n)\nSELECT 'group' AS row_type, industry AS label, amount\nFROM industry_groups\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount\nFROM base_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_customers AS (SELECT \"wren_src_crm_customers\".industry AS industry, \"wren_src_crm_customers\".dept_id AS dept_id, \"wren_src_crm_customers\".customer_id AS customer_id FROM (SELECT crm_customers.customer_id, crm_customers.dept_id, crm_customers.industry FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry FROM crm.bi008_s8_relations.customers AS __source) AS crm_customers) AS \"wren_src_crm_customers\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_total FROM sales_refunds GROUP BY dept_id, order_id), base_orders AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), industry_groups AS (SELECT COALESCE(c.industry, '未知行业') AS industry, SUM(b.net_sales) AS amount FROM base_orders AS b LEFT JOIN crm_customers AS c ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id GROUP BY COALESCE(c.industry, '未知行业')) SELECT 'group' AS row_type, industry AS label, amount FROM industry_groups UNION ALL SELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount FROM base_orders"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_customers AS (SELECT \"wren_src_crm_customers\".industry AS industry, \"wren_src_crm_customers\".dept_id AS dept_id, \"wren_src_crm_customers\".customer_id AS customer_id FROM (SELECT crm_customers.customer_id, crm_customers.dept_id, crm_customers.industry FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry FROM crm.bi008_s8_relations.customers AS __source) AS crm_customers) AS \"wren_src_crm_customers\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_total FROM sales_refunds GROUP BY dept_id, order_id), base_orders AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), industry_groups AS (SELECT COALESCE(c.industry, '未知行业') AS industry, SUM(b.net_sales) AS amount FROM base_orders AS b LEFT JOIN crm_customers AS c ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id GROUP BY COALESCE(c.industry, '未知行业')) SELECT 'group' AS row_type, industry AS label, amount FROM industry_groups UNION ALL SELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount FROM base_orders"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), industry_groups AS (\n  SELECT COALESCE(c.industry, '未知行业') AS industry,\n         SUM(b.net_sales) AS amount\n  FROM base_orders b\n  LEFT JOIN crm_customers c\n    ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id\n  GROUP BY COALESCE(c.industry, '未知行业')\n)\nSELECT 'group' AS row_type, industry AS label, amount\nFROM industry_groups\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount\nFROM base_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), industry_groups AS (\n  SELECT COALESCE(c.industry, '未知行业') AS industry,\n         SUM(b.net_sales) AS amount\n  FROM base_orders b\n  LEFT JOIN crm_customers c\n    ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id\n  GROUP BY COALESCE(c.industry, '未知行业')\n)\nSELECT 'group' AS row_type, industry AS label, amount\nFROM industry_groups\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount\nFROM base_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"row_type\",\n    \"label\",\n    \"amount\"\n  ],\n  \"rows\": [\n    {\n      \"row_type\": \"total\",\n      \"label\": \"不重复总额\",\n      \"amount\": \"865.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"零售\",\n      \"amount\": \"245.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"未知行业\",\n      \"amount\": \"80.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"服务\",\n      \"amount\": \"100.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"软件\",\n      \"amount\": \"300.00\"\n    },\n    {\n      \"row_type\": \"group\",\n      \"label\": \"制造\",\n      \"amount\": \"140.00\"\n    }\n  ],\n  \"row_count\": 6,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "answered",
+    "total": "865.00",
+    "groups": [
+      {
+        "label": "零售",
+        "amount": "245.00"
+      },
+      {
+        "label": "未知行业",
+        "amount": "80.00"
+      },
+      {
+        "label": "服务",
+        "amount": "100.00"
+      },
+      {
+        "label": "软件",
+        "amount": "300.00"
+      },
+      {
+        "label": "制造",
+        "amount": "140.00"
+      }
+    ],
+    "reason": "单位为人民币元。按 Asia/Shanghai 订单日期统计 [2026-01-01, 2027-01-01)，净销售额为订单实付减已记录退款，退款归属原订单日。退款先按部门、订单汇总；客户按部门、客户编号关联当前行业，缺失行业归为“未知行业”。总额直接汇总一行一订单的基础数据，避免重复。仅为合成数据结果，不代表公司结论，也不等于财务确认收入或毛利。",
+    "sql": [
+      "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), base_orders AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_total, 0) AS net_sales\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), industry_groups AS (\n  SELECT COALESCE(c.industry, '未知行业') AS industry,\n         SUM(b.net_sales) AS amount\n  FROM base_orders b\n  LEFT JOIN crm_customers c\n    ON b.dept_id = c.dept_id AND b.customer_id = c.customer_id\n  GROUP BY COALESCE(c.industry, '未知行业')\n)\nSELECT 'group' AS row_type, industry AS label, amount\nFROM industry_groups\nUNION ALL\nSELECT 'total' AS row_type, '不重复总额' AS label, COALESCE(SUM(net_sales), 0) AS amount\nFROM base_orders"
+    ]
+  },
+  "numeric_correct": true,
+  "usage": {
+    "input_tokens": 138804,
+    "cached_input_tokens": 118400,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1116,
+    "reasoning_output_tokens": 29
+  }
+}

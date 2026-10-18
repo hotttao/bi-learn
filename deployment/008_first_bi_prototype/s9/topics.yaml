@@ -1,0 +1,41 @@
+version: '1'
+status: reviewed_synthetic_experiment
+owner: experiment_author
+metric: net_revenue@1
+shared_rules: >-
+  仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款，
+  不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含，
+  退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一；
+  客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。
+topics:
+  net_revenue:
+    name: 净收入基础订单
+    depends_on: []
+    models: [sales_orders, sales_refunds]
+    rules: >-
+      sales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。
+      无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。
+      不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。
+  current_industry:
+    name: 按客户当前行业分析净收入
+    depends_on: [net_revenue]
+    models: [crm_customers]
+    rules: >-
+      当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联；
+      缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。
+  historical_industry:
+    name: 按下单时客户行业分析净收入
+    depends_on: [net_revenue]
+    models: [crm_industry_history]
+    rules: >-
+      下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联，
+      并要求 order_date>=valid_from AND order_date<valid_to。
+      无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。
+  overlapping_tags:
+    name: 按可重叠客户标签分析净收入
+    depends_on: [net_revenue]
+    models: [crm_customer_tags]
+    rules: >-
+      先得到一行一订单净额，再按 dept_id、customer_id 关联 crm_customer_tags。
+      无标签保留为“无标签”；每组计入成员订单完整净额，不分摊，标签组之间不能相加。
+      不重复总额必须从关联标签前的基础订单净额另查。

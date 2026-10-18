@@ -2,7 +2,7 @@
 
 日期：2026-10-16。本文收敛前面的调研，给出执行顺序；尚未部署或完成验收。
 
-2026-10-18 执行进度：S7 已确认并提交为 `1b0f9ec`，包括自选日期和实时源变化。当前 S8“增长与语义演进”已完成、待 review，尚未提交：1 万/10 万/100 万订单对账通过；12 次真实 Codex 对照完成，schema-only 六次澄清、schema＋规则六次数值正确；不外推生产容量或稳定正确率。当前步骤见 [008 README](../../deployment/008_first_bi_prototype/README.md)，教学见 [008 · S8 教程](../../deployment/008_first_bi_prototype/walkthroughs/008_S8-WALKTHROUGH.md)。部门隔离、自动语义同步及并发编辑保护仍暂缓。
+2026-10-18 执行进度：S7 已提交 `1b0f9ec`，S8 已提交 `57f67a7`；S9 按用户建议完成文件 Wiki＋Skill 增量读取语义，Wren 保留查询执行，当前待 review、未提交。六次真实 Codex 问数均正确，元数据 MCP 为 0，但尚未证实提速。见 [009 教程](../../deployment/008_first_bi_prototype/walkthroughs/009_S9-WALKTHROUGH.md)、[文件语义方案](11-file-wiki-semantic-context.md) 和 [008 README](../../deployment/008_first_bi_prototype/README.md)。部门隔离、自动语义同步及并发编辑保护仍暂缓。
 
 **先做方案二的缩减版：Superset＋单节点 Trino。先手工完成 BI，再接官方 MCP，最后接 Agent。**
 

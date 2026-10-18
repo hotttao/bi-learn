@@ -1,0 +1,30 @@
+{
+  "verified_at_utc": "2026-10-18T11:44:12.768048+00:00",
+  "file_wiki": {
+    "trials": 6,
+    "numeric_correct": 6,
+    "metadata_mcp_calls": 0,
+    "query_mcp_calls": 31,
+    "file_tool_calls": 24,
+    "model_elapsed_seconds": 380.619,
+    "usage": {
+      "input_tokens": 1317025,
+      "cached_input_tokens": 1129088,
+      "output_tokens": 7944
+    }
+  },
+  "s8_full_context_historical_baseline": {
+    "trials": 6,
+    "numeric_correct": 6,
+    "clarifications": 0,
+    "execution_failures": 0,
+    "model_elapsed_seconds": 340.626,
+    "tool_calls": 69,
+    "usage": {
+      "input_tokens": 1381510,
+      "cached_input_tokens": 1144704,
+      "output_tokens": 8130
+    }
+  },
+  "scope": "incremental file reads, no metadata MCP, native YAML remains canonical; prospective small-sample comparison, shell reads enabled only in this branch"
+}

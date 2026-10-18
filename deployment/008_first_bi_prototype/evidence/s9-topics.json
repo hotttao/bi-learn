@@ -1,0 +1,737 @@
+{
+  "verified_at_utc": "2026-10-18T11:26:31.635594+00:00",
+  "contexts": {
+    "current_industry": {
+      "strategy": "reviewed_topic_closure",
+      "status": "ready",
+      "topic_ids": [
+        "net_revenue",
+        "current_industry"
+      ],
+      "model_names": [
+        "crm_customers",
+        "sales_orders",
+        "sales_refunds"
+      ],
+      "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customers\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+      "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。",
+      "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+      "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+      "schema_utf8_bytes": 446,
+      "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+      "full_schema_utf8_bytes": 83225,
+      "schema_ratio": 0.00535896665665365
+    },
+    "historical_industry": {
+      "strategy": "reviewed_topic_closure",
+      "status": "ready",
+      "topic_ids": [
+        "net_revenue",
+        "historical_industry"
+      ],
+      "model_names": [
+        "crm_industry_history",
+        "sales_orders",
+        "sales_refunds"
+      ],
+      "schema": "Catalog: wren, Schema: public\n\n### Model: crm_industry_history\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - valid_from (DATE)\n    - valid_to (DATE)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+      "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。",
+      "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+      "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+      "schema_utf8_bytes": 499,
+      "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+      "full_schema_utf8_bytes": 83225,
+      "schema_ratio": 0.005995794532892761
+    },
+    "overlapping_tags": {
+      "strategy": "reviewed_topic_closure",
+      "status": "ready",
+      "topic_ids": [
+        "net_revenue",
+        "overlapping_tags"
+      ],
+      "model_names": [
+        "crm_customer_tags",
+        "sales_orders",
+        "sales_refunds"
+      ],
+      "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customer_tags\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - tag (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+      "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n先得到一行一订单净额，再按 dept_id、customer_id 关联 crm_customer_tags。 无标签保留为“无标签”；每组计入成员订单完整净额，不分摊，标签组之间不能相加。 不重复总额必须从关联标签前的基础订单净额另查。",
+      "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+      "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+      "schema_utf8_bytes": 445,
+      "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+      "full_schema_utf8_bytes": 83225,
+      "schema_ratio": 0.0053469510363472516
+    }
+  },
+  "queries": {
+    "current_industry": {
+      "columns": [
+        "label",
+        "amount"
+      ],
+      "rows": [
+        {
+          "label": "制造",
+          "amount": "140.00"
+        },
+        {
+          "label": "服务",
+          "amount": "100.00"
+        },
+        {
+          "label": "零售",
+          "amount": "245.00"
+        },
+        {
+          "label": "未知行业",
+          "amount": "80.00"
+        },
+        {
+          "label": "软件",
+          "amount": "300.00"
+        }
+      ],
+      "row_count": 5,
+      "truncated": false
+    },
+    "historical_industry": {
+      "columns": [
+        "label",
+        "amount"
+      ],
+      "rows": [
+        {
+          "label": "制造",
+          "amount": "140.00"
+        },
+        {
+          "label": "服务",
+          "amount": "100.00"
+        },
+        {
+          "label": "软件",
+          "amount": "450.00"
+        },
+        {
+          "label": "未知行业",
+          "amount": "80.00"
+        },
+        {
+          "label": "零售",
+          "amount": "95.00"
+        }
+      ],
+      "row_count": 5,
+      "truncated": false
+    },
+    "overlapping_tags": {
+      "columns": [
+        "label",
+        "amount"
+      ],
+      "rows": [
+        {
+          "label": "普通",
+          "amount": "100.00"
+        },
+        {
+          "label": "VIP",
+          "amount": "385.00"
+        },
+        {
+          "label": "战略",
+          "amount": "545.00"
+        },
+        {
+          "label": "无标签",
+          "amount": "80.00"
+        }
+      ],
+      "row_count": 4,
+      "truncated": false
+    }
+  },
+  "refusals": {
+    "before_selection": {
+      "error": "Error executing tool run_sql: BI008_TOPIC_SELECT_FIRST: no selected topic"
+    },
+    "outside_model": {
+      "error": "Error executing tool run_sql: BI008_TOPIC_SCOPE: models outside selected dependency closure: finance_revenue_entries"
+    },
+    "outside_in_cte": {
+      "error": "Error executing tool dry_plan: BI008_TOPIC_SCOPE: models outside selected dependency closure: crm_industry_history"
+    },
+    "ambiguous_clears_context": {
+      "error": "Error executing tool run_sql: BI008_TOPIC_SELECT_FIRST: no selected topic"
+    },
+    "missing_dependency": "BI008_TOPIC_CONFIG: missing topic missing",
+    "cycle": "BI008_TOPIC_CONFIG: cyclic dependency",
+    "missing_model": "BI008_TOPIC_CONFIG: missing model in current_industry",
+    "stale_registry": "BI008_TOPIC_REVISION: source or topic registry changed; review and restart"
+  },
+  "calls": [
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT * FROM sales_orders"
+      },
+      "result": {
+        "error": "Error executing tool run_sql: BI008_TOPIC_SELECT_FIRST: no selected topic"
+      }
+    },
+    {
+      "tool": "list_models",
+      "arguments": {},
+      "result": {
+        "models": [],
+        "selected_topics": []
+      }
+    },
+    {
+      "tool": "list_topics",
+      "arguments": {},
+      "result": {
+        "topics": [
+          {
+            "id": "net_revenue",
+            "name": "净收入基础订单"
+          },
+          {
+            "id": "current_industry",
+            "name": "按客户当前行业分析净收入"
+          },
+          {
+            "id": "historical_industry",
+            "name": "按下单时客户行业分析净收入"
+          },
+          {
+            "id": "overlapping_tags",
+            "name": "按可重叠客户标签分析净收入"
+          }
+        ],
+        "selection": "get_context(question) selects a conservative curated topic; ambiguous questions return no schema"
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "2026年净销售额按客户当前行业统计"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "ready",
+        "topic_ids": [
+          "net_revenue",
+          "current_industry"
+        ],
+        "model_names": [
+          "crm_customers",
+          "sales_orders",
+          "sales_refunds"
+        ],
+        "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customers\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。",
+        "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+        "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+        "schema_utf8_bytes": 446,
+        "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+        "full_schema_utf8_bytes": 83225,
+        "schema_ratio": 0.00535896665665365
+      }
+    },
+    {
+      "tool": "list_models",
+      "arguments": {},
+      "result": {
+        "models": [
+          {
+            "name": "crm_customers",
+            "description": null,
+            "column_count": 3
+          },
+          {
+            "name": "sales_orders",
+            "description": null,
+            "column_count": 5
+          },
+          {
+            "name": "sales_refunds",
+            "description": null,
+            "column_count": 4
+          }
+        ],
+        "selected_topics": [
+          "net_revenue",
+          "current_industry"
+        ]
+      }
+    },
+    {
+      "tool": "get_instructions",
+      "arguments": {},
+      "result": {
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。",
+        "used_legacy": false,
+        "selected_topics": [
+          "net_revenue",
+          "current_industry"
+        ]
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(c.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers c ON n.dept_id=c.dept_id AND n.customer_id=c.customer_id GROUP BY COALESCE(c.industry,'未知行业')"
+      },
+      "result": "WITH crm_customers AS (SELECT \"wren_src_crm_customers\".industry AS industry, \"wren_src_crm_customers\".dept_id AS dept_id, \"wren_src_crm_customers\".customer_id AS customer_id FROM (SELECT crm_customers.customer_id, crm_customers.dept_id, crm_customers.industry FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry FROM crm.bi008_s8_relations.customers AS __source) AS crm_customers) AS \"wren_src_crm_customers\"), sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".order_date AS order_date, \"wren_src_sales_orders\".paid_amount AS paid_amount FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), r AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id, order_id), n AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund, 0) AS net_amount FROM sales_orders AS o LEFT JOIN r ON o.dept_id = r.dept_id AND o.order_id = r.order_id) SELECT COALESCE(c.industry, '未知行业') AS label, SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers AS c ON n.dept_id = c.dept_id AND n.customer_id = c.customer_id GROUP BY COALESCE(c.industry, '未知行业')"
+    },
+    {
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(c.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers c ON n.dept_id=c.dept_id AND n.customer_id=c.customer_id GROUP BY COALESCE(c.industry,'未知行业')"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(c.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers c ON n.dept_id=c.dept_id AND n.customer_id=c.customer_id GROUP BY COALESCE(c.industry,'未知行业')"
+      },
+      "result": {
+        "columns": [
+          "label",
+          "amount"
+        ],
+        "rows": [
+          {
+            "label": "制造",
+            "amount": "140.00"
+          },
+          {
+            "label": "服务",
+            "amount": "100.00"
+          },
+          {
+            "label": "零售",
+            "amount": "245.00"
+          },
+          {
+            "label": "未知行业",
+            "amount": "80.00"
+          },
+          {
+            "label": "软件",
+            "amount": "300.00"
+          }
+        ],
+        "row_count": 5,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "2026年净收入按下单时客户行业统计"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "ready",
+        "topic_ids": [
+          "net_revenue",
+          "historical_industry"
+        ],
+        "model_names": [
+          "crm_industry_history",
+          "sales_orders",
+          "sales_refunds"
+        ],
+        "schema": "Catalog: wren, Schema: public\n\n### Model: crm_industry_history\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - valid_from (DATE)\n    - valid_to (DATE)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。",
+        "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+        "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+        "schema_utf8_bytes": 499,
+        "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+        "full_schema_utf8_bytes": 83225,
+        "schema_ratio": 0.005995794532892761
+      }
+    },
+    {
+      "tool": "list_models",
+      "arguments": {},
+      "result": {
+        "models": [
+          {
+            "name": "crm_industry_history",
+            "description": null,
+            "column_count": 5
+          },
+          {
+            "name": "sales_orders",
+            "description": null,
+            "column_count": 5
+          },
+          {
+            "name": "sales_refunds",
+            "description": null,
+            "column_count": 4
+          }
+        ],
+        "selected_topics": [
+          "net_revenue",
+          "historical_industry"
+        ]
+      }
+    },
+    {
+      "tool": "get_instructions",
+      "arguments": {},
+      "result": {
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。",
+        "used_legacy": false,
+        "selected_topics": [
+          "net_revenue",
+          "historical_industry"
+        ]
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(h.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_industry_history h ON n.dept_id=h.dept_id AND n.customer_id=h.customer_id AND n.order_date>=h.valid_from AND n.order_date<h.valid_to GROUP BY COALESCE(h.industry,'未知行业')"
+      },
+      "result": "WITH crm_industry_history AS (SELECT \"wren_src_crm_industry_history\".industry AS industry, \"wren_src_crm_industry_history\".valid_to AS valid_to, \"wren_src_crm_industry_history\".valid_from AS valid_from, \"wren_src_crm_industry_history\".dept_id AS dept_id, \"wren_src_crm_industry_history\".customer_id AS customer_id FROM (SELECT crm_industry_history.customer_id, crm_industry_history.dept_id, crm_industry_history.industry, crm_industry_history.valid_from, crm_industry_history.valid_to FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.industry AS industry, __source.valid_from AS valid_from, __source.valid_to AS valid_to FROM crm.bi008_s8_relations.industry_history AS __source) AS crm_industry_history) AS \"wren_src_crm_industry_history\"), sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".order_date AS order_date, \"wren_src_sales_orders\".paid_amount AS paid_amount FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), r AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id, order_id), n AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund, 0) AS net_amount FROM sales_orders AS o LEFT JOIN r ON o.dept_id = r.dept_id AND o.order_id = r.order_id) SELECT COALESCE(h.industry, '未知行业') AS label, SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_industry_history AS h ON n.dept_id = h.dept_id AND n.customer_id = h.customer_id AND n.order_date >= h.valid_from AND n.order_date < h.valid_to GROUP BY COALESCE(h.industry, '未知行业')"
+    },
+    {
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(h.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_industry_history h ON n.dept_id=h.dept_id AND n.customer_id=h.customer_id AND n.order_date>=h.valid_from AND n.order_date<h.valid_to GROUP BY COALESCE(h.industry,'未知行业')"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(h.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_industry_history h ON n.dept_id=h.dept_id AND n.customer_id=h.customer_id AND n.order_date>=h.valid_from AND n.order_date<h.valid_to GROUP BY COALESCE(h.industry,'未知行业')"
+      },
+      "result": {
+        "columns": [
+          "label",
+          "amount"
+        ],
+        "rows": [
+          {
+            "label": "制造",
+            "amount": "140.00"
+          },
+          {
+            "label": "服务",
+            "amount": "100.00"
+          },
+          {
+            "label": "软件",
+            "amount": "450.00"
+          },
+          {
+            "label": "未知行业",
+            "amount": "80.00"
+          },
+          {
+            "label": "零售",
+            "amount": "95.00"
+          }
+        ],
+        "row_count": 5,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "2026年净销售额按客户标签统计"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "ready",
+        "topic_ids": [
+          "net_revenue",
+          "overlapping_tags"
+        ],
+        "model_names": [
+          "crm_customer_tags",
+          "sales_orders",
+          "sales_refunds"
+        ],
+        "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customer_tags\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - tag (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n先得到一行一订单净额，再按 dept_id、customer_id 关联 crm_customer_tags。 无标签保留为“无标签”；每组计入成员订单完整净额，不分摊，标签组之间不能相加。 不重复总额必须从关联标签前的基础订单净额另查。",
+        "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+        "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+        "schema_utf8_bytes": 445,
+        "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval",
+        "full_schema_utf8_bytes": 83225,
+        "schema_ratio": 0.0053469510363472516
+      }
+    },
+    {
+      "tool": "list_models",
+      "arguments": {},
+      "result": {
+        "models": [
+          {
+            "name": "crm_customer_tags",
+            "description": null,
+            "column_count": 3
+          },
+          {
+            "name": "sales_orders",
+            "description": null,
+            "column_count": 5
+          },
+          {
+            "name": "sales_refunds",
+            "description": null,
+            "column_count": 4
+          }
+        ],
+        "selected_topics": [
+          "net_revenue",
+          "overlapping_tags"
+        ]
+      }
+    },
+    {
+      "tool": "get_instructions",
+      "arguments": {},
+      "result": {
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n先得到一行一订单净额，再按 dept_id、customer_id 关联 crm_customer_tags。 无标签保留为“无标签”；每组计入成员订单完整净额，不分摊，标签组之间不能相加。 不重复总额必须从关联标签前的基础订单净额另查。",
+        "used_legacy": false,
+        "selected_topics": [
+          "net_revenue",
+          "overlapping_tags"
+        ]
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(t.tag,'无标签') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags t ON n.dept_id=t.dept_id AND n.customer_id=t.customer_id GROUP BY COALESCE(t.tag,'无标签')"
+      },
+      "result": "WITH crm_customer_tags AS (SELECT \"wren_src_crm_customer_tags\".\"tag\" AS tag, \"wren_src_crm_customer_tags\".dept_id AS dept_id, \"wren_src_crm_customer_tags\".customer_id AS customer_id FROM (SELECT crm_customer_tags.customer_id, crm_customer_tags.dept_id, crm_customer_tags.\"tag\" FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.\"tag\" AS \"tag\" FROM crm.bi008_s8_relations.customer_tags AS __source) AS crm_customer_tags) AS \"wren_src_crm_customer_tags\"), sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".order_date AS order_date, \"wren_src_sales_orders\".paid_amount AS paid_amount FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), r AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id, order_id), n AS (SELECT o.order_id, o.dept_id, o.customer_id, o.order_date, o.paid_amount - COALESCE(r.refund, 0) AS net_amount FROM sales_orders AS o LEFT JOIN r ON o.dept_id = r.dept_id AND o.order_id = r.order_id) SELECT COALESCE(t.tag, '无标签') AS label, SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags AS t ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id GROUP BY COALESCE(t.tag, '无标签')"
+    },
+    {
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(t.tag,'无标签') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags t ON n.dept_id=t.dept_id AND n.customer_id=t.customer_id GROUP BY COALESCE(t.tag,'无标签')"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(t.tag,'无标签') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags t ON n.dept_id=t.dept_id AND n.customer_id=t.customer_id GROUP BY COALESCE(t.tag,'无标签')"
+      },
+      "result": {
+        "columns": [
+          "label",
+          "amount"
+        ],
+        "rows": [
+          {
+            "label": "普通",
+            "amount": "100.00"
+          },
+          {
+            "label": "VIP",
+            "amount": "385.00"
+          },
+          {
+            "label": "战略",
+            "amount": "545.00"
+          },
+          {
+            "label": "无标签",
+            "amount": "80.00"
+          }
+        ],
+        "row_count": 4,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "2026年净收入合计"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "ready",
+        "topic_ids": [
+          "net_revenue"
+        ],
+        "model_names": [
+          "sales_orders",
+          "sales_refunds"
+        ],
+        "schema": "Catalog: wren, Schema: public\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。",
+        "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+        "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+        "schema_utf8_bytes": 333,
+        "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval"
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT * FROM finance_revenue_entries"
+      },
+      "result": {
+        "error": "Error executing tool run_sql: BI008_TOPIC_SCOPE: models outside selected dependency closure: finance_revenue_entries"
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH x AS (SELECT * FROM crm_industry_history) SELECT * FROM x"
+      },
+      "result": {
+        "error": "Error executing tool dry_plan: BI008_TOPIC_SCOPE: models outside selected dependency closure: crm_industry_history"
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH marketing_customer_orders_000 AS (SELECT order_id FROM sales_orders) SELECT COUNT(*) AS n FROM marketing_customer_orders_000"
+      },
+      "result": "WITH sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id FROM (SELECT sales_orders.order_id FROM (SELECT __source.order_id AS order_id FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), marketing_customer_orders_000 AS (SELECT order_id FROM sales_orders) SELECT COUNT(*) AS n FROM marketing_customer_orders_000"
+    },
+    {
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH marketing_customer_orders_000 AS (SELECT order_id FROM sales_orders) SELECT COUNT(*) AS n FROM marketing_customer_orders_000"
+      },
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH marketing_customer_orders_000 AS (SELECT order_id FROM sales_orders) SELECT COUNT(*) AS n FROM marketing_customer_orders_000"
+      },
+      "result": {
+        "columns": [
+          "n"
+        ],
+        "rows": [
+          {
+            "n": 6
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "比较2026年净收入按当前行业和下单时行业的分组"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "ready",
+        "topic_ids": [
+          "net_revenue",
+          "historical_industry",
+          "current_industry"
+        ],
+        "model_names": [
+          "crm_customers",
+          "crm_industry_history",
+          "sales_orders",
+          "sales_refunds"
+        ],
+        "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customers\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - industry (VARCHAR)\n\n### Model: crm_industry_history\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - valid_from (DATE)\n    - valid_to (DATE)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+        "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。",
+        "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+        "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+        "schema_utf8_bytes": 612,
+        "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval"
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "净收入按行业统计"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "needs_clarification",
+        "message": "请明确客户当前行业，还是下单时行业。",
+        "topic_ids": [],
+        "model_names": [],
+        "schema": ""
+      }
+    },
+    {
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT COUNT(*) FROM sales_orders"
+      },
+      "result": {
+        "error": "Error executing tool run_sql: BI008_TOPIC_SELECT_FIRST: no selected topic"
+      }
+    },
+    {
+      "tool": "get_context",
+      "arguments": {
+        "question": "财务确认收入是多少"
+      },
+      "result": {
+        "strategy": "reviewed_topic_closure",
+        "status": "unavailable",
+        "message": "当前主题没有审核过的财务确认收入或毛利定义，不用净收入替代。",
+        "topic_ids": [],
+        "model_names": [],
+        "schema": ""
+      }
+    }
+  ],
+  "combined_context": {
+    "strategy": "reviewed_topic_closure",
+    "status": "ready",
+    "topic_ids": [
+      "net_revenue",
+      "historical_industry",
+      "current_industry"
+    ],
+    "model_names": [
+      "crm_customers",
+      "crm_industry_history",
+      "sales_orders",
+      "sales_refunds"
+    ],
+    "schema": "Catalog: wren, Schema: public\n\n### Model: crm_customers\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - industry (VARCHAR)\n\n### Model: crm_industry_history\n  Columns:\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - valid_from (DATE)\n    - valid_to (DATE)\n    - industry (VARCHAR)\n\n### Model: sales_orders\n  Columns:\n    - order_id (BIGINT)\n    - dept_id (VARCHAR)\n    - customer_id (BIGINT)\n    - order_date (DATE)\n    - paid_amount (DECIMAL)\n\n### Model: sales_refunds\n  Columns:\n    - refund_id (BIGINT)\n    - dept_id (VARCHAR)\n    - order_id (BIGINT)\n    - refund_amount (DECIMAL)\n",
+    "instructions": "仅合成数据，不是公司结论；人民币元，净收入/净销售额=订单实付减已记录退款， 不等于财务确认收入或毛利。订单日期为 Asia/Shanghai 业务 DATE，区间起含止不含， 退款归属原订单日。sales_orders 每行一订单，order_id 全局唯一； 客户身份必须使用 dept_id 和 customer_id。未匹配维度不丢订单。\nsales_refunds 必须先按 dept_id、order_id 汇总退款，再 LEFT JOIN sales_orders。 无退款为零，计算一行一订单 paid_amount-COALESCE(refund_total,0)。 不关联 sales_order_lines 累计实付；不使用财务确认表替代净收入。\n下单时行业来自 crm_industry_history，按 dept_id、customer_id 关联， 并要求 order_date>=valid_from AND order_date<valid_to。 无匹配保留为“未知行业”，有效期重叠必须由质量检查拒绝发布，不能改用当前行业代替。\n当前行业来自 crm_customers，按 dept_id、customer_id 与基础订单关联； 缺失客户保留订单，行业为“未知行业”。历史订单按当前客户归属重新分组。",
+    "registry_sha256": "b4b92059a859c3b13b4b1e11a5c95600ef5981444724d5ed93dd6af555e9fd1d",
+    "source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+    "schema_utf8_bytes": 612,
+    "scope": "curated topic selection and model-reference checks; not department authorization or vector retrieval"
+  },
+  "unsupported_metric": {
+    "strategy": "reviewed_topic_closure",
+    "status": "unavailable",
+    "message": "当前主题没有审核过的财务确认收入或毛利定义，不用净收入替代。",
+    "topic_ids": [],
+    "model_names": [],
+    "schema": ""
+  },
+  "checks_passed": true
+}

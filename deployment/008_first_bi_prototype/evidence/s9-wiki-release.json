@@ -1,0 +1,9 @@
+{
+  "version": "s9-wiki-v1",
+  "files": 510,
+  "native_models": 500,
+  "wren_source_revision": "da404dc40d91e86ae0b2ecbc081cc25e25e9ecd68f815d044f83c9b2aa9f9312",
+  "mdl_sha256": "39eb9e878bb3625d571bf0ad73397ff4b6112e6d0c8582336bd059135213af9f",
+  "skill_path": "s9/skills/bi008-semantic-context/SKILL.md",
+  "scope": "published native YAML plus topic navigation; no answer data; no global skill installation"
+}

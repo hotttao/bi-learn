@@ -1,0 +1,207 @@
+{
+  "verified_at_utc": "2026-10-18T11:44:11.432402+00:00",
+  "question": "overlapping_tags",
+  "rep": 1,
+  "elapsed_seconds": 64.986,
+  "numeric_correct": true,
+  "metadata_mcp_calls": 0,
+  "read_models": [
+    "crm_customer_tags",
+    "sales_orders",
+    "sales_refunds"
+  ],
+  "file_commands": [
+    {
+      "id": "item_1",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat .agents/skills/bi008-semantic-context/SKILL.md'",
+      "aggregated_output": "---\nname: bi008-semantic-context\ndescription: 按主题增量读取本地已审核的销售分析语义，查询净收入、当前或下单时行业、客户标签；通过 Wren 执行查询，不用元数据 MCP 或向量检索。\n---\n\n先读工作区的 `wiki/index.md`，按用户问题选择主题页。主题页会链接基础指标、所需原生 Wren YAML 及证据来源；只沿相关链接读取，不遍历全部 models，不读无关主题。页面或字段缺失时停止并说明缺口，含糊的“行业”要澄清时点，财务确认收入或毛利不能用净收入替代。\n\nWren YAML 是字段/结构依据，主题页解释关系用途，基础指标页定义业务口径。规则冲突时报告，不择一猜测；查询前版本预检由启动器与服务端执行。这里只使用合成实验发布包，不代表公司业务已审核。\n\n业务数据必须通过 bi008_s9_query 执行。对每条 SQL 分别真实调用 dry_plan，收到成功结果后再 dry_run，收到成功结果后才 run_sql；不能省略 dry_plan，也不能并行发这三步。只用未限定模型名、可见 CTE 和 DATE 字面量；金额为精确字符串。不调用元数据 MCP，不用 CLI/HTTP 绕过查询工具。\n\n本次分析只读：用 cat/sed/rg/ls 阅读工作区文件，不写 Wiki、不执行脚本，不查工作区外文件或其他实验答案。Skill 负责读取和分析流程，不自动编译 Markdown，也不代替后端查询校验或授权。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wiki/index.md'",
+      "aggregated_output": "# 销售分析语义索引\n\n状态：已审核的本地合成实验，不是公司正式定义。读取相关主题及其依赖即可，不读取全量模型。当前数据发布与查询模型绑定见 `release.json`，由启动器和查询服务预检。\n\n| 用户要分析什么 | 主题入口 | 所需知识 |\n| --- | --- | --- |\n| 净收入/净销售额总额、业务日期趋势 | [净收入基础指标](metrics/net-revenue.md) | 订单粒度、退款聚合、日期边界 |\n| 按客户当前行业 | [当前行业关系](relationships/current-industry.md) | 基础指标＋客户联合键，当前归属 |\n| 按下单时客户行业 | [历史行业关系](relationships/historical-industry.md) | 基础指标＋客户联合键与有效期 |\n| 按客户标签 | [可重叠标签关系](relationships/overlapping-tags.md) | 基础指标＋标签成员，组间不可加 |\n\n仅说“行业”时澄清当前还是下单时；仅说“收入”时澄清是否净收入。财务确认收入、毛利及其他未登记维度没有已审核定义，不默认为净收入总额。\n\n[维护约定](SCHEMA.md) 供维护 Wiki 时阅读，普通问数无需加载。[来源与变更记录](log.md) 记录人工整理依据，不存查询结果或预期答案。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wiki/metrics/net-revenue.md wiki/relationships/overlapping-tags.md'",
+      "aggregated_output": "# 净收入 net_revenue@1\n\n已审核范围：S8 独立合成销售数据。受控同义词“净销售额”，人民币元；订单实付减累计已记录退款，不是财务确认收入或毛利。\n\n先读原生 Wren 文件：[订单](../../wren/models/sales_orders/metadata.yml)、[退款](../../wren/models/sales_refunds/metadata.yml)。字段以 YAML 为准。\n\n`sales_orders` 每行一订单，order_id 全局唯一。退款先按 dept_id、order_id 汇总，再 LEFT JOIN 订单；无退款为零，得到一行一订单的 paid_amount 减退款。不要把原始退款明细或订单行直接关联后重复累计实付。客户身份是 dept_id＋customer_id。\n\n日期为 Asia/Shanghai 的订单业务 DATE，退款归属原订单日，区间起含止不含。缺失维度保留订单。基础不重复总额从一行一订单净额求和，不从多标签关联后的行求和。\n\n依据：[原始审核规则](../../raw/reviewed-sales-rules.md)。该来源只读；本文是其按主题组织的派生说明，不是新的独立指标定义。\n# 客户可重叠标签\n\n先读 [净收入基础指标](../metrics/net-revenue.md) 及其链接的订单/退款模型，再读 [原生标签模型](../../wren/models/crm_customer_tags/metadata.yml)。\n\n角色：允许重叠的标签成员。先得到一行一订单净额，再用 dept_id、customer_id 关联标签；同一客户可属于多个标签。无标签保留为“无标签”；每组计入成员订单完整净额，不分摊。因此标签组金额不能直接相加作为总额；不重复总额应从关联标签前的基础净额另查。\n\n依据：[审核规则来源](../../raw/reviewed-sales-rules.md)。标签成员不是互斥行业分类；本页不改变净收入公式。\n",
+      "exit_code": 0,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "command_execution",
+      "command": "/bin/bash -lc 'cat wren/models/sales_orders/metadata.yml wren/models/sales_refunds/metadata.yml wren/models/crm_customer_tags/metadata.yml'",
+      "aggregated_output": "name: sales_orders\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: orders\ncolumns:\n- name: order_id\n  type: BIGINT\n- name: dept_id\n  type: VARCHAR\n- name: customer_id\n  type: BIGINT\n- name: order_date\n  type: DATE\n- name: paid_amount\n  type: DECIMAL\nname: sales_refunds\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: refunds\ncolumns:\n- name: refund_id\n  type: BIGINT\n- name: dept_id\n  type: VARCHAR\n- name: order_id\n  type: BIGINT\n- name: refund_amount\n  type: DECIMAL\nname: crm_customer_tags\ntable_reference:\n  catalog: crm\n  schema: bi008_s8_relations\n  table: customer_tags\ncolumns:\n- name: dept_id\n  type: VARCHAR\n- name: customer_id\n  type: BIGINT\n- name: tag\n  type: VARCHAR\n",
+      "exit_code": 0,
+      "status": "completed"
+    }
+  ],
+  "calls": [
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n)\nSELECT SUM(net_amount) AS net_sales_total FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)) SELECT SUM(net_amount) AS net_sales_total FROM order_net"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)) SELECT SUM(net_amount) AS net_sales_total FROM order_net"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n)\nSELECT SUM(net_amount) AS net_sales_total FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), tag_members AS (\n  SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags\n)\nSELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount\nFROM order_net n\nLEFT JOIN tag_members t\n  ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id\nGROUP BY COALESCE(t.tag, '无标签')\nORDER BY customer_tag"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_customer_tags AS (SELECT \"wren_src_crm_customer_tags\".dept_id AS dept_id, \"wren_src_crm_customer_tags\".customer_id AS customer_id, \"wren_src_crm_customer_tags\".\"tag\" AS tag FROM (SELECT crm_customer_tags.customer_id, crm_customer_tags.dept_id, crm_customer_tags.\"tag\" FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.\"tag\" AS \"tag\" FROM crm.bi008_s8_relations.customer_tags AS __source) AS crm_customer_tags) AS \"wren_src_crm_customer_tags\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), tag_members AS (SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags) SELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount FROM order_net AS n LEFT JOIN tag_members AS t ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id GROUP BY COALESCE(t.tag, '无标签') ORDER BY customer_tag"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH sales_refunds AS (SELECT \"wren_src_sales_refunds\".dept_id AS dept_id, \"wren_src_sales_refunds\".order_id AS order_id, \"wren_src_sales_refunds\".refund_amount AS refund_amount FROM (SELECT sales_refunds.dept_id, sales_refunds.order_id, sales_refunds.refund_amount FROM (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.refund_amount AS refund_amount FROM crm.bi008_s8_relations.refunds AS __source) AS sales_refunds) AS \"wren_src_sales_refunds\"), sales_orders AS (SELECT \"wren_src_sales_orders\".order_id AS order_id, \"wren_src_sales_orders\".dept_id AS dept_id, \"wren_src_sales_orders\".customer_id AS customer_id, \"wren_src_sales_orders\".paid_amount AS paid_amount, \"wren_src_sales_orders\".order_date AS order_date FROM (SELECT sales_orders.customer_id, sales_orders.dept_id, sales_orders.order_date, sales_orders.order_id, sales_orders.paid_amount FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_relations.orders AS __source) AS sales_orders) AS \"wren_src_sales_orders\"), crm_customer_tags AS (SELECT \"wren_src_crm_customer_tags\".dept_id AS dept_id, \"wren_src_crm_customer_tags\".customer_id AS customer_id, \"wren_src_crm_customer_tags\".\"tag\" AS tag FROM (SELECT crm_customer_tags.customer_id, crm_customer_tags.dept_id, crm_customer_tags.\"tag\" FROM (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.\"tag\" AS \"tag\" FROM crm.bi008_s8_relations.customer_tags AS __source) AS crm_customer_tags) AS \"wren_src_crm_customer_tags\"), refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders AS o LEFT JOIN refund_totals AS r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= CAST('2026-01-01' AS DATE) AND o.order_date < CAST('2027-01-01' AS DATE)), tag_members AS (SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags) SELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount FROM order_net AS n LEFT JOIN tag_members AS t ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id GROUP BY COALESCE(t.tag, '无标签') ORDER BY customer_tag"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), tag_members AS (\n  SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags\n)\nSELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount\nFROM order_net n\nLEFT JOIN tag_members t\n  ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id\nGROUP BY COALESCE(t.tag, '无标签')\nORDER BY customer_tag"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n)\nSELECT SUM(net_amount) AS net_sales_total FROM order_net"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"net_sales_total\"\n  ],\n  \"rows\": [\n    {\n      \"net_sales_total\": \"865.00\"\n    }\n  ],\n  \"row_count\": 1,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_10",
+      "type": "mcp_tool_call",
+      "server": "bi008_s9_query",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "WITH refund_totals AS (\n  SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount\n  FROM sales_refunds\n  GROUP BY dept_id, order_id\n), order_net AS (\n  SELECT o.order_id, o.dept_id, o.customer_id,\n         o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount\n  FROM sales_orders o\n  LEFT JOIN refund_totals r\n    ON o.dept_id = r.dept_id AND o.order_id = r.order_id\n  WHERE o.order_date >= DATE '2026-01-01'\n    AND o.order_date < DATE '2027-01-01'\n), tag_members AS (\n  SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags\n)\nSELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount\nFROM order_net n\nLEFT JOIN tag_members t\n  ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id\nGROUP BY COALESCE(t.tag, '无标签')\nORDER BY customer_tag"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"customer_tag\",\n    \"net_sales_amount\"\n  ],\n  \"rows\": [\n    {\n      \"customer_tag\": \"VIP\",\n      \"net_sales_amount\": \"385.00\"\n    },\n    {\n      \"customer_tag\": \"普通\",\n      \"net_sales_amount\": \"100.00\"\n    },\n    {\n      \"customer_tag\": \"战略\",\n      \"net_sales_amount\": \"545.00\"\n    },\n    {\n      \"customer_tag\": \"无标签\",\n      \"net_sales_amount\": \"80.00\"\n    }\n  ],\n  \"row_count\": 4,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "answered",
+    "total": "865.00",
+    "groups": [
+      {
+        "label": "VIP",
+        "amount": "385.00"
+      },
+      {
+        "label": "普通",
+        "amount": "100.00"
+      },
+      {
+        "label": "战略",
+        "amount": "545.00"
+      },
+      {
+        "label": "无标签",
+        "amount": "80.00"
+      }
+    ],
+    "reason": "单位：人民币元。按上海时区订单业务日期统计2026-01-01至2026-12-31，净销售额为实付减累计已记录退款，退款归属原订单日期。无标签订单已保留。多标签客户的订单完整计入各所属标签，不分摊，因此分组金额不能相加作为不重复总额：分组合计1110.00元，重复计入245.00元；关联标签前按订单计算的不重复总额为865.00元。结果来自本地合成实验数据。",
+    "sql": [
+      "WITH refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders o LEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01') SELECT SUM(net_amount) AS net_sales_total FROM order_net",
+      "WITH refund_totals AS (SELECT dept_id, order_id, SUM(refund_amount) AS refund_amount FROM sales_refunds GROUP BY dept_id, order_id), order_net AS (SELECT o.order_id, o.dept_id, o.customer_id, o.paid_amount - COALESCE(r.refund_amount, 0) AS net_amount FROM sales_orders o LEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id WHERE o.order_date >= DATE '2026-01-01' AND o.order_date < DATE '2027-01-01'), tag_members AS (SELECT DISTINCT dept_id, customer_id, tag FROM crm_customer_tags) SELECT COALESCE(t.tag, '无标签') AS customer_tag, SUM(n.net_amount) AS net_sales_amount FROM order_net n LEFT JOIN tag_members t ON n.dept_id = t.dept_id AND n.customer_id = t.customer_id GROUP BY COALESCE(t.tag, '无标签') ORDER BY customer_tag"
+    ]
+  },
+  "usage": {
+    "input_tokens": 229783,
+    "cached_input_tokens": 199296,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1312,
+    "reasoning_output_tokens": 30
+  }
+}

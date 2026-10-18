@@ -1,0 +1,31 @@
+{
+  "verified_at_utc": "2026-10-18T11:42:25.484082+00:00",
+  "stage": "S9",
+  "primary_route": "file Wiki + local Skill + Wren query-only MCP",
+  "summary": {
+    "trials": 6,
+    "numeric_correct": 6,
+    "metadata_mcp_calls": 0,
+    "query_mcp_calls": 31,
+    "file_tool_calls": 24,
+    "model_elapsed_seconds": 380.619,
+    "usage": {
+      "input_tokens": 1317025,
+      "cached_input_tokens": 1129088,
+      "output_tokens": 7944
+    }
+  },
+  "release_version": "s9-wiki-v1",
+  "main_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "source_fingerprint": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "s7_binding_and_dashboard_layouts_unchanged": true,
+  "limitations": [
+    "synthetic curated topics only",
+    "500 models include empty aliases, not 500 source tables",
+    "Wiki rules not all enforced as executable Wren metrics",
+    "no production onboarding or automatic sync",
+    "file navigation not authorization",
+    "topic-MCP comparison real-model trials incomplete"
+  ],
+  "review_status": "uncommitted; wait for user review"
+}

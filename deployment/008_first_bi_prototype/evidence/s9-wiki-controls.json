@@ -1,0 +1,16 @@
+{
+  "verified_at_utc": "2026-10-18T11:39:34.683986+00:00",
+  "tools": [
+    "dry_plan",
+    "dry_run",
+    "run_sql"
+  ],
+  "faults_rejected": {
+    "missing_topic": "BI008_WIKI_REVISION: release files changed; review and republish",
+    "modified_native_yaml": "BI008_WIKI_REVISION: release files changed; review and republish",
+    "modified_rule": "BI008_WIKI_REVISION: release files changed; review and republish",
+    "mixed_execution_revision": "BI008_WIKI_REVISION: executing Wren source differs from published files"
+  },
+  "published_release_unchanged": true,
+  "limit": "Consistency checks, not signatures or authorization; faults injected into disposable copies only."
+}

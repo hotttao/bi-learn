@@ -1,0 +1,54 @@
+{
+  "declared_at_utc": "2026-10-18T11:23:23.310467+00:00",
+  "stage": "S9",
+  "scope": "primary: file Wiki + Skill progressive reading + Wren query-only MCP, over immutable S8 500-model catalog",
+  "base_commit": "57f67a7",
+  "topics": [
+    "net_revenue",
+    "current_industry",
+    "historical_industry",
+    "overlapping_tags"
+  ],
+  "targets": {
+    "returned_schema_bytes_ratio_max": 0.1,
+    "answer_and_total_match_s8_golden": true,
+    "metadata_mcp_calls": 0,
+    "returned_schema_bytes_ratio_scope": "topic-MCP fixed comparison only; file branch measures actual read models/calls"
+  },
+  "real_codex_trials": {
+    "questions": [
+      "current_industry",
+      "historical_industry",
+      "overlapping_tags"
+    ],
+    "repetitions": 2,
+    "baseline": "existing S8 schema_and_rules trials; prospective comparison, not rerandomized trial"
+  },
+  "controls": [
+    "no query before context selection",
+    "outside-topic model references rejected",
+    "ambiguous industry clears selection",
+    "unsupported metric does not fall back",
+    "missing dependency/cycle refused",
+    "stale topic registry refused"
+  ],
+  "not_in_scope": [
+    "vector embeddings",
+    "automatic Wren→BI semantic synchronization",
+    "concurrent BI edit protection",
+    "department isolation",
+    "new Agent framework",
+    "WrenAI Classic deployment"
+  ],
+  "assumption": "Original plan ended at S8; user explicitly selected topic-context work from the follow-up options.",
+  "direction_confirmed_by_user": true,
+  "user_steering": "After topic-context selection, user proposed LLM Wiki / Skill incremental file reading without metadata MCP or vectors.",
+  "primary_controls": [
+    "published file checksums and Wren source revision agree",
+    "dedicated MCP exposes only dry_plan/dry_run/run_sql",
+    "each trial reads index, Skill, relevant topic and exactly three native model YAMLs",
+    "actual answers and totals match independent S8 oracle",
+    "no expected answers or evidence in analysis workspace"
+  ],
+  "controls_scope": "Existing controls below belong to retained topic-MCP comparison, not Wiki authorization."
+}
