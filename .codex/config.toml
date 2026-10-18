@@ -1,0 +1,6 @@
+default_permissions = ":danger-full-access"
+approval_policy = "never"
+[features]
+# The built-in ChatGPT Apps MCP requires direct access to chatgpt.com.
+# Keep it disabled for this repository while the configured proxy is unavailable.
+apps = false
