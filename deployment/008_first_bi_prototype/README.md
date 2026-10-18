@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S6 已提交 `5c443ae`。当前 S7 已完成本轮实现和完整验收，待 review，未提交、未进入 S8。原有 24 项为 22 通过、2 延期，13 个独立问题全部通过；新增自选日期和实时数据变化验证通过。当前验收看板：[自选日期与实时数据](http://192.168.2.46:8088/superset/dashboard/4/)。完整操作见 [007 教程](walkthroughs/007_S7-WALKTHROUGH.md)。自动语义同步、并发编辑保护按用户要求暂不处理；部门隔离暂缓。**
+2026-10-18：**S7 已确认并提交 `1b0f9ec`。当前 S8“增长与语义演进”已完成，待 review，未提交。1 万/10 万/100 万订单查询全部对账；12 次真实 Codex 对照完成。教学与复现见 [008 教程](walkthroughs/008_S8-WALKTHROUGH.md)，完整结果见 [最终状态](evidence/s8-final-state.json)。S7 自选日期看板保持可用。自动语义同步、并发编辑保护及部门隔离继续暂缓。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -1046,7 +1046,7 @@ sudo python3 scripts/source_db.py verify > evidence/s6-source-baseline.json
 
 后续仍是本步 S7：账户可用后继续独立问题和两类预览渲染，再运行完整 `finish_s7.py`；全部补齐再交付本步最终 review。当前供 review 已实现范围，不提交、不进入 S8。
 
-## S7 补测与日期扩展完成（当前交付，待 review）
+## S7 补测与日期扩展完成（已确认提交 1b0f9ec，历史交付）
 
 已补齐原先 Q16～Q21：明细表、指标卡、缺失客户规则、退款扇出、超出旧固定窗口时禁止误保存、拒绝覆盖财务口径。13 个独立问题全部通过，两类新预览均经过真实浏览器渲染检查。原有 24 个验收条目为 22 通过、0 待测、0 阻断、2 延期；延期为真实网络断连恢复、部门/敏感列/撤权。原用量中断、partial 状态保留为历史记录，已不是当前状态。
 
@@ -1066,3 +1066,20 @@ sudo python3 scripts/source_db.py verify > evidence/s6-source-baseline.json
 当前交互入口 `sh scripts/analyze_s7.sh` 启动前校验全日期绑定，使用 `s7/DATE_ANALYSIS.md` 生成上下文；旧固定十月入口仍供历史问题集回归。当前只验证业务 DATE 日级范围，不宣称小时级精度、大数据扫描成本或生产权限已实现。自动语义同步和并发编辑保护按用户要求暂不处理。
 
 当前证据：[最终状态](evidence/s7-final-state.json)、[逐项结果](evidence/s7-case-results.json)、[全日期绑定](evidence/s7-date-binding.json)、[实时日期回归](evidence/s7-dates.json)、[日期浏览器结果](evidence/s7-dates-browser.json)、[默认看板截图](evidence/s7-date-dashboard.png)。当前停在 review，不提交、不进入 S8。
+
+## S8 操作记录（已完成，待 review，未提交）
+
+S7 已按用户确认提交 `1b0f9ec`。本步以 [预声明计划](s8/plan.json) 为准：行数和目录规模分开实验，不改四笔订单基线，不改正常 Wren 项目；复用现成 Codex，不创建新 Agent。
+
+已执行 `prepare_s8.py`：独立 schema 初始化 1 万、10 万、100 万订单，按固定种子生成订单与退款；以 Python 整数分账本对账。另建 6 订单/865 的关系 fixture，以及 10/100/500 模型目录。目录噪声为共享空 stub 的合成别名，不声称 500 张真实业务表。
+
+已执行 `benchmark_s8.py`：9 组 ×6 轮全部正确。百万订单的总额/当前行业/十月日趋势后续 5 轮中位分别为 1437.15/1812.75/907.40 ms，均达到预声明 5 秒探索目标；未清缓存，不宣称冷查询、P95 或生产容量。
+
+已执行 `inspect_s8_catalog.py`：MCP full-schema 上下文从 1493/16505 增到 83225 字节；未实现按业务域检索。错误退款/单列客户键/标签求和分别返回 1065/1650/1110，对照正确总额 865；当前/历史行业与重叠标签正确路径已对账。
+
+`evaluate_s8.py` 已完成同数据、同 MDL、同工具、同模型配置的两条件对照：只有 schema，或者 schema＋审核规则。每题隔离现成 Codex 会话，目录之外启动以避免 S7 业务指令泄漏；3 题 ×2 次 ×2 条件。实际结果：schema-only 六次都澄清，没有冒充数值答案；schema＋规则六次真实查询均正确。每次只重复两轮，不视为统计泛化证明。完整教学与结果见 [008 教程](walkthroughs/008_S8-WALKTHROUGH.md)。
+
+
+S8 完整检查 `finish_s8.py` 已通过：54 次语义 SDK 查询全部对账，错误关系反例命中，10/100/500 目录上下文增长实测，12 次 Codex 对照与实际工具结果核对完成；正常源指纹、Wren 绑定和四个看板保持不变。当前只有合成业务定义，不代表公司实体关系已整理完成；grep 后端仍返回全量上下文，主题检索未实现。
+
+已新增独立 [S8 规则](s8/rules.md)、[关系审阅清单](s8/semantic-map.yaml)、[术语词典](../../docs/ddd/bi008/CONTEXT.md)、可执行复现脚本与去敏证据。累计 token 与模型耗时保留在 [对照汇总](evidence/s8-agent-comparison.json)，不臆测账户实际费用。额外 query-info 接口 401 不扩大身份，使用 statement stats，源端逐查询磁盘/CPU 未测。暂不引入本体或新平台；先维护实体身份、关系角色、历史和标签分配等可回归契约。S8 未提交，等待本步 review。

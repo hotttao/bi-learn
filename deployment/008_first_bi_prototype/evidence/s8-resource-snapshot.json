@@ -1,0 +1,73 @@
+{
+  "observed_at_utc": "2026-10-18T10:12:39.125931+00:00",
+  "phase": "after benchmark; Agent trials may be active",
+  "containers": [
+    {
+      "BlockIO": "156kB / 0B",
+      "CPUPerc": "0.32%",
+      "Container": "f6020d293adf",
+      "ID": "f6020d293adf",
+      "MemPerc": "15.82%",
+      "MemUsage": "243.1MiB / 1.5GiB",
+      "Name": "bi008-superset-mcp-1",
+      "NetIO": "2.08MB / 2.07MB",
+      "PIDs": "15"
+    },
+    {
+      "BlockIO": "265MB / 19.1MB",
+      "CPUPerc": "0.04%",
+      "Container": "6a0f7bbc4aaa",
+      "ID": "6a0f7bbc4aaa",
+      "MemPerc": "23.86%",
+      "MemUsage": "366.5MiB / 1.5GiB",
+      "Name": "bi008-superset-1",
+      "NetIO": "24.1MB / 60MB",
+      "PIDs": "21"
+    },
+    {
+      "BlockIO": "221MB / 128MB",
+      "CPUPerc": "51.80%",
+      "Container": "1e45160dbf22",
+      "ID": "1e45160dbf22",
+      "MemPerc": "75.02%",
+      "MemUsage": "1.5GiB / 2GiB",
+      "Name": "bi008-trino-1",
+      "NetIO": "960MB / 18.9MB",
+      "PIDs": "267"
+    },
+    {
+      "BlockIO": "108MB / 45.2MB",
+      "CPUPerc": "0.00%",
+      "Container": "17c9abb260a9",
+      "ID": "17c9abb260a9",
+      "MemPerc": "48.13%",
+      "MemUsage": "246.4MiB / 512MiB",
+      "Name": "bi008-metadata-1",
+      "NetIO": "24.7MB / 27.2MB",
+      "PIDs": "12"
+    },
+    {
+      "BlockIO": "110MB / 160MB",
+      "CPUPerc": "1.25%",
+      "Container": "ca6998833e42",
+      "ID": "ca6998833e42",
+      "MemPerc": "13.82%",
+      "MemUsage": "106.1MiB / 768MiB",
+      "Name": "bi008-mysql-source-1",
+      "NetIO": "7.11MB / 4.44MB",
+      "PIDs": "40"
+    },
+    {
+      "BlockIO": "31.9MB / 977MB",
+      "CPUPerc": "12.02%",
+      "Container": "e25331f6fa74",
+      "ID": "e25331f6fa74",
+      "MemPerc": "43.06%",
+      "MemUsage": "165.4MiB / 384MiB",
+      "Name": "bi008-crm-source-1",
+      "NetIO": "8.02MB / 952MB",
+      "PIDs": "7"
+    }
+  ],
+  "scope": "single snapshot, not peak or per-query source load"
+}

@@ -1,0 +1,51 @@
+{
+  "verified_at_utc": "2026-10-18T10:19:34.565812+00:00",
+  "conditions": {
+    "schema_only": {
+      "trials": 6,
+      "numeric_correct": 0,
+      "clarifications": 6,
+      "execution_failures": 0,
+      "model_elapsed_seconds": 216.822,
+      "tool_calls": 43,
+      "usage": {
+        "input_tokens": 542331,
+        "cached_input_tokens": 355840,
+        "output_tokens": 2553
+      }
+    },
+    "schema_and_rules": {
+      "trials": 6,
+      "numeric_correct": 6,
+      "clarifications": 0,
+      "execution_failures": 0,
+      "model_elapsed_seconds": 340.626,
+      "tool_calls": 69,
+      "usage": {
+        "input_tokens": 1381510,
+        "cached_input_tokens": 1144704,
+        "output_tokens": 8130
+      }
+    }
+  },
+  "trial_files": [
+    "s8-schema_only-current_industry-1.json",
+    "s8-schema_and_rules-current_industry-1.json",
+    "s8-schema_only-historical_industry-1.json",
+    "s8-schema_and_rules-historical_industry-1.json",
+    "s8-schema_only-overlapping_tags-1.json",
+    "s8-schema_and_rules-overlapping_tags-1.json",
+    "s8-schema_only-current_industry-2.json",
+    "s8-schema_and_rules-current_industry-2.json",
+    "s8-schema_only-historical_industry-2.json",
+    "s8-schema_and_rules-historical_industry-2.json",
+    "s8-schema_only-overlapping_tags-2.json",
+    "s8-schema_and_rules-overlapping_tags-2.json"
+  ],
+  "limits": [
+    "only two repetitions per question, not statistical proof",
+    "same schema in both conditions, only rules differ",
+    "noise aliases do not measure 500 real source-table discovery",
+    "grep/full-context backend, no semantic vector retrieval claim"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "declared_at_utc": "2026-10-18T10:04:10.840198+00:00",
+  "seed": 20261018,
+  "order_counts": [
+    10000,
+    100000,
+    1000000
+  ],
+  "catalog_model_counts": [
+    10,
+    100,
+    500
+  ],
+  "query_repeats_after_first": 5,
+  "concurrency": 1,
+  "queries": [
+    "total",
+    "current_industry",
+    "october_daily"
+  ],
+  "correctness": "exact decimal total, grouped amounts and row grain match independent integer-cent generator",
+  "exploratory_latency_goal_ms": 5000,
+  "latency_goal_statistic": "median of 5 subsequent runs; first run separate, caches not forcibly evicted",
+  "model_comparison": {
+    "catalog_size": 500,
+    "questions": [
+      "current_industry",
+      "historical_industry",
+      "overlapping_tags"
+    ],
+    "repetitions": 2,
+    "conditions": [
+      "schema_only",
+      "schema_and_rules"
+    ],
+    "same_model": "inherit existing Codex model; no override",
+    "same_tools": "read-only Wren MCP tool allowlist in both conditions",
+    "same_data": true,
+    "scoring": "numeric correctness, answer coverage, clarification, unsafe guesses, observed semantic contract and queries; do not count clarification as a numeric success"
+  },
+  "not_in_scope": [
+    "automatic semantic synchronization",
+    "concurrent BI edits",
+    "department authorization",
+    "production capacity certification",
+    "new Agent framework"
+  ],
+  "isolation": "independent bi008_s8_* schemas and .local/s8 projects; baseline sales/crm.public tables and Wren main project unchanged"
+}

@@ -1,0 +1,1877 @@
+{
+  "verified_at_utc": "2026-10-18T10:07:35.102052+00:00",
+  "concurrency": 1,
+  "results": [
+    {
+      "orders": 10000,
+      "query": "total",
+      "sql": "SELECT COUNT(*) AS order_count,SUM(net_amount) AS net_revenue FROM bi_orders",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_10000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_10000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT COUNT(*) AS order_count, SUM(net_amount) AS net_revenue FROM bi_orders",
+      "first_ms": 843.16,
+      "subsequent_ms": [
+        521.45,
+        658.21,
+        236.7,
+        607.39,
+        292.72
+      ],
+      "median_ms": 521.45,
+      "min_ms": 236.7,
+      "max_ms": 658.21,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_count": 10000,
+          "net_revenue": "5028617.4800000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063626_00427_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 20,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 20,
+          "planningTimeMillis": 65,
+          "analysisTimeMillis": 31,
+          "cpuTimeMillis": 24,
+          "wallTimeMillis": 48,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 189,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 10,
+          "processedRows": 17500,
+          "processedBytes": 135503,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 135503,
+          "peakMemoryBytes": 84064,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 5,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 5,
+            "cpuTimeMillis": 2,
+            "wallTimeMillis": 3,
+            "processedRows": 1,
+            "processedBytes": 82,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 6,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 6,
+                "cpuTimeMillis": 10,
+                "wallTimeMillis": 14,
+                "processedRows": 12500,
+                "processedBytes": 72832,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 6,
+                    "wallTimeMillis": 7,
+                    "processedRows": 2500,
+                    "processedBytes": 62589,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 6,
+                        "wallTimeMillis": 24,
+                        "processedRows": 5000,
+                        "processedBytes": 0,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 10000,
+      "query": "current_industry",
+      "sql": "SELECT industry,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.bi008_s8_10000.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_10000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_10000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "first_ms": 495.73,
+      "subsequent_ms": [
+        461.71,
+        593.86,
+        574.64,
+        374.68,
+        402.01
+      ],
+      "median_ms": 461.71,
+      "min_ms": 374.68,
+      "max_ms": 593.86,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "industry": "制造",
+          "net_revenue": "1257994.3800000000"
+        },
+        {
+          "industry": "服务",
+          "net_revenue": "1258919.3800000000"
+        },
+        {
+          "industry": "软件",
+          "net_revenue": "1259844.3800000000"
+        },
+        {
+          "industry": "零售",
+          "net_revenue": "1251859.3400000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063629_00434_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 35,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 35,
+          "planningTimeMillis": 185,
+          "analysisTimeMillis": 35,
+          "cpuTimeMillis": 59,
+          "wallTimeMillis": 293,
+          "queuedTimeMillis": 1,
+          "elapsedTimeMillis": 502,
+          "finishingTimeMillis": 5,
+          "physicalInputTimeMillis": 24,
+          "processedRows": 57500,
+          "processedBytes": 596196,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 596196,
+          "peakMemoryBytes": 624744,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 168,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 4,
+                "processedRows": 4,
+                "processedBytes": 360,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 4,
+                    "wallTimeMillis": 12,
+                    "processedRows": 4,
+                    "processedBytes": 158,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 11,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 11,
+                        "cpuTimeMillis": 27,
+                        "wallTimeMillis": 133,
+                        "processedRows": 32500,
+                        "processedBytes": 532921,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 5,
+                            "wallTimeMillis": 5,
+                            "processedRows": 2500,
+                            "processedBytes": 62589,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 12,
+                                "wallTimeMillis": 62,
+                                "processedRows": 5000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          },
+                          {
+                            "stageId": "6",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 1,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 1,
+                            "cpuTimeMillis": 7,
+                            "wallTimeMillis": 76,
+                            "processedRows": 20000,
+                            "processedBytes": 0,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 10000,
+      "query": "october_daily",
+      "sql": "SELECT order_date,SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' GROUP BY order_date ORDER BY order_date",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_10000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_10000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE) GROUP BY order_date ORDER BY order_date",
+      "first_ms": 373.6,
+      "subsequent_ms": [
+        255.5,
+        716.06,
+        532.86,
+        257.97,
+        357.09
+      ],
+      "median_ms": 357.09,
+      "min_ms": 255.5,
+      "max_ms": 716.06,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_date": "2026-10-01",
+          "net_revenue": "14437.7600000000"
+        },
+        {
+          "order_date": "2026-10-02",
+          "net_revenue": "14446.4000000000"
+        },
+        {
+          "order_date": "2026-10-03",
+          "net_revenue": "14457.2400000000"
+        },
+        {
+          "order_date": "2026-10-04",
+          "net_revenue": "14468.0800000000"
+        },
+        {
+          "order_date": "2026-10-05",
+          "net_revenue": "14478.9200000000"
+        },
+        {
+          "order_date": "2026-10-06",
+          "net_revenue": "14489.5600000000"
+        },
+        {
+          "order_date": "2026-10-07",
+          "net_revenue": "14498.4000000000"
+        },
+        {
+          "order_date": "2026-10-08",
+          "net_revenue": "14509.2400000000"
+        },
+        {
+          "order_date": "2026-10-09",
+          "net_revenue": "14520.0800000000"
+        },
+        {
+          "order_date": "2026-10-10",
+          "net_revenue": "14530.7200000000"
+        },
+        {
+          "order_date": "2026-10-11",
+          "net_revenue": "14540.5600000000"
+        },
+        {
+          "order_date": "2026-10-12",
+          "net_revenue": "14550.4000000000"
+        },
+        {
+          "order_date": "2026-10-13",
+          "net_revenue": "14561.2400000000"
+        },
+        {
+          "order_date": "2026-10-14",
+          "net_revenue": "14571.8800000000"
+        },
+        {
+          "order_date": "2026-10-15",
+          "net_revenue": "14581.7200000000"
+        },
+        {
+          "order_date": "2026-10-16",
+          "net_revenue": "14592.5600000000"
+        },
+        {
+          "order_date": "2026-10-17",
+          "net_revenue": "14602.4000000000"
+        },
+        {
+          "order_date": "2026-10-18",
+          "net_revenue": "14613.0400000000"
+        },
+        {
+          "order_date": "2026-10-19",
+          "net_revenue": "14622.8800000000"
+        },
+        {
+          "order_date": "2026-10-20",
+          "net_revenue": "14633.7200000000"
+        },
+        {
+          "order_date": "2026-10-21",
+          "net_revenue": "14644.5600000000"
+        },
+        {
+          "order_date": "2026-10-22",
+          "net_revenue": "14654.2000000000"
+        },
+        {
+          "order_date": "2026-10-23",
+          "net_revenue": "14664.0400000000"
+        },
+        {
+          "order_date": "2026-10-24",
+          "net_revenue": "14674.8800000000"
+        },
+        {
+          "order_date": "2026-10-25",
+          "net_revenue": "14685.7200000000"
+        },
+        {
+          "order_date": "2026-10-26",
+          "net_revenue": "14696.3600000000"
+        },
+        {
+          "order_date": "2026-10-27",
+          "net_revenue": "14705.2000000000"
+        },
+        {
+          "order_date": "2026-10-28",
+          "net_revenue": "14716.0400000000"
+        },
+        {
+          "order_date": "2026-10-29",
+          "net_revenue": "14726.8800000000"
+        },
+        {
+          "order_date": "2026-10-30",
+          "net_revenue": "14737.5200000000"
+        },
+        {
+          "order_date": "2026-10-31",
+          "net_revenue": "14748.3600000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063632_00441_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 29,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 29,
+          "planningTimeMillis": 99,
+          "analysisTimeMillis": 23,
+          "cpuTimeMillis": 29,
+          "wallTimeMillis": 137,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 299,
+          "finishingTimeMillis": 0,
+          "physicalInputTimeMillis": 7,
+          "processedRows": 8368,
+          "processedBytes": 137493,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 137493,
+          "peakMemoryBytes": 147664,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 31,
+            "processedBytes": 675,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 3,
+                "wallTimeMillis": 3,
+                "processedRows": 31,
+                "processedBytes": 840,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 8,
+                    "processedRows": 31,
+                    "processedBytes": 557,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 6,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 6,
+                        "cpuTimeMillis": 12,
+                        "wallTimeMillis": 36,
+                        "processedRows": 3368,
+                        "processedBytes": 72832,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 5,
+                            "wallTimeMillis": 69,
+                            "processedRows": 2500,
+                            "processedBytes": 62589,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 3,
+                                "wallTimeMillis": 20,
+                                "processedRows": 5000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 100000,
+      "query": "total",
+      "sql": "SELECT COUNT(*) AS order_count,SUM(net_amount) AS net_revenue FROM bi_orders",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_100000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_100000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT COUNT(*) AS order_count, SUM(net_amount) AS net_revenue FROM bi_orders",
+      "first_ms": 345.27,
+      "subsequent_ms": [
+        364.63,
+        574.1,
+        745.47,
+        452.61,
+        346.13
+      ],
+      "median_ms": 452.61,
+      "min_ms": 346.13,
+      "max_ms": 745.47,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_count": 100000,
+          "net_revenue": "50713061.1000000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063635_00448_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 20,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 20,
+          "planningTimeMillis": 95,
+          "analysisTimeMillis": 28,
+          "cpuTimeMillis": 67,
+          "wallTimeMillis": 137,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 297,
+          "finishingTimeMillis": 0,
+          "physicalInputTimeMillis": 73,
+          "processedRows": 175000,
+          "processedBytes": 1350503,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1350503,
+          "peakMemoryBytes": 960256,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 5,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 5,
+            "cpuTimeMillis": 2,
+            "wallTimeMillis": 3,
+            "processedRows": 1,
+            "processedBytes": 82,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 6,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 6,
+                "cpuTimeMillis": 38,
+                "wallTimeMillis": 88,
+                "processedRows": 125000,
+                "processedBytes": 725332,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 7,
+                    "wallTimeMillis": 14,
+                    "processedRows": 25000,
+                    "processedBytes": 625089,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 20,
+                        "wallTimeMillis": 32,
+                        "processedRows": 50000,
+                        "processedBytes": 0,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 100000,
+      "query": "current_industry",
+      "sql": "SELECT industry,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.bi008_s8_100000.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_100000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_100000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "first_ms": 1070.72,
+      "subsequent_ms": [
+        574.45,
+        546.07,
+        965.61,
+        876.83,
+        488.39
+      ],
+      "median_ms": 574.45,
+      "min_ms": 488.39,
+      "max_ms": 965.61,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "industry": "制造",
+          "net_revenue": "12691120.4200000000"
+        },
+        {
+          "industry": "服务",
+          "net_revenue": "12691460.3300000000"
+        },
+        {
+          "industry": "软件",
+          "net_revenue": "12690810.2300000000"
+        },
+        {
+          "industry": "零售",
+          "net_revenue": "12639670.1200000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063640_00455_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 35,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 35,
+          "planningTimeMillis": 268,
+          "analysisTimeMillis": 24,
+          "cpuTimeMillis": 199,
+          "wallTimeMillis": 1051,
+          "queuedTimeMillis": 0,
+          "elapsedTimeMillis": 1063,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 156,
+          "processedRows": 215000,
+          "processedBytes": 1811196,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1811196,
+          "peakMemoryBytes": 1464592,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 52,
+            "processedRows": 4,
+            "processedBytes": 168,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 6,
+                "wallTimeMillis": 16,
+                "processedRows": 4,
+                "processedBytes": 360,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 9,
+                    "wallTimeMillis": 13,
+                    "processedRows": 4,
+                    "processedBytes": 158,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 11,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 11,
+                        "cpuTimeMillis": 125,
+                        "wallTimeMillis": 499,
+                        "processedRows": 145000,
+                        "processedBytes": 1185421,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 12,
+                            "wallTimeMillis": 21,
+                            "processedRows": 25000,
+                            "processedBytes": 625089,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 28,
+                                "wallTimeMillis": 257,
+                                "processedRows": 50000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          },
+                          {
+                            "stageId": "6",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 1,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 1,
+                            "cpuTimeMillis": 18,
+                            "wallTimeMillis": 193,
+                            "processedRows": 20000,
+                            "processedBytes": 0,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 100000,
+      "query": "october_daily",
+      "sql": "SELECT order_date,SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' GROUP BY order_date ORDER BY order_date",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_100000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_100000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE) GROUP BY order_date ORDER BY order_date",
+      "first_ms": 381.23,
+      "subsequent_ms": [
+        506.79,
+        303.8,
+        356.66,
+        325.48,
+        333.38
+      ],
+      "median_ms": 333.38,
+      "min_ms": 303.8,
+      "max_ms": 506.79,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_date": "2026-10-01",
+          "net_revenue": "142648.4700000000"
+        },
+        {
+          "order_date": "2026-10-02",
+          "net_revenue": "142740.2700000000"
+        },
+        {
+          "order_date": "2026-10-03",
+          "net_revenue": "141854.1600000000"
+        },
+        {
+          "order_date": "2026-10-04",
+          "net_revenue": "141956.6800000000"
+        },
+        {
+          "order_date": "2026-10-05",
+          "net_revenue": "142061.2200000000"
+        },
+        {
+          "order_date": "2026-10-06",
+          "net_revenue": "141177.0500000000"
+        },
+        {
+          "order_date": "2026-10-07",
+          "net_revenue": "141266.9500000000"
+        },
+        {
+          "order_date": "2026-10-08",
+          "net_revenue": "141369.4300000000"
+        },
+        {
+          "order_date": "2026-10-09",
+          "net_revenue": "140483.9600000000"
+        },
+        {
+          "order_date": "2026-10-10",
+          "net_revenue": "140589.8400000000"
+        },
+        {
+          "order_date": "2026-10-11",
+          "net_revenue": "140693.7400000000"
+        },
+        {
+          "order_date": "2026-10-12",
+          "net_revenue": "139792.1700000000"
+        },
+        {
+          "order_date": "2026-10-13",
+          "net_revenue": "139896.7100000000"
+        },
+        {
+          "order_date": "2026-10-14",
+          "net_revenue": "140002.6300000000"
+        },
+        {
+          "order_date": "2026-10-15",
+          "net_revenue": "139116.5200000000"
+        },
+        {
+          "order_date": "2026-10-16",
+          "net_revenue": "139218.9200000000"
+        },
+        {
+          "order_date": "2026-10-17",
+          "net_revenue": "138319.4500000000"
+        },
+        {
+          "order_date": "2026-10-18",
+          "net_revenue": "138425.4100000000"
+        },
+        {
+          "order_date": "2026-10-19",
+          "net_revenue": "138529.3100000000"
+        },
+        {
+          "order_date": "2026-10-20",
+          "net_revenue": "137641.6600000000"
+        },
+        {
+          "order_date": "2026-10-21",
+          "net_revenue": "137745.2000000000"
+        },
+        {
+          "order_date": "2026-10-22",
+          "net_revenue": "137838.2000000000"
+        },
+        {
+          "order_date": "2026-10-23",
+          "net_revenue": "136952.0900000000"
+        },
+        {
+          "order_date": "2026-10-24",
+          "net_revenue": "137054.4100000000"
+        },
+        {
+          "order_date": "2026-10-25",
+          "net_revenue": "137157.9500000000"
+        },
+        {
+          "order_date": "2026-10-26",
+          "net_revenue": "136273.9800000000"
+        },
+        {
+          "order_date": "2026-10-27",
+          "net_revenue": "136364.8800000000"
+        },
+        {
+          "order_date": "2026-10-28",
+          "net_revenue": "136467.1600000000"
+        },
+        {
+          "order_date": "2026-10-29",
+          "net_revenue": "135580.6900000000"
+        },
+        {
+          "order_date": "2026-10-30",
+          "net_revenue": "135686.7700000000"
+        },
+        {
+          "order_date": "2026-10-31",
+          "net_revenue": "135791.6700000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063643_00462_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 29,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 29,
+          "planningTimeMillis": 310,
+          "analysisTimeMillis": 32,
+          "cpuTimeMillis": 91,
+          "wallTimeMillis": 228,
+          "queuedTimeMillis": 1,
+          "elapsedTimeMillis": 697,
+          "finishingTimeMillis": 2,
+          "physicalInputTimeMillis": 46,
+          "processedRows": 83494,
+          "processedBytes": 1352493,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 1352493,
+          "peakMemoryBytes": 1001432,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 2,
+            "wallTimeMillis": 4,
+            "processedRows": 31,
+            "processedBytes": 675,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 4,
+                "wallTimeMillis": 11,
+                "processedRows": 31,
+                "processedBytes": 840,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 7,
+                    "processedRows": 31,
+                    "processedBytes": 557,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 6,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 6,
+                        "cpuTimeMillis": 52,
+                        "wallTimeMillis": 116,
+                        "processedRows": 33494,
+                        "processedBytes": 725332,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 12,
+                            "wallTimeMillis": 49,
+                            "processedRows": 25000,
+                            "processedBytes": 625089,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 16,
+                                "wallTimeMillis": 41,
+                                "processedRows": 50000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 1000000,
+      "query": "total",
+      "sql": "SELECT COUNT(*) AS order_count,SUM(net_amount) AS net_revenue FROM bi_orders",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_1000000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_1000000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT COUNT(*) AS order_count, SUM(net_amount) AS net_revenue FROM bi_orders",
+      "first_ms": 2167.2,
+      "subsequent_ms": [
+        1707.86,
+        1437.15,
+        1508.67,
+        1410.21,
+        1341.76
+      ],
+      "median_ms": 1437.15,
+      "min_ms": 1341.76,
+      "max_ms": 1707.86,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_count": 1000000,
+          "net_revenue": "504489653.1300000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063654_00469_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 20,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 20,
+          "planningTimeMillis": 95,
+          "analysisTimeMillis": 37,
+          "cpuTimeMillis": 861,
+          "wallTimeMillis": 1512,
+          "queuedTimeMillis": 1,
+          "elapsedTimeMillis": 1562,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 36,
+          "processedRows": 1750000,
+          "processedBytes": 13501369,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 13501369,
+          "peakMemoryBytes": 13763121,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 5,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 5,
+            "cpuTimeMillis": 4,
+            "wallTimeMillis": 7,
+            "processedRows": 1,
+            "processedBytes": 82,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 6,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 6,
+                "cpuTimeMillis": 532,
+                "wallTimeMillis": 814,
+                "processedRows": 1250000,
+                "processedBytes": 7250664,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 74,
+                    "wallTimeMillis": 324,
+                    "processedRows": 250000,
+                    "processedBytes": 6250623,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 1,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 1,
+                        "cpuTimeMillis": 251,
+                        "wallTimeMillis": 367,
+                        "processedRows": 500000,
+                        "processedBytes": 0,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 1000000,
+      "query": "current_industry",
+      "sql": "SELECT industry,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.bi008_s8_1000000.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_1000000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_1000000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "first_ms": 2153.63,
+      "subsequent_ms": [
+        1737.76,
+        1875.01,
+        1812.75,
+        1693.3,
+        2421.8
+      ],
+      "median_ms": 1812.75,
+      "min_ms": 1693.3,
+      "max_ms": 2421.8,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "industry": "制造",
+          "net_revenue": "126246757.1900000000"
+        },
+        {
+          "industry": "服务",
+          "net_revenue": "126246196.2500000000"
+        },
+        {
+          "industry": "软件",
+          "net_revenue": "126246625.3200000000"
+        },
+        {
+          "industry": "零售",
+          "net_revenue": "125750074.3700000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063707_00476_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 35,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 35,
+          "planningTimeMillis": 267,
+          "analysisTimeMillis": 47,
+          "cpuTimeMillis": 1046,
+          "wallTimeMillis": 1848,
+          "queuedTimeMillis": 2,
+          "elapsedTimeMillis": 2117,
+          "finishingTimeMillis": 1,
+          "physicalInputTimeMillis": 112,
+          "processedRows": 1790000,
+          "processedBytes": 13962062,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 13962062,
+          "peakMemoryBytes": 15221808,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 4,
+            "processedBytes": 168,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 5,
+                "wallTimeMillis": 6,
+                "processedRows": 4,
+                "processedBytes": 360,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 6,
+                    "processedRows": 4,
+                    "processedBytes": 158,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 11,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 11,
+                        "cpuTimeMillis": 720,
+                        "wallTimeMillis": 1120,
+                        "processedRows": 1270000,
+                        "processedBytes": 7710753,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 49,
+                            "wallTimeMillis": 78,
+                            "processedRows": 250000,
+                            "processedBytes": 6250623,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 254,
+                                "wallTimeMillis": 573,
+                                "processedRows": 500000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          },
+                          {
+                            "stageId": "6",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 1,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 1,
+                            "cpuTimeMillis": 12,
+                            "wallTimeMillis": 64,
+                            "processedRows": 20000,
+                            "processedBytes": 0,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    },
+    {
+      "orders": 1000000,
+      "query": "october_daily",
+      "sql": "SELECT order_date,SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' GROUP BY order_date ORDER BY order_date",
+      "expanded_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM crm.bi008_s8_1000000.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM crm.bi008_s8_1000000.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE) GROUP BY order_date ORDER BY order_date",
+      "first_ms": 1136.45,
+      "subsequent_ms": [
+        1097.67,
+        742.48,
+        1095.26,
+        867.86,
+        907.4
+      ],
+      "median_ms": 907.4,
+      "min_ms": 742.48,
+      "max_ms": 1097.67,
+      "correct": true,
+      "exploratory_latency_goal_ms": 5000,
+      "latency_goal_met": true,
+      "rows": [
+        {
+          "order_date": "2026-10-01",
+          "net_revenue": "1381552.1500000000"
+        },
+        {
+          "order_date": "2026-10-02",
+          "net_revenue": "1381466.3400000000"
+        },
+        {
+          "order_date": "2026-10-03",
+          "net_revenue": "1381517.5300000000"
+        },
+        {
+          "order_date": "2026-10-04",
+          "net_revenue": "1381568.7200000000"
+        },
+        {
+          "order_date": "2026-10-05",
+          "net_revenue": "1381619.9100000000"
+        },
+        {
+          "order_date": "2026-10-06",
+          "net_revenue": "1381671.1000000000"
+        },
+        {
+          "order_date": "2026-10-07",
+          "net_revenue": "1381585.2900000000"
+        },
+        {
+          "order_date": "2026-10-08",
+          "net_revenue": "1381636.4800000000"
+        },
+        {
+          "order_date": "2026-10-09",
+          "net_revenue": "1381687.6700000000"
+        },
+        {
+          "order_date": "2026-10-10",
+          "net_revenue": "1381738.8600000000"
+        },
+        {
+          "order_date": "2026-10-11",
+          "net_revenue": "1381790.0500000000"
+        },
+        {
+          "order_date": "2026-10-12",
+          "net_revenue": "1381704.2400000000"
+        },
+        {
+          "order_date": "2026-10-13",
+          "net_revenue": "1381755.4300000000"
+        },
+        {
+          "order_date": "2026-10-14",
+          "net_revenue": "1381806.6200000000"
+        },
+        {
+          "order_date": "2026-10-15",
+          "net_revenue": "1381857.8100000000"
+        },
+        {
+          "order_date": "2026-10-16",
+          "net_revenue": "1381909.0000000000"
+        },
+        {
+          "order_date": "2026-10-17",
+          "net_revenue": "1380833.1800000000"
+        },
+        {
+          "order_date": "2026-10-18",
+          "net_revenue": "1381874.3800000000"
+        },
+        {
+          "order_date": "2026-10-19",
+          "net_revenue": "1381925.5700000000"
+        },
+        {
+          "order_date": "2026-10-20",
+          "net_revenue": "1380986.7500000000"
+        },
+        {
+          "order_date": "2026-10-21",
+          "net_revenue": "1382027.9500000000"
+        },
+        {
+          "order_date": "2026-10-22",
+          "net_revenue": "1380952.1300000000"
+        },
+        {
+          "order_date": "2026-10-23",
+          "net_revenue": "1381003.3200000000"
+        },
+        {
+          "order_date": "2026-10-24",
+          "net_revenue": "1382044.5200000000"
+        },
+        {
+          "order_date": "2026-10-25",
+          "net_revenue": "1381105.7000000000"
+        },
+        {
+          "order_date": "2026-10-26",
+          "net_revenue": "1381156.8900000000"
+        },
+        {
+          "order_date": "2026-10-27",
+          "net_revenue": "1381071.0800000000"
+        },
+        {
+          "order_date": "2026-10-28",
+          "net_revenue": "1381122.2700000000"
+        },
+        {
+          "order_date": "2026-10-29",
+          "net_revenue": "1381173.4600000000"
+        },
+        {
+          "order_date": "2026-10-30",
+          "net_revenue": "1381224.6500000000"
+        },
+        {
+          "order_date": "2026-10-31",
+          "net_revenue": "1381275.8400000000"
+        }
+      ],
+      "separate_plan_execution_stats": {
+        "query_id": "20261018_063715_00483_ujdet",
+        "statement_stats": {
+          "state": "FINISHED",
+          "queued": false,
+          "scheduled": true,
+          "progressPercentage": 100.0,
+          "runningPercentage": 0.0,
+          "nodes": 1,
+          "totalSplits": 29,
+          "queuedSplits": 0,
+          "runningSplits": 0,
+          "completedSplits": 29,
+          "planningTimeMillis": 148,
+          "analysisTimeMillis": 44,
+          "cpuTimeMillis": 449,
+          "wallTimeMillis": 779,
+          "queuedTimeMillis": 1,
+          "elapsedTimeMillis": 1009,
+          "finishingTimeMillis": 0,
+          "physicalInputTimeMillis": 47,
+          "processedRows": 834940,
+          "processedBytes": 13503359,
+          "physicalInputBytes": 0,
+          "physicalWrittenBytes": 0,
+          "internalNetworkInputBytes": 13503359,
+          "peakMemoryBytes": 9600504,
+          "spilledBytes": 0,
+          "rootStage": {
+            "stageId": "0",
+            "state": "FINISHED",
+            "done": true,
+            "nodes": 1,
+            "totalSplits": 1,
+            "queuedSplits": 0,
+            "runningSplits": 0,
+            "completedSplits": 1,
+            "cpuTimeMillis": 1,
+            "wallTimeMillis": 1,
+            "processedRows": 31,
+            "processedBytes": 675,
+            "physicalInputBytes": 0,
+            "failedTasks": 0,
+            "coordinatorOnly": false,
+            "subStages": [
+              {
+                "stageId": "1",
+                "state": "FINISHED",
+                "done": true,
+                "nodes": 1,
+                "totalSplits": 5,
+                "queuedSplits": 0,
+                "runningSplits": 0,
+                "completedSplits": 5,
+                "cpuTimeMillis": 6,
+                "wallTimeMillis": 8,
+                "processedRows": 31,
+                "processedBytes": 840,
+                "physicalInputBytes": 0,
+                "failedTasks": 0,
+                "coordinatorOnly": false,
+                "subStages": [
+                  {
+                    "stageId": "2",
+                    "state": "FINISHED",
+                    "done": true,
+                    "nodes": 1,
+                    "totalSplits": 8,
+                    "queuedSplits": 0,
+                    "runningSplits": 0,
+                    "completedSplits": 8,
+                    "cpuTimeMillis": 5,
+                    "wallTimeMillis": 6,
+                    "processedRows": 31,
+                    "processedBytes": 557,
+                    "physicalInputBytes": 0,
+                    "failedTasks": 0,
+                    "coordinatorOnly": false,
+                    "subStages": [
+                      {
+                        "stageId": "3",
+                        "state": "FINISHED",
+                        "done": true,
+                        "nodes": 1,
+                        "totalSplits": 6,
+                        "queuedSplits": 0,
+                        "runningSplits": 0,
+                        "completedSplits": 6,
+                        "cpuTimeMillis": 105,
+                        "wallTimeMillis": 198,
+                        "processedRows": 334940,
+                        "processedBytes": 7250664,
+                        "physicalInputBytes": 0,
+                        "failedTasks": 0,
+                        "coordinatorOnly": false,
+                        "subStages": [
+                          {
+                            "stageId": "4",
+                            "state": "FINISHED",
+                            "done": true,
+                            "nodes": 1,
+                            "totalSplits": 8,
+                            "queuedSplits": 0,
+                            "runningSplits": 0,
+                            "completedSplits": 8,
+                            "cpuTimeMillis": 47,
+                            "wallTimeMillis": 81,
+                            "processedRows": 250000,
+                            "processedBytes": 6250623,
+                            "physicalInputBytes": 0,
+                            "failedTasks": 0,
+                            "coordinatorOnly": false,
+                            "subStages": [
+                              {
+                                "stageId": "5",
+                                "state": "FINISHED",
+                                "done": true,
+                                "nodes": 1,
+                                "totalSplits": 1,
+                                "queuedSplits": 0,
+                                "runningSplits": 0,
+                                "completedSplits": 1,
+                                "cpuTimeMillis": 285,
+                                "wallTimeMillis": 485,
+                                "processedRows": 500000,
+                                "processedBytes": 0,
+                                "physicalInputBytes": 0,
+                                "failedTasks": 0,
+                                "coordinatorOnly": false,
+                                "subStages": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "query_stats_unavailable": 401
+      }
+    }
+  ],
+  "caches": "not evicted; first observed run separate; subsequent 5-run median/range, no reliable P95 claim",
+  "latency_scope": "Wren Python SDK plan+execute+fetch, no Codex or chart rendering",
+  "source_layout": "isolated PostgreSQL schemas on same host through existing Trino, not a cross-DB production benchmark",
+  "all_correct": true,
+  "all_latency_goals_met": true
+}

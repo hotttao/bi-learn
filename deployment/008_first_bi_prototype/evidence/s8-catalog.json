@@ -1,0 +1,117 @@
+{
+  "verified_at_utc": "2026-10-18T10:09:49.180994+00:00",
+  "contexts": [
+    {
+      "models": 10,
+      "condition": "schema_only",
+      "strategy": "full",
+      "schema_utf8_bytes": 1493,
+      "schema_characters": 1493,
+      "instructions_utf8_bytes": 89,
+      "selected_domain_subset": false
+    },
+    {
+      "models": 10,
+      "condition": "schema_and_rules",
+      "strategy": "full",
+      "schema_utf8_bytes": 1493,
+      "schema_characters": 1493,
+      "instructions_utf8_bytes": 1416,
+      "selected_domain_subset": false
+    },
+    {
+      "models": 100,
+      "condition": "schema_only",
+      "strategy": "full",
+      "schema_utf8_bytes": 16505,
+      "schema_characters": 16505,
+      "instructions_utf8_bytes": 89,
+      "selected_domain_subset": false
+    },
+    {
+      "models": 100,
+      "condition": "schema_and_rules",
+      "strategy": "full",
+      "schema_utf8_bytes": 16505,
+      "schema_characters": 16505,
+      "instructions_utf8_bytes": 1416,
+      "selected_domain_subset": false
+    },
+    {
+      "models": 500,
+      "condition": "schema_only",
+      "strategy": "full",
+      "schema_utf8_bytes": 83225,
+      "schema_characters": 83225,
+      "instructions_utf8_bytes": 89,
+      "selected_domain_subset": false
+    },
+    {
+      "models": 500,
+      "condition": "schema_and_rules",
+      "strategy": "full",
+      "schema_utf8_bytes": 83225,
+      "schema_characters": 83225,
+      "instructions_utf8_bytes": 1416,
+      "selected_domain_subset": false
+    }
+  ],
+  "relationship_controls": {
+    "current_industry": {
+      "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(c.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers c ON n.dept_id=c.dept_id AND n.customer_id=c.customer_id GROUP BY COALESCE(c.industry,'未知行业')",
+      "amounts": {
+        "零售": "245.00",
+        "未知行业": "80.00",
+        "软件": "300.00",
+        "服务": "100.00",
+        "制造": "140.00"
+      },
+      "correct": true
+    },
+    "historical_industry": {
+      "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(h.industry,'未知行业') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_industry_history h ON n.dept_id=h.dept_id AND n.customer_id=h.customer_id AND n.order_date>=h.valid_from AND n.order_date<h.valid_to GROUP BY COALESCE(h.industry,'未知行业')",
+      "amounts": {
+        "软件": "450.00",
+        "制造": "140.00",
+        "未知行业": "80.00",
+        "零售": "95.00",
+        "服务": "100.00"
+      },
+      "correct": true
+    },
+    "overlapping_tags": {
+      "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT COALESCE(t.tag,'无标签') AS label,SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags t ON n.dept_id=t.dept_id AND n.customer_id=t.customer_id GROUP BY COALESCE(t.tag,'无标签')",
+      "amounts": {
+        "战略": "545.00",
+        "VIP": "385.00",
+        "普通": "100.00",
+        "无标签": "80.00"
+      },
+      "correct": true
+    },
+    "refund_fanout": {
+      "sql": "SELECT SUM(o.paid_amount-COALESCE(r.refund_amount,0)) AS amount FROM sales_orders o LEFT JOIN sales_refunds r ON o.dept_id=r.dept_id AND o.order_id=r.order_id",
+      "observed_wrong_total": "1065.00",
+      "correct_total": "865.00",
+      "caught_by_golden": true
+    },
+    "customer_id_only": {
+      "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customers c ON n.customer_id=c.customer_id",
+      "observed_wrong_total": "1650.00",
+      "correct_total": "865.00",
+      "caught_by_golden": true
+    },
+    "tag_sum_as_total": {
+      "sql": "WITH r AS (SELECT dept_id,order_id,SUM(refund_amount) AS refund FROM sales_refunds GROUP BY dept_id,order_id),\nn AS (SELECT o.order_id,o.dept_id,o.customer_id,o.order_date,o.paid_amount-COALESCE(r.refund,0) AS net_amount FROM sales_orders o LEFT JOIN r ON o.dept_id=r.dept_id AND o.order_id=r.order_id)\nSELECT SUM(n.net_amount) AS amount FROM n LEFT JOIN crm_customer_tags t ON n.dept_id=t.dept_id AND n.customer_id=t.customer_id",
+      "observed_wrong_total": "1110.00",
+      "correct_total": "865.00",
+      "caught_by_golden": true
+    }
+  },
+  "history_overlap_check": [
+    {
+      "overlaps": 0
+    }
+  ],
+  "scope": "Synthetic model catalog context stress; no vector retrieval. Relations are read models, not inferred transaction aggregates."
+}

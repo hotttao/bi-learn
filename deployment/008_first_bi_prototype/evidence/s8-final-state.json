@@ -1,0 +1,63 @@
+{
+  "verified_at_utc": "2026-10-18T10:19:35.982639+00:00",
+  "stage": "S8",
+  "research_complete": true,
+  "all_numerical_benchmarks_correct": true,
+  "latency_goal_all_met": true,
+  "orders_per_tier": [
+    10000,
+    100000,
+    1000000
+  ],
+  "catalog_model_counts": [
+    10,
+    100,
+    500
+  ],
+  "comparison": {
+    "schema_only": {
+      "trials": 6,
+      "numeric_correct": 0,
+      "clarifications": 6,
+      "execution_failures": 0,
+      "model_elapsed_seconds": 216.822,
+      "tool_calls": 43,
+      "usage": {
+        "input_tokens": 542331,
+        "cached_input_tokens": 355840,
+        "output_tokens": 2553
+      }
+    },
+    "schema_and_rules": {
+      "trials": 6,
+      "numeric_correct": 6,
+      "clarifications": 0,
+      "execution_failures": 0,
+      "model_elapsed_seconds": 340.626,
+      "tool_calls": 69,
+      "usage": {
+        "input_tokens": 1381510,
+        "cached_input_tokens": 1144704,
+        "output_tokens": 8130
+      }
+    }
+  },
+  "main_model_and_source_baseline_unchanged": true,
+  "baseline_snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "plan_sha256": "3a58b39855054cb9a20b91bbf89ecab50d19a66e0887d14b45f7ce7cc68cdba8",
+  "not_proven": [
+    "production capacity/concurrency",
+    "cold-cache/P95 performance",
+    "actual 500 physical-source-table onboarding",
+    "vector/domain retrieval quality",
+    "company business definitions",
+    "ontology inference"
+  ],
+  "still_deferred": [
+    "department authorization",
+    "automatic Wren→BI semantic sync",
+    "concurrent BI edit protection",
+    "real network-fault recovery"
+  ],
+  "review_status": "uncommitted; wait for user review"
+}

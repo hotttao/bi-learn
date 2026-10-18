@@ -1,0 +1,49 @@
+status: reviewed_synthetic_experiment
+owner: experiment_author_not_company_business_owner
+scope: bi008_s8_relations_only
+metric:
+  id: net_revenue@1
+  aliases: [净收入, 净销售额]
+  grain: one_row_per_order
+  unit: CNY_yuan
+  expression: paid_amount_minus_aggregated_recorded_refunds
+  excludes: [financial_recognized_income, gross_profit]
+entities:
+  order: {model: sales_orders, identity: [order_id], business_date: order_date}
+  customer: {model: crm_customers, identity: [dept_id, customer_id]}
+relations:
+  - role: recorded_refunds
+    source: order
+    target: sales_refunds
+    keys: [dept_id, order_id]
+    raw_cardinality: one_to_many
+    consumption: aggregate_refunds_before_join
+    missing: zero_refund
+  - role: current_customer_industry
+    source: order
+    target: customer
+    keys: [dept_id, customer_id]
+    cardinality: many_to_one
+    missing: retain_as_unknown_industry
+  - role: order_time_customer_industry
+    source: order
+    target: crm_industry_history
+    keys: [dept_id, customer_id]
+    temporal: order_date_gte_valid_from_and_lt_valid_to
+    cardinality_after_temporal_filter: many_to_zero_or_one
+    quality: reject_overlapping_intervals
+    missing: retain_as_unknown_industry
+  - role: overlapping_customer_tag
+    source: order
+    target: crm_customer_tags
+    keys: [dept_id, customer_id]
+    cardinality: many_to_many
+    allocation: full_order_net_in_each_group
+    additivity: non_additive_across_tags
+    missing: retain_as_no_tag
+unused_for_this_metric: [sales_order_lines, finance_revenue_entries]
+maintenance:
+  schema_change: inspect_affected_entities_keys_and_fields
+  rule_change: review_new_contract_and_recompute_golden_answers
+  publication: build_regression_review_then_reload
+  automatic_sync: deferred_by_user

@@ -1,0 +1,62 @@
+{
+  "verified_at_utc": "2026-10-18T10:06:10.159332+00:00",
+  "schemas": [
+    "bi008_s8_10000",
+    "bi008_s8_100000",
+    "bi008_s8_1000000",
+    "bi008_s8_relations"
+  ],
+  "catalogs": [
+    {
+      "count": 10,
+      "condition": "schema_only",
+      "build_ms": 13.41,
+      "mdl_bytes": 3249,
+      "project": ".local/s8/catalogs/10/schema_only",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    },
+    {
+      "count": 10,
+      "condition": "schema_and_rules",
+      "build_ms": 9.08,
+      "mdl_bytes": 3249,
+      "project": ".local/s8/catalogs/10/schema_and_rules",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    },
+    {
+      "count": 100,
+      "condition": "schema_only",
+      "build_ms": 147.47,
+      "mdl_bytes": 34281,
+      "project": ".local/s8/catalogs/100/schema_only",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    },
+    {
+      "count": 100,
+      "condition": "schema_and_rules",
+      "build_ms": 145.52,
+      "mdl_bytes": 34281,
+      "project": ".local/s8/catalogs/100/schema_and_rules",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    },
+    {
+      "count": 500,
+      "condition": "schema_only",
+      "build_ms": 742.09,
+      "mdl_bytes": 172201,
+      "project": ".local/s8/catalogs/500/schema_only",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    },
+    {
+      "count": 500,
+      "condition": "schema_and_rules",
+      "build_ms": 725.05,
+      "mdl_bytes": 172201,
+      "project": ".local/s8/catalogs/500/schema_and_rules",
+      "note": "7 real business tables plus synthetic catalog noise aliases sharing an empty stub; not 500 physical source tables"
+    }
+  ],
+  "elapsed_seconds": 14.95,
+  "baseline_touched": false,
+  "seed": 20261018
+}
