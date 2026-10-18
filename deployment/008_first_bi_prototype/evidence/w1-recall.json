@@ -1,0 +1,10 @@
+[
+  {
+    "nl_query": "全量合成数据按当前行业比较净收入",
+    "sql_query": "SELECT industry,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+    "datasource": "trino",
+    "tags": "",
+    "path": "knowledge/sql/query.md",
+    "score": 5
+  }
+]

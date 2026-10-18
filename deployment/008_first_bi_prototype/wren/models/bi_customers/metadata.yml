@@ -1,0 +1,19 @@
+name: bi_customers
+primary_key:
+- customer_dept_id
+- customer_local_id
+properties:
+  description: 每行一部门内客户，复合键唯一；行业更新会重分组历史订单
+columns:
+- name: customer_dept_id
+  type: CHAR(1)
+  properties:
+    description: 部门，客户和退款关联键的一部分
+- name: customer_local_id
+  type: BIGINT
+  properties:
+    description: 部门内客户 ID，不能单独关联
+- name: industry
+  type: VARCHAR
+  properties:
+    description: 客户当前行业，不是订单时点行业

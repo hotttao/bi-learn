@@ -1,0 +1,15 @@
+relationships:
+- name: orders_refund_totals
+  models:
+  - bi_orders
+  - bi_refund_totals
+  join_type: MANY_TO_ONE
+  condition: bi_orders.dept_id = bi_refund_totals.refund_dept_id AND bi_orders.order_id
+    = bi_refund_totals.refund_order_id
+- name: orders_customers
+  models:
+  - bi_orders
+  - bi_customers
+  join_type: MANY_TO_ONE
+  condition: bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id
+    = bi_customers.customer_local_id

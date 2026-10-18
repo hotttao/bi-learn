@@ -1,0 +1,94 @@
+{
+  "verified_at_utc": "2026-10-18T02:13:24.905826+00:00",
+  "python": "3.13.5",
+  "versions": {
+    "wrenai": "0.16.0",
+    "wren-core-py": "0.8.1",
+    "trino": "0.340.0",
+    "pyarrow": "26.0.0",
+    "sqlglot": "30.23.0"
+  },
+  "mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "source_files": [
+    ".gitignore",
+    "AGENTS.md",
+    "cubes/net_revenue/metadata.yml",
+    "knowledge/caveats/.gitkeep",
+    "knowledge/glossary/.gitkeep",
+    "knowledge/knowledge.yml",
+    "knowledge/metrics/.gitkeep",
+    "knowledge/rules/.gitkeep",
+    "knowledge/rules/general.md",
+    "knowledge/sql/.gitkeep",
+    "knowledge/sql/2026-10.md",
+    "knowledge/sql/query.md",
+    "models/bi_customers/metadata.yml",
+    "models/bi_customers/ref_sql.sql",
+    "models/bi_orders/metadata.yml",
+    "models/bi_refund_totals/metadata.yml",
+    "models/bi_refund_totals/ref_sql.sql",
+    "relationships.yml",
+    "requirements.in",
+    "requirements.lock",
+    "wren_project.yml"
+  ],
+  "source_sha256": {
+    "requirements.in": "7e9b9c4b93a497bbcf934f326f0e94b1454cc519381423b6eda374e74748ce77",
+    ".gitignore": "2c2c29d2328f63f007ed4cc9f7a4a05da049752b123d26ada35e01bad4c100b1",
+    "relationships.yml": "1a73e960f7f8a05e941628a0f72d68e92969f059eeee8222e1de83eb6b785b65",
+    "wren_project.yml": "55e5088dda7de53000a250eacd8b87377ebeb55691c5b291f28d66ce7dcd20dc",
+    "requirements.lock": "a207e5755811150fc2e79680a632535b8ca7c44e47391f8d97f221bfa6436149",
+    "AGENTS.md": "cb9d7a050568727c17dc6020a9792abf43b40e1e658c409fe4d259c30f8b6352",
+    "knowledge/knowledge.yml": "5c9536c0f64193f535c425baf9f2c7431b89eb46bab5fb85d4bfcffabb565f43",
+    "knowledge/metrics/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "knowledge/rules/general.md": "f8ebb2651853068b5af0ad0cb6fadb3cbb79e1d22d6c42418d02e4686c76177e",
+    "knowledge/rules/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "knowledge/glossary/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "knowledge/caveats/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "knowledge/sql/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "knowledge/sql/2026-10.md": "a6cee21ba4d0209a894f30a40bf642936562d086a4011148ffa560bee91f815c",
+    "knowledge/sql/query.md": "4a23f5a4be0653465e80d10207603ed2ad2f415ec0f58cad057ce58a859b480e",
+    "cubes/net_revenue/metadata.yml": "43a10826e2dc00513966bd5083f7ae700d7d8a7137065c0a7812857dad6c89dc",
+    "models/bi_orders/metadata.yml": "63db6fbec98940325486e4a5a7ee3d1fac2f3e458925eb90f7340d764167fce9",
+    "models/bi_customers/metadata.yml": "178ae15045c596a1a004cf0af14149991a4b79554a5628394a9f2754c1309d42",
+    "models/bi_customers/ref_sql.sql": "50c0308945429158a7f7d0b49a6d2e936a75f2417d0304bf646a498747c33ed2",
+    "models/bi_refund_totals/metadata.yml": "b86ad063cf3e8acfd490f9ef1df3a3e9e6f586f85f4ae0ff77b8f9475e633342",
+    "models/bi_refund_totals/ref_sql.sql": "7501737df23a4891b464984337bd251a4248f325ab0f56f343d5a3ed2e8b1bb5"
+  },
+  "compiled_mdl_evidence": "evidence/w1-compiled-mdl.json",
+  "execution": "host project-local CLI/SDK in-process → existing Trino → S2 sources; no persistent Wren server",
+  "core_queries": "passed with documented compatibility workarounds",
+  "scope_policy": "7 named input probes rejected; generic qualifier protection NOT FIXED",
+  "superset": {
+    "url": "http://192.168.2.46:8088/superset/dashboard/1/",
+    "healthy": true,
+    "dataset_id": 2,
+    "sql_unchanged": true,
+    "chart_ids": [
+      1,
+      2,
+      3
+    ]
+  },
+  "trino": {
+    "nodeId": "bi008-single",
+    "state": "ACTIVE",
+    "nodeVersion": {
+      "version": "481"
+    },
+    "environment": "bi008",
+    "coordinator": true,
+    "coordinatorId": "ujdet",
+    "starting": false,
+    "uptime": "5.37m"
+  },
+  "not_verified": [
+    "MCP/Codex tool connection (W2)",
+    "semantic change release (W3)",
+    "department isolation (S5)",
+    "generic strict-mode qualifier protection",
+    "vector indexing/recall",
+    "automatic Superset synchronization",
+    "production/scale capacity"
+  ]
+}

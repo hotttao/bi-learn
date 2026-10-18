@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-17：**S3 已确认并提交（`4f2c973`），Superset 入口仍为 `192.168.2.46:8088`。S4 已获用户确认：Trino 跨库对账、关系反例、语义契约和行业图均通过实测。S3 图表换位仍保留未验证项。MCP 与 Wren 尚未进入。**
+2026-10-18：**S4 已确认并提交（`61c9d59`）。W1 已获用户确认：Wren 0.16.0＋引擎 0.8.1 的三模型/两关系/cube 已对账 245、120/125，并通过缺失客户和分级精度回归；通用限定名范围缺口仍未修复，详见 W1 记录。Superset 仍为 `192.168.2.46:8088`；MCP 尚未接入。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -110,7 +110,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973` 已提交，没有 push。当前工作为 S4，交付范围见本文末尾；教程见 [S4-WALKTHROUGH.md](S4-WALKTHROUGH.md)。S3 图表拖动换位未验证的限制继续保留。以下保留各步当时的记录。
+S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973`、S4 `61c9d59` 已提交，没有 push。当前 review 为 W1：本地安装、原生 MDL 项目、固定查询、兼容规避与已知缺口。先读 [W1 教程](W1-WALKTHROUGH.md) 和本文末尾 W1 操作记录；本步未提交，不进入 W2。以下保留各步当时的记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -660,3 +660,136 @@ sudo docker-compose --profile sources --profile federation up -d --wait mysql-so
 **S4 已完成，用户回复“没问题，继续”确认本步并授权提交及进入 W1。** 未验证范围包括部门认证/隔离、跨源原子快照、大数据性能、MCP 和 Wren；S3 图表拖动换位限制仍保留。本步确认并提交后，下一步为 W1：以同一数据基线建立 Wren 新版语义模型及查询实验，不开发新的 Agent。
 
 交付自查：Python AST、Node 语法、Compose 基础/构建 override 校验、JSON 解析与证据一致性、Markdown 本地链接/围栏、全部本步文本的真实密码扫描及空白检查通过；`git diff --check` 通过。最终记录中的浏览器报告与独立浏览器证据一致；只提交过已确认的 S3，S4 仍未提交，`.codex/` 未改动或纳入提交。
+
+## W1 操作记录：Wren 新版建模与固定查询
+
+### 1. 授权、目标和本步结论
+
+用户回复“没问题，继续”确认 S4；已提交 `61c9d59`，没有 push。W1 于 2026-10-17 开始，10-18 继续并完成本轮实现与实测，**待 review、未提交**。
+
+本步把已确认的业务关系做成 Wren 原生项目：YAML 模型/关系/cube → 编译 MDL → 引擎展开 SQL → 同一 Trino → 同一 MySQL/CRM。没有另造一套业务数据，没有启动旧版聊天应用，也没有开发 Agent。
+
+核心查询、关联、cube、缺失客户和分级精度已通过；**通用限定名检查仍存在已复现缺口**，不能把本步描述为完整授权或所有原生语义能力均通过。Superset 保持 S4 资产。MCP 接入属于 W2，本步未启动 MCP 服务、未修改 Codex 连接配置。
+
+先看 [W1 亲手操作教程](W1-WALKTHROUGH.md)，再对照 [模型上下文](evidence/w1-schema-context.txt) 和 [完整回归证据](evidence/w1-verification.json)。
+
+### 2. 版本与本地安装
+
+核对官方当前开源路线为 CLI 项目和进程内引擎，与历史 GenBI 聊天应用不同。[官方入门](https://docs.getwren.ai/oss/get_started/quickstart)、[建模流程](https://docs.getwren.ai/oss/guides/model)、[连接器字段](https://docs.getwren.ai/oss/guides/connect)。文档帮助发现入口，实际参数和行为以安装包、CLI help 和实测为准。
+
+| 组件 | 实际固定/运行版本 |
+| --- | --- |
+| Wren CLI | wrenai 0.16.0，安装 trino extra |
+| Rust 语义引擎 | wren-core-py 0.8.1 |
+| 独立虚拟环境 | Python 3.13.5，`.local/wren-venv/` |
+| Wren 的 Trino 客户端 | 0.340.0；与 Superset 内的 0.337.0 分环境，不升级后者 |
+| Arrow / SQL 解析 | pyarrow 26.0.0 / sqlglot 30.23.0 |
+| 安装辅助 | 本地 uv 0.9.9，固定 wheel SHA-256 |
+
+宿主没有 pip，原有 venv/ensurepip 也不能直接使用。尝试直连 PyPI/requests 时遇到 TLS/403 或超时；改用 curl 从可访问的清华镜像取得 uv wheel 并校验。首次提取假设 wheel 含 `/bin/uv` 失败，检查 wheel 后改为实际 `uv-0.9.9.data/scripts/uv`。没有安装系统 Python 包或修改全局 Wren 配置。
+
+实际先用 uv 创建本地 venv，再安装两个固定主依赖；随后以 freeze 保存本次实际的 48 个依赖版本为 `wren/requirements.lock`，`requirements.in` 记录主依赖。新增 `scripts/install_w1.py` 固化 bootstrap、锁定安装及项目 profile 初始化，并在现有环境重跑：依赖检查通过，连接验证成功。锁文件固定版本，不宣称所有平台的 wheel 字节完全相同。
+
+复现命令：
+
+```bash
+python3 scripts/install_w1.py
+scripts/wren.sh version
+scripts/wren.sh profile debug
+```
+
+`wren.sh` 设置项目内 WREN_HOME、WREN_PROJECT_HOME 和 grep 后端；profile 名 bi008，配置源为 `wren/runtime/trino-connection.json`，实际 profile 文件被 Git 忽略。CLI 连接 `127.0.0.1:18080`，用户名是查询标签；无认证和部门隔离。依然由 Trino 使用 S2 只读源账号，未在 Wren 存储数据库管理员凭据。
+
+### 3. 发现真实 schema，再补业务语义
+
+使用固定安装包的 `generate-mdl` 指南，而非把旧版 UI 的配置格式套到新版 CLI。执行 `wren context init --path .../wren`，读取生成的 AGENTS.md，删除本次新生成的 example 模型/视图，再依据已授权三表范围建模；没有重置已有用户语义项目。
+
+通过 Trino `SHOW COLUMNS` 读取订单、退款、客户的真实字段和类型，并读取退款聚合结果的列类型。调用 Wren `parse_type(..., 'trino')` 规范化类型，保存 [w1-discovery.json](evidence/w1-discovery.json)。最终保留只读 `scripts/discover_w1.py`，重跑只更新发现记录，不覆盖人工审核后的 YAML。
+
+Trino 字段元数据没有替我们确定跨源业务主键和关联口径；本步复用 S2 实际约束和 S4 已确认的契约，手工补入关系、退款时间归属、当前行业等规则。这是“工具发现结构＋人审核业务语义”，不是自动从表名猜出正确关系。
+
+| Wren 对象 | 实现和业务含义 |
+| --- | --- |
+| bi_orders | 物理订单映射，一行一订单；计算 refund_total、net_amount、industry |
+| bi_refund_totals | ref_sql 先按部门/订单聚合退款；复合主键，两列目标键用别名 |
+| bi_customers | ref_sql 映射 CRM 当前客户；原生复合主键；两列目标键用别名 |
+| 两个 MANY_TO_ONE 关系 | 都包含部门及业务 ID；至多一条匹配，需要外部质量检查验证 |
+| net_revenue cube | base_object 为 bi_orders；度量 total=SUM(net_amount)，行业/部门维度和订单日时间维度 |
+| knowledge/rules | 口径、当前/历史语义、单位、权限边界和兼容限制，供 Agent 读取 |
+| knowledge/sql | 两条已确认实验查询；CLI memory store 创建后标记为 verified_experiment |
+
+这里的 cube 是 Wren 原生聚合对象，没有部署 Cube 产品。业务负责人/审核人尚未指派，项目版本 1.0 只是本地实验，不代表公司指标注册已完成。
+
+### 4. 构建、执行与真实检查
+
+执行并通过：
+
+```bash
+scripts/wren.sh context validate --strict
+scripts/wren.sh context build
+scripts/wren.sh dry-plan --sql 'SELECT SUM(net_amount) AS net_revenue FROM bi_orders'
+scripts/wren.sh --sql 'SELECT SUM(net_amount) AS net_revenue FROM bi_orders' --output json
+scripts/wren.sh cube query --cube net_revenue --measures total --dimensions industry --output json
+.local/wren-venv/bin/python scripts/verify_w1.py
+```
+
+YAML 校验的 `--strict` 是将警告视为错误；运行时 `strict_mode` 从项目 runtime/config.json 加载。CLI wrapper 和测试 SDK 都显式使用该配置；SDK 测试另设置 `fallback=False`，不因规划失败放过原查询。SDK 是现成 Wren 引擎，只用于确定性验收，没有引入 Agent 框架。
+
+编译产物 `wren/target/mdl.json` 被生成项目的 `.gitignore` 忽略；不要手改。为 review 保存 [实际编译 MDL](evidence/w1-compiled-mdl.json)，最终状态与回归报告登记其 SHA-256。重建产物内容需与证据版本相同，否则重新回归。
+
+| 检查 | 实际结果 |
+| --- | --- |
+| 全量订单 | 4 行，订单 1～4，订单/部门/客户键均保留，净额 70/75/50/50 |
+| 合计 | 245.0000000000，Arrow Decimal/Python Decimal |
+| 行业 | 软件 120、零售 125 |
+| 部门 | A 145、B 100；这是分析分组，不是隔离测试 |
+| 日期 | 10-01 120、10-02 125；第一天筛选 120 |
+| 空时间窗口 | COUNT 为 0，不伪造图表数据 |
+| cube | 行业结果 120/125，与模型 SQL 和 S4 一致 |
+| 缺失客户内存 fixture | 去掉 A/1 后订单仍为 1～4，A/1 为未知行业，总额仍 245 |
+| 显式一分钱内存 fixture | 每单实付加 0.01，合计 245.04，精确 Decimal 比较通过 |
+| 7 个政策拒绝 | 三个物理表入口、未知模型、CTE 中原始表、UPDATE、CREATE 均在 SQL_POLICY_CHECK 阶段拒绝 |
+| CLI 实际入口 | 合计成功、原始退款表失败，验证 wrapper 的 strict 配置生效 |
+
+只读质量查询复用 S4 的七类检查，均为 0 个失败。所有 W1 fixture 只修改内存 manifest；没有改动真实源表。最终再次执行 S2 的源验证，7 个拒绝检查通过，完整指纹仍与 S2 相同，见 [w1-source-baseline.json](evidence/w1-source-baseline.json)。
+
+### 5. 已发现的问题、规避和仍未通过的边界
+
+| 实际问题 | 观察、处理和边界 |
+| --- | --- |
+| 参数化 MDL DECIMAL 被当成字符串 | `DECIMAL(12, 2)` 在计算字段中触发 Utf8 减法规划错误；最小用例复现。改用通用 DECIMAL，原始精度保留在 source_type 属性；实际查询仍需 Decimal 回归，属性本身不强制精度 |
+| 外关联投影了无匹配侧的同名键 | 最初无退款 B/1 的订单/部门/客户键变成 NULL，软件 70、未知 50、零售 125，合计仍 245。检查生成计划后，将客户和退款目标键改用不同别名，正确保留订单键；当前明细和缺失客户回归均通过 |
+| 完整限定名可绕过同名模型展开 | 初始模型名 orders 时，`mysql.sales.orders` 的末尾查询保留物理引用，虽然前面生成了模型 CTE。改成 bi_ 模型避免当前三表名称碰撞，7 个具体拒绝用例通过；通用限定名问题未修复，规划探针仍保留，不执行 `mysql.sales.bi_orders`，不以命名约定作为完整授权 |
+| SQL DECIMAL 常量丢失小数位 | `DECIMAL '0.01'` 被翻译成无标度 CAST，在 Trino 中变为 0，四单加分的测试仍得 245.00。保留原失败和计划证据，再使用显式 `CAST('0.01' AS DECIMAL(12,2))` 得 245.04；没有修改期望来掩盖错误 |
+
+最初错误外关联的 SQL 见 [w1-initial-relationship-plan.sql](evidence/w1-initial-relationship-plan.sql)。参数化类型、常量翻译和限定名问题的复现保留在回归证据 known_issues 下。成功断言和已知错误复现分开记录；known_issues 中的预期失败不是能力通过。
+
+本次最有价值的发现是：**仅对 245 会漏掉订单键和行业归属错误，YAML 校验通过也不能证明业务语义正确。** 原生关系声明、实际数据质量、引擎生成 SQL 和消费入口都需要分别验证。
+
+W2 的前置项是为实际 MCP 入口补齐限定名/同名物理表的约束并验证；没有完成时不对团队开放。不得靠提示词或给工具起不同名字解决执行边界。后续可评估上游修复或最小入口适配，本步不提前实现 MCP。
+
+### 6. 知识上下文、重启与 Superset 状态
+
+调用 memory store 保存两条实验示例后，实际检查：
+
+```bash
+scripts/wren.sh memory index
+scripts/wren.sh memory describe
+scripts/wren.sh memory recall -q '行业' --output json
+```
+
+grep 后端的 index 实测 no-op；describe 输出三模型、关系和 cube，recall 命中已保存行业示例，见 [w1-recall.json](evidence/w1-recall.json)。本版本未安装 memory extra 时，memory fetch 实际报缺少扩展；已将项目 AGENTS.md 指引改为 describe＋instructions＋recall。没有声称已建向量索引。
+
+10-18 继续时，宿主 uptime 表明刚重启，五容器均停止；使用现有 Compose up --wait 命令恢复。没有重建或删除数据卷，没有另改自动启动策略。Wren 是查询时进程内运行，没有常驻服务要单独恢复；虚拟环境和项目文件仍保留。
+
+最终运行 `scripts/finish_w1.py` 只读核查：Trino 481 ACTIVE/非 starting、Superset health 成功，数据集 ID 2 的 SQL 和净收入指标与 S4 相同，看板仍为图表 1/2/3。见 [w1-final-state.json](evidence/w1-final-state.json)。Wren 模型没有被自动提交到 Superset，也没有改变看板。
+
+### 7. 交付与亲手操作
+
+跟着教程依次查看模型、dry-plan、运行合计/cube，再检查拒绝；对照“错误但合计仍为 245”的初始计划，解释为什么必须检查订单键和行业分组。不要把示例 SQL、业务知识 Markdown 和引擎强制规则混为一谈。
+
+本步数据经过“Wren CLI/引擎→Trino→S2 两源”；正确性的依据是明细/分组/独立答案/异常 fixture/原始源指纹一致。结果不对时先看生成 SQL 的关联键和保留侧，再看源质量、金额类型与查询范围。
+
+**W1 本轮实现与调研完成；用户回复“继续”，确认本步并授权提交、进入 W2。** 核心建模查询可用，通用严格范围缺口仍未修复；MCP、变更发布、部门隔离、向量检索、大数据性能和 Superset 自动同步均未通过本步验证。S3 图表换位未验证项继续保留。
+
+交付自查：Python AST、shell 语法、YAML 严格校验与构建、JSON 解析、Markdown 本地链接/围栏、真实密码扫描、空白检查均通过。编译 MDL 与回归/最终状态的哈希一致；模型和知识源文件哈希一致。宿主恢复后五容器均 healthy，见 [w1-containers.json](evidence/w1-containers.json)。没有提交 W1，没有 push，没有纳入 `.codex/` 用户配置。

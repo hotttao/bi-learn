@@ -1,0 +1,47 @@
+Catalog: wren, Schema: public
+
+### Model: bi_customers — 每行一部门内客户，复合键唯一；行业更新会重分组历史订单
+  Primary key: ['customer_dept_id', 'customer_local_id']
+  Columns:
+    - customer_dept_id (CHAR(1)) — 部门，客户和退款关联键的一部分
+    - customer_local_id (BIGINT) — 部门内客户 ID，不能单独关联
+    - industry (VARCHAR) — 客户当前行业，不是订单时点行业
+
+### Model: bi_orders — 每行一订单；关联退款汇总和当前客户；net_revenue@1 的基础模型
+  Primary key: order_id
+  Columns:
+    - order_id (BIGINT) — 全局唯一订单 ID
+    - dept_id (CHAR(1)) — 部门，客户和退款关联键的一部分
+    - customer_id (BIGINT) — 部门内客户 ID，不能单独关联
+    - order_date (DATE) — Asia/Shanghai 业务日期，退款归属原订单日
+    - paid_amount (DECIMAL) — 订单实付，人民币元，定点数
+    - refund (bi_refund_totals) — 退款已按部门和订单汇总，至多一行 [relationship: orders_refund_totals]
+    - customer (bi_customers) — 按部门和客户复合键匹配当前客户，允许无匹配 [relationship: orders_customers]
+    - refund_total (DECIMAL) — 订单累计已记录退款，无退款为零，归属订单日 [calculated: coalesce(refund.refund_total, 0)]
+    - net_amount (DECIMAL) — 净收入行值=实付-累计退款，人民币元；SUM 为净收入 [calculated: paid_amount - coalesce(refund.refund_total, 0)]
+    - industry (VARCHAR) — 客户当前行业，缺失保留订单为未知行业 [calculated: coalesce(customer.industry, '未知行业')]
+
+### Model: bi_refund_totals — 原始退款先按部门和订单聚合，不能把订单实付关联到退款明细后求和
+  Primary key: ['refund_dept_id', 'refund_order_id']
+  Columns:
+    - refund_dept_id (CHAR(1)) — 退款所属部门
+    - refund_order_id (BIGINT) — 退款所属订单
+    - refund_total (DECIMAL) — 订单累计退款，人民币元
+
+### Relationship: orders_refund_totals
+  bi_orders → bi_refund_totals (MANY_TO_ONE)
+  Condition: bi_orders.dept_id = bi_refund_totals.refund_dept_id AND bi_orders.order_id = bi_refund_totals.refund_order_id
+
+### Relationship: orders_customers
+  bi_orders → bi_customers (MANY_TO_ONE)
+  Condition: bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id = bi_customers.customer_local_id
+
+### Cube: net_revenue (base: bi_orders)
+  Measures:
+    - total (DECIMAL): SUM(net_amount)
+  Dimensions:
+    - industry (VARCHAR)
+    - dept_id (VARCHAR)
+  Time dimensions:
+    - order_date (DATE)
+

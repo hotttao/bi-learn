@@ -1,0 +1,7 @@
+schema_version: 5
+name: bi008_semantics
+version: '1.0'
+catalog: wren
+schema: public
+data_source: trino
+profile: bi008

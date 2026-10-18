@@ -1,0 +1,86 @@
+{
+  "discovered_at_utc": "2026-10-17T15:10:34.657126+00:00",
+  "source": "live Trino SHOW COLUMNS + aggregate result metadata",
+  "tables": {
+    "orders": [
+      {
+        "name": "order_id",
+        "raw_type": "bigint",
+        "type": "BIGINT"
+      },
+      {
+        "name": "dept_id",
+        "raw_type": "char(1)",
+        "type": "CHAR(1)"
+      },
+      {
+        "name": "customer_id",
+        "raw_type": "bigint",
+        "type": "BIGINT"
+      },
+      {
+        "name": "order_date",
+        "raw_type": "date",
+        "type": "DATE"
+      },
+      {
+        "name": "paid_amount",
+        "raw_type": "decimal(12,2)",
+        "type": "DECIMAL(12, 2)"
+      }
+    ],
+    "refunds": [
+      {
+        "name": "refund_id",
+        "raw_type": "bigint",
+        "type": "BIGINT"
+      },
+      {
+        "name": "dept_id",
+        "raw_type": "char(1)",
+        "type": "CHAR(1)"
+      },
+      {
+        "name": "order_id",
+        "raw_type": "bigint",
+        "type": "BIGINT"
+      },
+      {
+        "name": "refund_date",
+        "raw_type": "date",
+        "type": "DATE"
+      },
+      {
+        "name": "refund_amount",
+        "raw_type": "decimal(12,2)",
+        "type": "DECIMAL(12, 2)"
+      }
+    ],
+    "customers": [
+      {
+        "name": "dept_id",
+        "raw_type": "char(1)",
+        "type": "CHAR(1)"
+      },
+      {
+        "name": "customer_id",
+        "raw_type": "bigint",
+        "type": "BIGINT"
+      },
+      {
+        "name": "industry",
+        "raw_type": "varchar",
+        "type": "VARCHAR"
+      }
+    ]
+  },
+  "aggregate_types": {
+    "dept_id": "CHAR(1)",
+    "order_id": "BIGINT",
+    "refund_total": "DECIMAL(38, 2)"
+  },
+  "business_rules_source": "S2 enforced keys and S4 reviewed net_revenue@1; not auto-inferred from names",
+  "mdl_decimal_adapter": "generic DECIMAL; source precision retained in properties.source_type",
+  "relationship_key_aliases": "distinct target aliases avoid nullable-side key projection",
+  "raw_refund_model_exposed": false
+}

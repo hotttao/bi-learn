@@ -1,0 +1,351 @@
+{
+  "verified_at_utc": "2026-10-18T02:08:36.020886+00:00",
+  "versions": {
+    "wrenai": "0.16.0",
+    "wren-core-py": "0.8.1",
+    "trino": "0.340.0",
+    "pyarrow": "26.0.0",
+    "sqlglot": "30.23.0"
+  },
+  "mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "strict_mode": true,
+  "sdk_fallback": false,
+  "quality": {
+    "query_id": "20261018_020836_00000_ujdet",
+    "columns": [
+      "rule",
+      "failures"
+    ],
+    "rows": [
+      [
+        "duplicate_order",
+        0
+      ],
+      [
+        "invalid_refund",
+        0
+      ],
+      [
+        "invalid_customer",
+        0
+      ],
+      [
+        "invalid_order",
+        0
+      ],
+      [
+        "duplicate_customer",
+        0
+      ],
+      [
+        "excess_refund",
+        0
+      ],
+      [
+        "orphan_refund",
+        0
+      ]
+    ]
+  },
+  "queries": {
+    "orders": {
+      "sql": "SELECT order_id,dept_id,customer_id,order_date,industry,paid_amount,refund_total,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".dept_id AS dept_id, \"wren_src_bi_orders\".customer_id AS customer_id, \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".paid_amount AS paid_amount, \"wren_src_bi_orders\".refund_total AS refund_total, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__2.customer_id, __relation__2.dept_id, COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_date, __relation__2.order_id, __relation__2.paid_amount, COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS refund_total FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_date, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, dept_id, customer_id, order_date, industry, paid_amount, refund_total, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int64\ndept_id: string\ncustomer_id: int64\norder_date: date32[day]\nindustry: string\npaid_amount: decimal128(12, 2)\nrefund_total: decimal128(38, 10)\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "dept_id": "A",
+          "customer_id": 1,
+          "order_date": "2026-10-01",
+          "industry": "软件",
+          "paid_amount": "100.00",
+          "refund_total": "30.0000000000",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "dept_id": "A",
+          "customer_id": 2,
+          "order_date": "2026-10-02",
+          "industry": "零售",
+          "paid_amount": "80.00",
+          "refund_total": "5.0000000000",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 3,
+          "dept_id": "B",
+          "customer_id": 1,
+          "order_date": "2026-10-01",
+          "industry": "软件",
+          "paid_amount": "50.00",
+          "refund_total": "0E-10",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "dept_id": "B",
+          "customer_id": 2,
+          "order_date": "2026-10-02",
+          "industry": "零售",
+          "paid_amount": "60.00",
+          "refund_total": "10.0000000000",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    },
+    "total": {
+      "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "arrow_schema": "net_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "net_revenue": "245.0000000000"
+        }
+      ]
+    },
+    "industry": {
+      "sql": "SELECT industry,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY industry ORDER BY industry",
+      "arrow_schema": "industry: string\nnet_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "industry": "软件",
+          "net_revenue": "120.0000000000"
+        },
+        {
+          "industry": "零售",
+          "net_revenue": "125.0000000000"
+        }
+      ]
+    },
+    "department": {
+      "sql": "SELECT dept_id,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY dept_id ORDER BY dept_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".dept_id AS dept_id, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.dept_id, __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT dept_id, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY dept_id ORDER BY dept_id",
+      "arrow_schema": "dept_id: string\nnet_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "dept_id": "A",
+          "net_revenue": "145.0000000000"
+        },
+        {
+          "dept_id": "B",
+          "net_revenue": "100.0000000000"
+        }
+      ]
+    },
+    "daily": {
+      "sql": "SELECT order_date,SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY order_date ORDER BY order_date",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS net_revenue FROM bi_orders GROUP BY order_date ORDER BY order_date",
+      "arrow_schema": "order_date: date32[day]\nnet_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_date": "2026-10-01",
+          "net_revenue": "120.0000000000"
+        },
+        {
+          "order_date": "2026-10-02",
+          "net_revenue": "125.0000000000"
+        }
+      ]
+    },
+    "one_day": {
+      "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-10-02' AS DATE)",
+      "arrow_schema": "net_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "net_revenue": "120.0000000000"
+        }
+      ]
+    },
+    "empty": {
+      "sql": "SELECT COUNT(*) AS n FROM bi_orders WHERE order_date >= DATE '2026-11-01'",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT bi_orders.order_date FROM (SELECT __source.order_date AS order_date FROM mysql.sales.orders AS __source) AS bi_orders) AS \"wren_src_bi_orders\") SELECT COUNT(*) AS n FROM bi_orders WHERE order_date >= CAST('2026-11-01' AS DATE)",
+      "arrow_schema": "n: int64",
+      "rows": [
+        {
+          "n": 0
+        }
+      ]
+    }
+  },
+  "rejections": {
+    "SELECT * FROM mysql.sales.orders": "[MODEL_NOT_FOUND] Table 'orders' is not defined in the MDL manifest. In strict mode, all table references must correspond to MDL models. phase=SQL_POLICY_CHECK",
+    "SELECT * FROM mysql.sales.refunds": "[MODEL_NOT_FOUND] Table 'refunds' is not defined in the MDL manifest. In strict mode, all table references must correspond to MDL models. phase=SQL_POLICY_CHECK",
+    "SELECT * FROM crm.public.customers": "[MODEL_NOT_FOUND] Table 'customers' is not defined in the MDL manifest. In strict mode, all table references must correspond to MDL models. phase=SQL_POLICY_CHECK",
+    "SELECT * FROM not_a_model": "[MODEL_NOT_FOUND] Table 'not_a_model' is not defined in the MDL manifest. In strict mode, all table references must correspond to MDL models. phase=SQL_POLICY_CHECK",
+    "WITH x AS (SELECT * FROM mysql.sales.refunds) SELECT * FROM x": "[MODEL_NOT_FOUND] Table 'refunds' is not defined in the MDL manifest. In strict mode, all table references must correspond to MDL models. phase=SQL_POLICY_CHECK",
+    "UPDATE bi_orders SET paid_amount=0 WHERE 1=0": "[BLOCKED_STATEMENT] 'UPDATE' is not a read-only query. Only read-only SELECT statements are accepted. phase=SQL_POLICY_CHECK",
+    "CREATE TABLE x AS SELECT * FROM bi_orders": "[BLOCKED_STATEMENT] 'CREATE' is not a read-only query. Only read-only SELECT statements are accepted. phase=SQL_POLICY_CHECK"
+  },
+  "fixtures": {
+    "missing_customer": {
+      "sql": "SELECT order_id,dept_id,customer_id,order_date,industry,paid_amount,refund_total,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".dept_id AS dept_id, \"wren_src_bi_orders\".customer_id AS customer_id, \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".paid_amount AS paid_amount, \"wren_src_bi_orders\".refund_total AS refund_total, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__2.customer_id, __relation__2.dept_id, COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_date, __relation__2.order_id, __relation__2.paid_amount, COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS refund_total FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_date, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers WHERE NOT (dept_id = 'A' AND customer_id = 1)) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, dept_id, customer_id, order_date, industry, paid_amount, refund_total, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int64\ndept_id: string\ncustomer_id: int64\norder_date: date32[day]\nindustry: string\npaid_amount: decimal128(12, 2)\nrefund_total: decimal128(38, 10)\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "dept_id": "A",
+          "customer_id": 1,
+          "order_date": "2026-10-01",
+          "industry": "未知行业",
+          "paid_amount": "100.00",
+          "refund_total": "30.0000000000",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "dept_id": "A",
+          "customer_id": 2,
+          "order_date": "2026-10-02",
+          "industry": "零售",
+          "paid_amount": "80.00",
+          "refund_total": "5.0000000000",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 3,
+          "dept_id": "B",
+          "customer_id": 1,
+          "order_date": "2026-10-01",
+          "industry": "软件",
+          "paid_amount": "50.00",
+          "refund_total": "0E-10",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "dept_id": "B",
+          "customer_id": 2,
+          "order_date": "2026-10-02",
+          "industry": "零售",
+          "paid_amount": "60.00",
+          "refund_total": "10.0000000000",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    },
+    "cent_precision": {
+      "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT order_id, dept_id, customer_id, order_date, paid_amount + CAST('0.01' AS DECIMAL(12, 2)) AS paid_amount FROM mysql.sales.orders) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "arrow_schema": "net_revenue: decimal128(38, 10)",
+      "rows": [
+        {
+          "net_revenue": "245.0400000000"
+        }
+      ]
+    }
+  },
+  "known_issues": {
+    "decimal_literal_scale_loss": {
+      "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT order_id, dept_id, customer_id, order_date, paid_amount + CAST('0.01' AS DECIMAL) AS paid_amount FROM mysql.sales.orders) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders",
+      "arrow_schema": "net_revenue: decimal128(38, 0)",
+      "rows": [
+        {
+          "net_revenue": "245"
+        }
+      ]
+    },
+    "qualified_model_name": {
+      "input": "SELECT * FROM mysql.sales.bi_orders",
+      "plan": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS \"order_id\", \"wren_src_bi_orders\".dept_id AS \"dept_id\", \"wren_src_bi_orders\".customer_id AS \"customer_id\", \"wren_src_bi_orders\".order_date AS \"order_date\", \"wren_src_bi_orders\".paid_amount AS \"paid_amount\", \"wren_src_bi_orders\".refund_total AS \"refund_total\", \"wren_src_bi_orders\".net_amount AS \"net_amount\", \"wren_src_bi_orders\".industry AS \"industry\" FROM (SELECT __relation__2.customer_id, __relation__2.dept_id, COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_date, __relation__2.order_id, __relation__2.paid_amount, COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS refund_total FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_date, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT * FROM mysql.sales.bi_orders",
+      "status": "NOT_FIXED; planning only, not executed; bi_ naming avoids current physical-table collisions, not a general authorization fix"
+    },
+    "parameterized_decimal": "[INVALID_SQL] ModelGenerationRule\ncaused by\nError during planning: Cannot coerce arithmetic expression Utf8 - Int64 to valid types phase=SQL_PLANNING"
+  },
+  "cube": {
+    "sql": "SELECT industry AS industry, SUM(net_amount) AS total FROM bi_orders GROUP BY 1",
+    "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry AS industry, SUM(net_amount) AS total FROM bi_orders GROUP BY 1",
+    "arrow_schema": "industry: string\ntotal: decimal128(38, 10)",
+    "rows": [
+      {
+        "industry": "零售",
+        "total": "125.0000000000"
+      },
+      {
+        "industry": "软件",
+        "total": "120.0000000000"
+      }
+    ]
+  },
+  "source_baseline": {
+    "orders": {
+      "query_id": "20261018_020845_00013_ujdet",
+      "columns": [
+        "order_id",
+        "dept_id",
+        "customer_id",
+        "paid_amount"
+      ],
+      "rows": [
+        [
+          1,
+          "A",
+          1,
+          "100.00"
+        ],
+        [
+          2,
+          "A",
+          2,
+          "80.00"
+        ],
+        [
+          3,
+          "B",
+          1,
+          "50.00"
+        ],
+        [
+          4,
+          "B",
+          2,
+          "60.00"
+        ]
+      ]
+    },
+    "customers": {
+      "query_id": "20261018_020845_00014_ujdet",
+      "columns": [
+        "dept_id",
+        "customer_id",
+        "industry"
+      ],
+      "rows": [
+        [
+          "A",
+          1,
+          "软件"
+        ],
+        [
+          "A",
+          2,
+          "零售"
+        ],
+        [
+          "B",
+          1,
+          "软件"
+        ],
+        [
+          "B",
+          2,
+          "零售"
+        ]
+      ]
+    }
+  },
+  "not_verified": [
+    "MCP/Codex tool connection (W2)",
+    "semantic change release (W3)",
+    "department isolation (S5)",
+    "generic strict-mode qualifier protection",
+    "vector indexing/recall",
+    "automatic Superset synchronization",
+    "production/scale capacity"
+  ]
+}

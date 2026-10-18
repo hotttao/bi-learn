@@ -1,6 +1,6 @@
 # 业务关系、语义上下文与增长实验
 
-状态：S4 已将首版关系与指标落实为 [实验契约](semantic/net_revenue.v1.json)、[跨库 SQL](sql/trino/orders_enriched_v1.sql) 和 [实测断言](evidence/s4-queries.json)，S4 已获用户确认。Superset 数据集 ID 为 2，资产映射见 [s4-assets.json](evidence/s4-assets.json)。负责人/审核人尚未指定，不代表企业语义发布；MDL 与 Agent 接入尚未实现。S2 已将主键、退款复合外键、金额检查等部分规则落地，并加入跨库引用及退款累计的程序校验；具体执行位置与边界见 [数据字典](DATA-DICTIONARY.md)，实测见 [S2 证据](evidence/s2-sources.json)。
+状态：S4 已将首版关系与指标落实为 [实验契约](semantic/net_revenue.v1.json)、[跨库 SQL](sql/trino/orders_enriched_v1.sql) 和 [实测断言](evidence/s4-queries.json)，S4 已获用户确认。Superset 数据集 ID 为 2，资产映射见 [s4-assets.json](evidence/s4-assets.json)。负责人/审核人尚未指定，不代表企业语义发布；W1 已将关系和净收入实现为 Wren 原生 MDL 项目，核心查询通过但有限定名等兼容缺口；见 [W1 教程](W1-WALKTHROUGH.md)。Agent/MCP 接入尚未实现。S2 已将主键、退款复合外键、金额检查等部分规则落地，并加入跨库引用及退款累计的程序校验；具体执行位置与边界见 [数据字典](DATA-DICTIONARY.md)，实测见 [S2 证据](evidence/s2-sources.json)。
 
 ## 第一课：为什么知道列名仍然会算错
 

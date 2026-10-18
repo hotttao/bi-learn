@@ -1,0 +1,153 @@
+[
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-10-17 17:52:32 +0800 CST",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "e25331f6fa74",
+    "Image": "postgres:17.6-bookworm",
+    "Labels": "com.docker.compose.config-hash=dc4cb83043815438eb7249ca598beee9765cced15043efc78e10553d656e4092,com.docker.compose.container-number=1,com.docker.compose.depends_on=,com.docker.compose.oneoff=False,com.docker.compose.project=bi008,com.docker.compose.project.working_dir=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype,com.docker.compose.service=crm-source,com.docker.compose.image=sha256:567d5d704a3e5a4864393b623a0d50eb1b5a4ad134cdac7cf19555cb2d8ffe9e,com.docker.compose.project.config_files=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/compose.yaml,com.docker.compose.version=2.26.1",
+    "LocalVolumes": "1",
+    "Mounts": "bi008_crm_sour…",
+    "Name": "bi008-crm-source-1",
+    "Names": "bi008-crm-source-1",
+    "Networks": "bi008_default",
+    "Ports": "5432/tcp",
+    "Project": "bi008",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 5432,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "16 hours ago",
+    "Service": "crm-source",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 5 minutes (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-10-17 20:55:46 +0800 CST",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "17c9abb260a9",
+    "Image": "postgres:17.6-bookworm",
+    "Labels": "com.docker.compose.container-number=1,com.docker.compose.project=bi008,com.docker.compose.project.config_files=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/compose.yaml,com.docker.compose.project.working_dir=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype,com.docker.compose.service=metadata,com.docker.compose.version=2.26.1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:567d5d704a3e5a4864393b623a0d50eb1b5a4ad134cdac7cf19555cb2d8ffe9e,com.docker.compose.oneoff=False,com.docker.compose.config-hash=b5cbb7e5066fd2952bba07ace6c43d0061a5d1509ff651b92711129a270d588c",
+    "LocalVolumes": "1",
+    "Mounts": "bi008_metadata",
+    "Name": "bi008-metadata-1",
+    "Names": "bi008-metadata-1",
+    "Networks": "bi008_default",
+    "Ports": "5432/tcp",
+    "Project": "bi008",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 5432,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "13 hours ago",
+    "Service": "metadata",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 5 minutes (healthy)"
+  },
+  {
+    "Command": "\"docker-entrypoint.s…\"",
+    "CreatedAt": "2026-10-17 20:44:45 +0800 CST",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "ca6998833e42",
+    "Image": "mysql:8.4.6",
+    "Labels": "com.docker.compose.config-hash=5cc79f94f412cf1354860693abca137d19e639877d558c34c8d67a661a81e0a2,com.docker.compose.container-number=1,com.docker.compose.oneoff=False,com.docker.compose.project=bi008,com.docker.compose.project.config_files=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/compose.yaml,com.docker.compose.replace=6b4b37df335cf1a36035b90f4ae9b27245b027c7a7683aa4c065f03609c5646e,com.docker.compose.service=mysql-source,com.docker.compose.version=2.26.1,com.docker.compose.depends_on=,com.docker.compose.image=sha256:c7fa03bf950b7fca40d7e1cae1ed638fadbc63b679ff74f1efb7d626e4c042ea,com.docker.compose.project.working_dir=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype",
+    "LocalVolumes": "1",
+    "Mounts": "bi008_mysql_so…",
+    "Name": "bi008-mysql-source-1",
+    "Names": "bi008-mysql-source-1",
+    "Networks": "bi008_default",
+    "Ports": "3306/tcp, 33060/tcp",
+    "Project": "bi008",
+    "Publishers": [
+      {
+        "URL": "",
+        "TargetPort": 3306,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      },
+      {
+        "URL": "",
+        "TargetPort": 33060,
+        "PublishedPort": 0,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "13 hours ago",
+    "Service": "mysql-source",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 5 minutes (healthy)"
+  },
+  {
+    "Command": "\"gunicorn --bind=0.0…\"",
+    "CreatedAt": "2026-10-18 10:07:50 +0800 CST",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "6a0f7bbc4aaa",
+    "Image": "bi008-superset:6.1.0",
+    "Labels": "com.docker.compose.version=2.26.1,sha=c83fb2bb1dcfac41ac51bcebd82471f4a7180d18,version=6.1.0,com.docker.compose.depends_on=metadata:service_healthy:false,com.docker.compose.oneoff=False,com.docker.compose.replace=b6ee66f871a75d90e118f674198178dd3f7df9425eadcda6b253b6195b0b8f61,com.docker.compose.service=superset,com.docker.compose.config-hash=13a6c3a4e079ff73ce4f3a5c30795af3e79f3f6e16cc0198e597d19afa530744,com.docker.compose.container-number=1,target=lean,build_actor=rusackas,build_trigger=6.1.0,com.docker.compose.image=sha256:bf781e00c640a827b0eaabc6d1f49bee6b00191e3cfb0d9b978ddccc23c8361e,com.docker.compose.project=bi008,com.docker.compose.project.working_dir=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype,base=3.10-slim-bookworm,com.docker.compose.project.config_files=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/compose.yaml",
+    "LocalVolumes": "0",
+    "Mounts": "/home/tao/code…,/home/tao/code…",
+    "Name": "bi008-superset-1",
+    "Names": "bi008-superset-1",
+    "Networks": "bi008_default",
+    "Ports": "192.168.2.46:8088->8088/tcp",
+    "Project": "bi008",
+    "Publishers": [
+      {
+        "URL": "192.168.2.46",
+        "TargetPort": 8088,
+        "PublishedPort": 8088,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "5 minutes ago",
+    "Service": "superset",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 5 minutes (healthy)"
+  },
+  {
+    "Command": "\"/usr/lib/trino/bin/…\"",
+    "CreatedAt": "2026-10-17 22:13:00 +0800 CST",
+    "ExitCode": 0,
+    "Health": "healthy",
+    "ID": "1e45160dbf22",
+    "Image": "trinodb/trino:481",
+    "Labels": "com.docker.compose.project=bi008,com.docker.compose.service=trino,com.redhat.license_terms=https://www.redhat.com/en/about/red-hat-end-user-license-agreements#UBI,io.k8s.display-name=Red Hat Universal Base Image 10 Micro,io.openshift.expose-services=,name=ubi10/ubi-micro,summary=ubi10 micro image,vendor=Red Hat, Inc.,build-date=2026-05-11T20:56:45Z,com.docker.compose.depends_on=mysql-source:service_healthy:false,crm-source:service_healthy:false,com.docker.compose.image=sha256:1629098dd4c6234ffab1e179d8a6da20964942a37f392d378b08b85231cd1079,maintainer=Red Hat, Inc.,com.redhat.component=ubi10-micro-container,cpe=cpe:/o:redhat:enterprise_linux:10.1,architecture=x86_64,com.docker.compose.oneoff=False,com.docker.compose.replace=d988a4e9cff01ba479df32a75e27292d3d8b0dcdcb7489060a6304c76928ea09,distribution-scope=public,url=https://catalog.redhat.com/en/search?searchType=containers,com.docker.compose.project.config_files=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/compose.yaml,com.docker.compose.version=2.26.1,io.k8s.description=Very small image which doesn't install the package manager.,org.opencontainers.image.created=2026-05-11T20:56:45Z,org.opencontainers.image.revision=3163a8bed7f181a76a816649999f0de8a4c8f650,vcs-ref=3163a8bed7f181a76a816649999f0de8a4c8f650,com.docker.compose.config-hash=a9e3f9aa88eb4118905bb8abd5dcfdbdf12fe6aca57ac8f1527207ff27b08b2b,com.docker.compose.container-number=1,com.docker.compose.project.working_dir=/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype,description=Very small image which doesn't install the package manager.,vcs-type=git,io.buildah.version=1.42.2,release=1778532954,version=10.1",
+    "LocalVolumes": "1",
+    "Mounts": "bi008_trino_da…,/home/tao/code…",
+    "Name": "bi008-trino-1",
+    "Names": "bi008-trino-1",
+    "Networks": "bi008_default",
+    "Ports": "127.0.0.1:18080->8080/tcp",
+    "Project": "bi008",
+    "Publishers": [
+      {
+        "URL": "127.0.0.1",
+        "TargetPort": 8080,
+        "PublishedPort": 18080,
+        "Protocol": "tcp"
+      }
+    ],
+    "RunningFor": "12 hours ago",
+    "Service": "trino",
+    "Size": "0B",
+    "State": "running",
+    "Status": "Up 5 minutes (healthy)"
+  }
+]

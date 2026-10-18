@@ -1,0 +1,1 @@
+{"datasource":"trino","host":"127.0.0.1","port":"18080","catalog":"mysql","schema":"sales","user":"bi008_wren"}

@@ -1,0 +1,21 @@
+name: net_revenue
+base_object: bi_orders
+measures:
+- name: total
+  expression: SUM(net_amount)
+  type: DECIMAL
+  properties:
+    source_type: DECIMAL(38, 2)
+dimensions:
+- name: industry
+  expression: industry
+  type: VARCHAR
+- name: dept_id
+  expression: dept_id
+  type: VARCHAR
+time_dimensions:
+- name: order_date
+  expression: order_date
+  type: DATE
+properties:
+  description: 净收入 net_revenue@1，人民币元；退款归属订单日，行业采用当前值。净销售额为受控别名；收入需澄清。

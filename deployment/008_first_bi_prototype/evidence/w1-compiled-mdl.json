@@ -1,0 +1,231 @@
+{
+  "catalog": "wren",
+  "schema": "public",
+  "models": [
+    {
+      "name": "bi_customers",
+      "primaryKey": [
+        "customer_dept_id",
+        "customer_local_id"
+      ],
+      "properties": {
+        "description": "每行一部门内客户，复合键唯一；行业更新会重分组历史订单"
+      },
+      "columns": [
+        {
+          "name": "customer_dept_id",
+          "type": "CHAR(1)",
+          "properties": {
+            "description": "部门，客户和退款关联键的一部分"
+          }
+        },
+        {
+          "name": "customer_local_id",
+          "type": "BIGINT",
+          "properties": {
+            "description": "部门内客户 ID，不能单独关联"
+          }
+        },
+        {
+          "name": "industry",
+          "type": "VARCHAR",
+          "properties": {
+            "description": "客户当前行业，不是订单时点行业"
+          }
+        }
+      ],
+      "refSql": "SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry\nFROM crm.public.customers"
+    },
+    {
+      "name": "bi_orders",
+      "tableReference": {
+        "catalog": "mysql",
+        "schema": "sales",
+        "table": "orders"
+      },
+      "primaryKey": "order_id",
+      "properties": {
+        "description": "每行一订单；关联退款汇总和当前客户；net_revenue@1 的基础模型"
+      },
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "BIGINT",
+          "properties": {
+            "description": "全局唯一订单 ID"
+          }
+        },
+        {
+          "name": "dept_id",
+          "type": "CHAR(1)",
+          "properties": {
+            "description": "部门，客户和退款关联键的一部分"
+          }
+        },
+        {
+          "name": "customer_id",
+          "type": "BIGINT",
+          "properties": {
+            "description": "部门内客户 ID，不能单独关联"
+          }
+        },
+        {
+          "name": "order_date",
+          "type": "DATE",
+          "properties": {
+            "description": "Asia/Shanghai 业务日期，退款归属原订单日"
+          }
+        },
+        {
+          "name": "paid_amount",
+          "type": "DECIMAL",
+          "properties": {
+            "description": "订单实付，人民币元，定点数",
+            "sourceType": "DECIMAL(12, 2)"
+          }
+        },
+        {
+          "name": "refund",
+          "type": "bi_refund_totals",
+          "relationship": "orders_refund_totals",
+          "properties": {
+            "description": "退款已按部门和订单汇总，至多一行"
+          }
+        },
+        {
+          "name": "customer",
+          "type": "bi_customers",
+          "relationship": "orders_customers",
+          "properties": {
+            "description": "按部门和客户复合键匹配当前客户，允许无匹配"
+          }
+        },
+        {
+          "name": "refund_total",
+          "type": "DECIMAL",
+          "isCalculated": true,
+          "expression": "coalesce(refund.refund_total, 0)",
+          "properties": {
+            "description": "订单累计已记录退款，无退款为零，归属订单日",
+            "sourceType": "DECIMAL(38, 2)"
+          }
+        },
+        {
+          "name": "net_amount",
+          "type": "DECIMAL",
+          "isCalculated": true,
+          "expression": "paid_amount - coalesce(refund.refund_total, 0)",
+          "properties": {
+            "description": "净收入行值=实付-累计退款，人民币元；SUM 为净收入",
+            "sourceType": "DECIMAL(38, 2)"
+          }
+        },
+        {
+          "name": "industry",
+          "type": "VARCHAR",
+          "isCalculated": true,
+          "expression": "coalesce(customer.industry, '未知行业')",
+          "properties": {
+            "description": "客户当前行业，缺失保留订单为未知行业"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bi_refund_totals",
+      "primaryKey": [
+        "refund_dept_id",
+        "refund_order_id"
+      ],
+      "properties": {
+        "description": "原始退款先按部门和订单聚合，不能把订单实付关联到退款明细后求和"
+      },
+      "columns": [
+        {
+          "name": "refund_dept_id",
+          "type": "CHAR(1)",
+          "properties": {
+            "description": "退款所属部门"
+          }
+        },
+        {
+          "name": "refund_order_id",
+          "type": "BIGINT",
+          "properties": {
+            "description": "退款所属订单"
+          }
+        },
+        {
+          "name": "refund_total",
+          "type": "DECIMAL",
+          "properties": {
+            "description": "订单累计退款，人民币元",
+            "sourceType": "DECIMAL(38, 2)"
+          }
+        }
+      ],
+      "refSql": "SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total\nFROM mysql.sales.refunds\nGROUP BY dept_id, order_id"
+    }
+  ],
+  "relationships": [
+    {
+      "name": "orders_refund_totals",
+      "models": [
+        "bi_orders",
+        "bi_refund_totals"
+      ],
+      "joinType": "MANY_TO_ONE",
+      "condition": "bi_orders.dept_id = bi_refund_totals.refund_dept_id AND bi_orders.order_id = bi_refund_totals.refund_order_id"
+    },
+    {
+      "name": "orders_customers",
+      "models": [
+        "bi_orders",
+        "bi_customers"
+      ],
+      "joinType": "MANY_TO_ONE",
+      "condition": "bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id = bi_customers.customer_local_id"
+    }
+  ],
+  "views": [],
+  "cubes": [
+    {
+      "name": "net_revenue",
+      "baseObject": "bi_orders",
+      "measures": [
+        {
+          "name": "total",
+          "expression": "SUM(net_amount)",
+          "type": "DECIMAL",
+          "properties": {
+            "sourceType": "DECIMAL(38, 2)"
+          }
+        }
+      ],
+      "dimensions": [
+        {
+          "name": "industry",
+          "expression": "industry",
+          "type": "VARCHAR"
+        },
+        {
+          "name": "dept_id",
+          "expression": "dept_id",
+          "type": "VARCHAR"
+        }
+      ],
+      "timeDimensions": [
+        {
+          "name": "order_date",
+          "expression": "order_date",
+          "type": "DATE"
+        }
+      ],
+      "properties": {
+        "description": "净收入 net_revenue@1，人民币元；退款归属订单日，行业采用当前值。净销售额为受控别名；收入需澄清。"
+      }
+    }
+  ],
+  "dataSource": "trino",
+  "layoutVersion": 3
+}
