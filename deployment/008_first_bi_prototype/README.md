@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S4 已提交（`61c9d59`），W1 已确认并提交（`7e6d467`）。W2 的 Codex＋Wren MCP 已通过 review，用户授权提交并按原计划进入 W3；本次提交前尚未实施 W3。Superset 仍为 `192.168.2.46:8088`，原有资产未变。**
+2026-10-18：**S4 已提交（`61c9d59`），W1 已确认并提交（`7e6d467`）。W2 已确认并提交（`35db4e5`）；当前 W3“语义变更维护”已实现并完成实验，待本步 review，未提交。部门隔离暂缓。Superset 仍为 `192.168.2.46:8088`，原有资产未变。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -14,6 +14,8 @@
 2. 完成当前步骤的实现、必要验证和操作记录；解释结果，并提供可亲手重复的操作。
 3. 展示变更、实际结果、失败与限制，停在“待 review”，不执行 Git 提交，也不进入下一步。
 4. 用户确认后，只提交本步相关文件，再进入下一步；如果用户提出修改，先修改并重新交付 review。确认规划不等于提前确认后续全部实现。
+
+全部分步教程按顺序集中在 [walkthroughs/](walkthroughs/README.md)，使用 `001_` 起的连续编号。教程命令仍在本原型根目录执行。
 
 当前阅读顺序：本文件 → [业务语义与增长实验](semantic-design.md) → [Codex 工作指令](agent.md)。[AGENTS.md](AGENTS.md) 是本目录的 Codex 指令入口。
 
@@ -56,12 +58,12 @@
 | W1 Wren 建模与查询 | S4 后固定新版 Wren 版本，建立独立语义项目，复用同一测试源；核验 MDL、严格模型范围与固定查询 | 文档语义如何变成可执行模型 | 245 基准与 Superset 对账；退款和客户关联正确；记录模型版本与允许入口 |
 | W2 Codex＋Wren MCP | 先固定工具调用，再用现成 Codex 发现模型并问数，不开发 Agent | 上下文、工具和执行模型的区别 | 同义问法、歧义和异常 fixture 通过；未验证的部门边界不作为团队服务开放 |
 | W3 语义变更维护 | 独立 fixture 制造客户键和业务口径变化；发现、审核、构建、索引更新、发布与回归 | schema 不变也可能需要语义升级 | 能发现错误关系、核对版本一致性并恢复正确结果；明确 Superset 资产是否需要人工同步 |
-| S5 部门隔离（第三关） | 可信 Trino 认证、A/B 受限身份和访问策略、各自 BI connection/dataset/普通用户 | 身份、连接权限、行列与资产权限的区别 | A 145、B 100；伪造用户名、猜资产 ID、导出、直接查询、缓存和撤权路径均验证；失败不得宣称隔离通过 |
+| S5 部门隔离（暂缓，不作当前前置项） | 可信 Trino 认证、A/B 受限身份和访问策略、各自 BI connection/dataset/普通用户 | 身份、连接权限、行列与资产权限的区别 | A 145、B 100；伪造用户名、猜资产 ID、导出、直接查询、缓存和撤权路径均验证；失败不得宣称隔离通过 |
 | S6 官方 MCP 固定调用 | 核对版本实际工具清单、启动 MCP、固定参数完成预览→保存→加入指定看板；写调用与读回证据 | MCP 是工具协议；保存涉及外部副作用 | 原生资产可编辑、重开/刷新有效；重复调用不重复加图；中断恢复与 A/B 权限通过；不足时先报告最小适配范围 |
 | S7 Codex 接入（第四关） | 将已验证 MCP 接给 Codex；加载语义上下文；运行中文问题集，覆盖 KPI/趋势/行业/明细、筛选和多轮修改 | 从业务意图到受控工具；区分模型理解与服务端校验 | 三句原型对话通过；保留人工改动；结果可追溯到身份、数据集和指标版本；同义问法、歧义、失败路径有记录 |
 | S8 增长与语义演进 | 目录增长、数据量增长分开测；比较仅 schema 与语义契约；记录性能、错误、成本和下一步选型 | 何时需要汇总、语义服务、本体 | 先声明实验规模与可接受目标，再记录实测；明确是否需要独立语义层或分析仓库，不能从 4 条数据推出生产容量 |
 
-执行顺序调整为 **S1 → S2 → S3 → S4 → W1 → W2 → W3 → S5 → S6 → S7 → S8**。保留原 S 编号便于对应历史记录；新增 W 步骤体现已确认的研究重点。Superset MCP 与 Wren MCP 是不同工具入口，后续 S6/S7 仍独立验收资产操作；W 阶段先验证语义，不宣称已打通图表保存。每一步继续单独 review。
+执行顺序调整为 **S1 → S2 → S3 → S4 → W1 → W2 → W3 → S6 → S7 → S8**（S5 暂缓，恢复时再单独安排；S6/S7 的部门隔离验收随 S5 延后，不将其标为通过）。保留原 S 编号便于对应历史记录；新增 W 步骤体现已确认的研究重点。Superset MCP 与 Wren MCP 是不同工具入口，后续 S6/S7 仍独立验收资产操作；W 阶段先验证语义，不宣称已打通图表保存。每一步继续单独 review。
 
 S1 只固定本步配置目标，Trino/Wren 等进入相应步骤时再固定版本和依赖，只启动当前步骤需要的服务。S2 的业务 PostgreSQL 与 S3 的元数据库分开，减少误操作混淆。S3 是第一个可以亲手使用的看板；不等待 MCP 才交付。
 
@@ -110,7 +112,7 @@ review 反馈与确认：
 
 ## 当前 review 范围
 
-S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973`、S4 `61c9d59` 已提交，没有 push。当前 review 为 W1：本地安装、原生 MDL 项目、固定查询、兼容规避与已知缺口。先读 [W1 教程](W1-WALKTHROUGH.md) 和本文末尾 W1 操作记录；本步未提交，不进入 W2。以下保留各步当时的记录。
+S1 `a0b9333`、S2 `1183f69`、S3 `4f2c973`、S4 `61c9d59` 已提交，没有 push。W1、W2 后续已分别确认并提交为 `7e6d467`、`35db4e5`。当前 review 为 W3，先读 [W3 教程](walkthroughs/005_W3-WALKTHROUGH.md) 和本文末尾 W3 记录。以下保留各步当时的记录。
 
 ## S1 操作记录：环境与配置准备
 
@@ -403,7 +405,7 @@ sudo python3 scripts/source_db.py verify
 - 登录入口：http://192.168.2.46:8088
 - 实际看板：http://192.168.2.46:8088/superset/dashboard/1/
 - 用户：`admin`；密码从本机 `.env` 的 `SUPERSET_ADMIN_PASSWORD` 读取，未写入 Git。
-- 亲手复现：[S3-WALKTHROUGH.md](S3-WALKTHROUGH.md)。
+- 亲手复现：[001_S3-WALKTHROUGH.md](walkthroughs/001_S3-WALKTHROUGH.md)。
 
 容器内 Gunicorn 仍监听 `0.0.0.0:8088`，宿主仅发布到指定 LAN 地址；不是将宿主所有网卡都开放。`docker port` 实测为 `8088/tcp -> 192.168.2.46:8088`，`ss -ltn` 也确认该绑定，LAN 地址的 `/health` 返回 HTTP 200。Chrome 在本机经这个 LAN 地址完成验证；未从第二台设备单独验证连通性。该 IP 来自 DHCP，变化时需修改绑定配置并重建 Web 容器。
 
@@ -529,7 +531,7 @@ sudo docker-compose up -d --wait metadata superset
 
 用户回复“继续”后提交 S3，提交为 `4f2c973`，未 push。S3 图表拖动换位继续作为未验证项，不阻塞独立的跨源查询实验。本步不进入 Wren 或 MCP。
 
-先理解三件事：Trino catalog 提供物理读取入口，SQL 决定如何关联，语义契约解释为什么这样关联。仅配置 connector 不会自动生成可靠业务语义。新增文件为 `trino/`、`sql/trino/orders_enriched_v1.sql`、`semantic/net_revenue.v1.json`、S4 脚本、证据和 [亲手操作教程](S4-WALKTHROUGH.md)。
+先理解三件事：Trino catalog 提供物理读取入口，SQL 决定如何关联，语义契约解释为什么这样关联。仅配置 connector 不会自动生成可靠业务语义。新增文件为 `trino/`、`sql/trino/orders_enriched_v1.sql`、`semantic/net_revenue.v1.json`、S4 脚本、证据和 [亲手操作教程](walkthroughs/002_S4-WALKTHROUGH.md)。
 
 ### 2. 版本、资源与入口
 
@@ -671,7 +673,7 @@ sudo docker-compose --profile sources --profile federation up -d --wait mysql-so
 
 核心查询、关联、cube、缺失客户和分级精度已通过；**通用限定名检查仍存在已复现缺口**，不能把本步描述为完整授权或所有原生语义能力均通过。Superset 保持 S4 资产。MCP 接入属于 W2，本步未启动 MCP 服务、未修改 Codex 连接配置。
 
-先看 [W1 亲手操作教程](W1-WALKTHROUGH.md)，再对照 [模型上下文](evidence/w1-schema-context.txt) 和 [完整回归证据](evidence/w1-verification.json)。
+先看 [W1 亲手操作教程](walkthroughs/003_W1-WALKTHROUGH.md)，再对照 [模型上下文](evidence/w1-schema-context.txt) 和 [完整回归证据](evidence/w1-verification.json)。
 
 ### 2. 版本与本地安装
 
@@ -799,7 +801,7 @@ grep 后端的 index 实测 no-op；describe 输出三模型、关系和 cube，
 
 **状态：实现完成，待 review；未提交 W2，不进入 W3。** 用户本轮“继续”确认 W1 后，已先提交 W1 为 `7e6d467`。此前 W1 段落中的“没有提交”描述的是当时交付状态，此处记录后续动作。
 
-目的：验证现成 Codex 能消费同一份可执行业务语义，而非新建 Agent。教学入口是 [W2-WALKTHROUGH.md](W2-WALKTHROUGH.md)，指令仍由 [agent.md](agent.md) 和 [wren/AGENTS.md](wren/AGENTS.md) 提供。
+目的：验证现成 Codex 能消费同一份可执行业务语义，而非新建 Agent。教学入口是 [004_W2-WALKTHROUGH.md](walkthroughs/004_W2-WALKTHROUGH.md)，指令仍由 [agent.md](agent.md) 和 [wren/AGENTS.md](wren/AGENTS.md) 提供。
 
 ### 1. 实际操作、版本和文件
 
@@ -863,4 +865,80 @@ Codex 项目配置已实际被新 CLI 会话加载；已有客户端如未发现
 
 交付自查：本步变更文件的 Python AST、shell 语法、JSON/TOML 解析、Markdown 本地链接和围栏、真实凭据扫描、空白检查通过。安装复现成功；固定 MCP、实际 Codex 基线/同义/歧义和最终状态检查均有证据。原始日志与机器配置留在 Git 忽略目录；未纳入仓库根 `.codex/`。没有提交 W2，没有 push。
 
-2026-10-18 后续确认：用户要求“按照原先的计划继续”，授权提交 W2 并进入 W3。部门隔离暂缓；本次确认不提前批准 W3 的实现或提交。
+2026-10-18 后续确认：用户要求“按照原先的计划继续”，授权提交 W2 并进入 W3。部门隔离暂缓；本次确认授权实施 W3，不代表 W3 成果已通过 review，不授权直接提交 W3。
+
+
+## W3 语义变更维护实际记录（2026-10-18）
+
+**状态：完成本步实验，待 review，未提交 W3。** 用户要求按原计划继续后，先提交已确认 W2 为 `35db4e5`，再实施 W3；未进入后续步骤，没有 push。部门隔离按用户最新要求暂缓。
+
+本步目的：把“维护业务关系是关键”落实为能验证的流程，而不是继续增加 BI 产品。W1 已开始构建语义层，W2 已验证 Codex 消费；W3 关注关系与业务政策变化后的发现、影响分析、审核记录、构建、上下文一致性和回退。详细教学见 [005_W3-WALKTHROUGH.md](walkthroughs/005_W3-WALKTHROUGH.md)。
+
+### 1. 操作与产物
+
+| 顺序 | 实际操作 | 结果/产物 |
+| --- | --- | --- |
+| 1 | 阅读 W1/W2 模型、MCP 适配和已确认的 W3 关系演练计划 | 保持独立 fixture，不改 S2 数据，不将原型本就存在的部门内 ID 错当成新变化 |
+| 2 | 创建 [business.json](w3/fixtures/business.json) | 初始客户全局 ID；变化后 B 客户改为部门内 ID。状态字段从初始就存在；v1/v2 政策单独列出 |
+| 3 | 实现 [verify_w3.py](scripts/verify_w3.py) 生成候选项目 | 每轮生成三个正式实验候选及失败副本，实际 strict validate/build/index；SQL VALUES 在现有 Trino 上执行 |
+| 4 | 用真实 Trino 检查键唯一性、schema、模型查询 | 全局 ID 失效时有 2 组重复键；复合键检查通过。schema 采集证实字段与类型未变 |
+| 5 | 修改关系后做独立回归和影响分析 | 四行订单、245、行业120/125恢复；从 MDL 提取关系/模型/cube 依赖，其他消费端人工登记 |
+| 6 | 制造 schema/数据均不变的政策变化 | v2 排除 settled，指标显式升级 net_revenue@2，结果195/70/125；独立整数分账本与手写答案一致 |
+| 7 | 实现 [w3_release.py](scripts/w3_release.py) 与 [w3_mcp.py](scripts/w3_mcp.py) | 本地合成发布包、文件指纹和当前指针；拒绝模型/规则/示例版本不一致，旧会话在切换后拒绝查询 |
+| 8 | 演练混合上下文、未审核内容改动、回退和恢复 | 均有拒绝或恢复证据；回退245，再恢复195 |
+| 9 | 使用真实 Codex CLI 测试新版 | 仅本次进程覆盖 MCP 命令，18次实际调用，正确使用v2规则与版本取得195/70/125；正常客户端配置不改 |
+| 10 | 重新验证源、正常 Wren 项目和 Superset | S2原始源完整指纹未变；正常MDL仍是W1版本，S4数据集SQL与图表1/2/3不变 |
+
+实际命令，工作目录均为本原型：
+
+```bash
+.local/wren-venv/bin/python scripts/verify_w3.py
+python3 scripts/verify_w3_codex.py
+sudo python3 scripts/source_db.py verify > evidence/w3-source-baseline.json
+.local/wren-venv/bin/python scripts/finish_w3.py
+```
+
+没有新装包或新增常驻服务。项目仍使用 W2 的65包锁文件。生成目录在 `.local/w3/`；可 review 的源码、契约和编译模型另复制到 `evidence/w3-models/`，不包含运行连接/profile文件。
+
+### 2. 失败与发现
+
+首次关系漂移实验错误地预期“总额直接从245变490”，断言失败。独立诊断三种查询后发现：总额不需要客户行业，Wren裁掉了客户关联，仍返回245；行业分组与带行业明细触发重复匹配，分别合计490、返回8行。因此将回归明确拆为总额、行业、日期和明细粒度，保留真实计划与错误结果，未用总额通过掩盖关系问题。
+
+候选模型即使 strict validate/build 成功，数据唯一性仍可能失败。MDL MANY_TO_ONE 声明不能替代真实基数检查；这个教训直接影响公司存量表接入的验收标准。
+
+最后审阅还发现初始候选的客户字段说明残留“部门内唯一”，与初始全局键规则矛盾。已修正生成器中的字段说明并重跑完整W3版本实验，再以新发布包重跑Codex验证；未修改已发布目录掩盖差异。
+
+真实 Codex 的长句 recall 没有命中示例，固定短关键词能命中；Codex实际读取完整规则和schema后完成问数，没有编造示例。grep不是语义检索，向量索引和任意检索质量仍未验证。Agent也没有历史版本查询接口，不能声称已完成所有版本差异的自动解释。
+
+### 3. 结果与证据
+
+| 实验 | 实测结果 | 证据位置 |
+| --- | --- | --- |
+| 初始语义 | 全局键唯一，4行，245，行业120/125 | [W3主证据](evidence/w3-verification.json) initial_quality/initial_regression |
+| 关系失效 | 2组重复键；总额仍245、行业240/250、明细8行 | 同上 relationship_drift，含实际计划和返回 |
+| 阻止错误发布 | 质量失败不切换当前指针 | 同上 relationship_drift |
+| 修正与影响分析 | 复合键后245，行业120/125，4行 | 同上 relationship_regression/impact |
+| 政策变化 | schema与数据指纹相同；状态paid/settled→paid；新指标195 | 同上 metric_drift/metric_regression |
+| 上下文同步 | 模型、契约、规则、示例随包发布；旧会话拒绝查询、新会话读新版本 | 同上 mcp_*、[最终核查](evidence/w3-final-state.json) |
+| 防止混合版本 | 新模型配旧规则拒绝；即便调用方全填通过，独立版本核验仍拒绝 | 主证据 mixed_context_publication 与最终核查 independent_context_rejection |
+| 完整性与恢复 | 修改发布内容被拒绝，回退245，再恢复195 | 主证据 tampered_bundle/rollback/recovery |
+| Codex实际消费 | 18次MCP调用，三条SQL先计划/dry-run，v2答案195/70/125 | [Codex证据](evidence/w3-codex-verification.json) |
+| 业务源/BI不变 | S2指纹不变，正常Wren模型不变，Superset原资产不变 | [源验证](evidence/w3-source-baseline.json)、[最终核查](evidence/w3-final-state.json) |
+
+三个源码快照：[初始](evidence/w3-models/initial)、[关系修正](evidence/w3-models/relationship-v2)、[口径v2](evidence/w3-models/metric-v2)。这是实验的版本，不是企业语义已发布的证明。
+
+### 4. 维护边界与亲手操作
+
+依次比较初始与关系修正版的 relationships、客户主键，再比较关系修正版与口径v2的订单ref_sql和规则。最后对照发布包的metric、模型哈希、规则、示例和Codex运行契约。先说明键为什么改、哪些查询受影响，再解释配置语法。
+
+本步数据经过“独立Wren候选→Trino执行VALUES源”和“Codex→版本化MCP→相同模型”；没有写源业务表。正确性依据是独立账本、质量检查、查询明细和分组、实际版本/知识指纹以及回退结果。排错先看使用哪个发布版本，再查键唯一性与查询是否触发关联，最后查口径/时间/金额。
+
+发布器是本地实验代码，只接受明确的合成审核记录，不冒充业务人员审核；没有定时元数据采集器、跨服务分布式发布、生产回滚平台或完整企业血缘。Superset仍使用独立S4 SQL，未自动切换Wren指标。存量公司业务还需要真实DDL、报表SQL、代码规则和负责人确认，本次不能代替。
+
+每轮生成新目录并保留旧包；退出Codex即停止该stdio进程。重跑主实验会切换新的实验指针，应重跑Codex和最终检查以保持证据一致。正常MCP配置仍查询245基线；195只属于W3测试进程，不会改动正常看板。
+
+交付自查：本步 Python AST、shell语法、JSON/TOML解析、Markdown本地链接/围栏、空白与实际凭据扫描通过；全部候选实际strict校验/构建与版本回归通过，源码说明修正后已重跑完整实验和真实Codex。最终检查确认Codex、当前发布包和证据属于同一轮，独立上下文校验能拒绝伪造的通过标志，S2/S4与正常Wren基线保持不变。未提交W3，未push，仓库根`.codex/`仍未纳入提交。
+
+教程目录整理：按用户要求将5份WALKTHROUGH集中到`walkthroughs/`，依S3、S4、W1、W2、W3顺序编号001～005，新增阅读目录并更新教程内部、README、指令文件与wiki引用。仅调整文档组织，未提交。
+
+2026-10-18 后续确认：用户要求“提交代码，进行下一步”，确认W3与教程目录整理，授权提交并进入S6；S5部门隔离继续暂缓。S6完成后仍需单独review。

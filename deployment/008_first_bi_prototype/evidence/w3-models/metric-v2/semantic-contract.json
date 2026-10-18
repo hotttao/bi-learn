@@ -1,0 +1,70 @@
+{
+  "metric": "net_revenue@2",
+  "customer_key": [
+    "dept_id",
+    "customer_id"
+  ],
+  "order_grain": "one row per eligible order",
+  "eligible_statuses": [
+    "paid"
+  ],
+  "history": "current industry; refund belongs to order date",
+  "scope": "synthetic_fixture",
+  "source_schema": {
+    "orders": [
+      [
+        "order_id",
+        "integer"
+      ],
+      [
+        "dept_id",
+        "varchar(1)"
+      ],
+      [
+        "customer_id",
+        "integer"
+      ],
+      [
+        "order_date",
+        "date"
+      ],
+      [
+        "paid_amount",
+        "decimal(12, 2)"
+      ],
+      [
+        "status",
+        "varchar(7)"
+      ]
+    ],
+    "customers": [
+      [
+        "dept_id",
+        "varchar(1)"
+      ],
+      [
+        "customer_id",
+        "integer"
+      ],
+      [
+        "industry",
+        "varchar(2)"
+      ]
+    ],
+    "refunds": [
+      [
+        "dept_id",
+        "varchar(1)"
+      ],
+      [
+        "order_id",
+        "integer"
+      ],
+      [
+        "refund_amount",
+        "decimal(12, 2)"
+      ]
+    ]
+  },
+  "source_snapshot_sha256": "daef9f29f4fd3b88eb79f8892e5f591f39daa4f587a07d102b67a4a56d951eaf"
+}

@@ -1,0 +1,7 @@
+schema_version: 5
+name: bi008_w3_fixture
+version: metric-v2
+catalog: wren
+schema: public
+data_source: trino
+profile: bi008

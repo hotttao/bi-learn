@@ -17,7 +17,7 @@
 
 ## 2. 从订单和退款建立数据集
 
-在 Superset 的 SQL Lab 中选择上述只读连接、`sales` schema，粘贴 [订单净收入 SQL](sql/mysql/order_net.sql) 并执行。
+在 Superset 的 SQL Lab 中选择上述只读连接、`sales` schema，粘贴 [订单净收入 SQL](../sql/mysql/order_net.sql) 并执行。
 
 先观察四行结果：订单 1～4 的净收入为 70、75、50、50。退款先按部门和订单汇总，再 LEFT JOIN 订单；无退款的订单保留，退款按 0 处理。订单日、部门和净收入是后续图表共用的字段。
 

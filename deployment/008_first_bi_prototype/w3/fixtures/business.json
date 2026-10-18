@@ -1,0 +1,27 @@
+{
+  "scope": "synthetic W3 fixture only; not the S2 source or company data",
+  "orders": [
+    {"order_id":1,"dept_id":"A","customer_id":1,"order_date":"2026-10-01","paid_amount":"100.00","status":"paid"},
+    {"order_id":2,"dept_id":"A","customer_id":2,"order_date":"2026-10-02","paid_amount":"80.00","status":"paid"},
+    {"order_id":3,"dept_id":"B","customer_id":3,"order_date":"2026-10-01","paid_amount":"50.00","status":"settled"},
+    {"order_id":4,"dept_id":"B","customer_id":4,"order_date":"2026-10-02","paid_amount":"60.00","status":"paid"}
+  ],
+  "refunds": [
+    {"dept_id":"A","order_id":1,"refund_amount":"10.00"},
+    {"dept_id":"A","order_id":1,"refund_amount":"20.00"},
+    {"dept_id":"A","order_id":2,"refund_amount":"5.00"},
+    {"dept_id":"B","order_id":4,"refund_amount":"10.00"}
+  ],
+  "customers": [
+    {"dept_id":"A","customer_id":1,"industry":"软件"},
+    {"dept_id":"A","customer_id":2,"industry":"零售"},
+    {"dept_id":"B","customer_id":3,"industry":"软件"},
+    {"dept_id":"B","customer_id":4,"industry":"零售"}
+  ],
+  "change": {"description":"customer identifiers become local to the department; remap both order references and customers", "B_customer_id_mapping":{"3":1,"4":2}},
+  "policies": {"v1":["paid","settled"],"v2":["paid"]},
+  "independent_expected": {
+    "v1":{"total":"245.00","industry":{"软件":"120.00","零售":"125.00"},"daily":{"2026-10-01":"120.00","2026-10-02":"125.00"},"orders":4},
+    "v2":{"total":"195.00","industry":{"软件":"70.00","零售":"125.00"},"daily":{"2026-10-01":"70.00","2026-10-02":"125.00"},"orders":3}
+  }
+}

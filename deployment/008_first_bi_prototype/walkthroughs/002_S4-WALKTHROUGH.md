@@ -24,7 +24,7 @@ SELECT * FROM crm.public.customers ORDER BY dept_id, customer_id;
 python3 scripts/verify_s4.py --query < sql/trino/orders_enriched_v1.sql
 ```
 
-再复制 [orders_enriched_v1.sql](sql/trino/orders_enriched_v1.sql)，检查恰好 4 行：净收入为 70、75、50、50，软件两单、零售两单。不要先看总额；行粒度错误时总额正确也可能只是巧合。
+再复制 [orders_enriched_v1.sql](../sql/trino/orders_enriched_v1.sql)，检查恰好 4 行：净收入为 70、75、50、50，软件两单、零售两单。不要先看总额；行粒度错误时总额正确也可能只是巧合。
 
 ## 3. 故意漏掉退款聚合
 
@@ -63,7 +63,7 @@ sudo python3 scripts/verify_s4.py
 
 ## 7. 关系增加以后怎么维护
 
-本步 [net_revenue.v1.json](semantic/net_revenue.v1.json) 是内部契约，记录指标、粒度、复合键、基数、缺失处理、时间与质量约束；它不是 Wren MDL，Codex 也不会凭文件存在就自动加载。
+本步 [net_revenue.v1.json](../semantic/net_revenue.v1.json) 是内部契约，记录指标、粒度、复合键、基数、缺失处理、时间与质量约束；它不是 Wren MDL，Codex 也不会凭文件存在就自动加载。
 
 目前的维护链路是：源 schema/数据变化 → 执行质量及指标回归 → 核对契约与 SQL → 更新实际 BI 数据集 → 读回与页面对账 → review。脚本拒绝发布重复客户键；缺失客户通过查询内 fixture 保留“未知行业”。没有后台监控或自动同步服务。
 

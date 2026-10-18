@@ -1,6 +1,6 @@
 # W2：让 Codex 使用同一份业务语义问数
 
-本步已实际完成，待 review，未提交。W1 已提交为 `7e6d467`。先读本教程，再对照 [README 操作记录](README.md#w2-codexwren-mcp-实际记录2026-10-18)。以下命令均在 `deployment/008_first_bi_prototype` 执行；需要 S2～S4 的现有容器与数据卷，不会替你初始化生产数据库。
+本步已实际完成，待 review，未提交。W1 已提交为 `7e6d467`。先读本教程，再对照 [README 操作记录](../README.md#w2-codexwren-mcp-实际记录2026-10-18)。以下命令均在 `deployment/008_first_bi_prototype` 执行；需要 S2～S4 的现有容器与数据卷，不会替你初始化生产数据库。
 
 ## 1. 先看清数据经过什么
 
@@ -27,7 +27,7 @@ python3 scripts/install_w2.py
 
 安装器复用 W1 的本地虚拟环境，使用 65 包锁文件，保留 W1 的 48 个固定依赖。关键版本是 `wrenai==0.16.0`、`wren-core-py==0.8.1`、`mcp==1.26.0`。首次解析得到 MCP 2.3.0 时，Wren 导入 `mcp.server.fastmcp` 失败，因此不能只写“安装最新 MCP”。
 
-安装器还会 validate/build，并生成**本原型目录**的 `.codex/config.toml`；仓库根 `.codex/` 和用户全局配置不改。可提交模板在 [mcp.example.toml](codex/mcp.example.toml)，绝对路径由脚本按实际目录生成，本机配置被 Git 忽略。配置不同会报错供检查，不会直接覆盖已有同名入口。
+安装器还会 validate/build，并生成**本原型目录**的 `.codex/config.toml`；仓库根 `.codex/` 和用户全局配置不改。可提交模板在 [mcp.example.toml](../codex/mcp.example.toml)，绝对路径由脚本按实际目录生成，本机配置被 Git 忽略。配置不同会报错供检查，不会直接覆盖已有同名入口。
 
 `mcp list` 只证明客户端读取了配置，不能证明模型已调用工具。实际调用证据在后面的 Codex 验证中。已有 Codex 客户端可能需要重新打开会话才能加载新增 MCP；从本目录启动新 CLI 会话已实测成功。无需为了每条命令反复重启。
 
@@ -41,7 +41,7 @@ python3 scripts/install_w2.py
 
 这是真实 MCP 客户端，不是直接调用 Python 函数来冒充 MCP。它启动服务、握手、发现工具，然后读取规则、模型、cube、知识资源与工作流 prompt。`get_context` 在未安装向量检索扩展时能回退为完整 schema；不要把 W1 的 CLI `memory fetch` 失败推断成全部 MCP 上下文不可用。
 
-接下来依次测试 dry-plan、dry-run、查询、cube 和错误输入。检查 [固定调用证据](evidence/w2-mcp-verification.json) 的 baseline，而不是 calls 中某个同名工具的最后一次返回。
+接下来依次测试 dry-plan、dry-run、查询、cube 和错误输入。检查 [固定调用证据](../evidence/w2-mcp-verification.json) 的 baseline，而不是 calls 中某个同名工具的最后一次返回。
 
 | 你要理解的点 | 实测事实 |
 | --- | --- |
@@ -89,7 +89,7 @@ W1 已发现限定名可能绕过同名模型展开；原生 strict_mode 不是�
 
 ## 6. 日期区间失败时怎么操作
 
-原生 cube 日期区间会将 DATE 与 varchar 比较，Trino 报 TYPE_MISMATCH，见 [保留的失败](evidence/w2-native-cube-range-failure.json)。当前适配入口明确返回 `BI008_CUBE_RANGE`。无区间 cube 聚合/日期分组已通过；有固定时间窗口时使用：
+原生 cube 日期区间会将 DATE 与 varchar 比较，Trino 报 TYPE_MISMATCH，见 [保留的失败](../evidence/w2-native-cube-range-failure.json)。当前适配入口明确返回 `BI008_CUBE_RANGE`。无区间 cube 聚合/日期分组已通过；有固定时间窗口时使用：
 
 ```sql
 SELECT order_date, SUM(net_amount) AS net_revenue

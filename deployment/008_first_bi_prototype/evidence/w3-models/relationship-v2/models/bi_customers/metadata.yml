@@ -1,0 +1,19 @@
+name: bi_customers
+primary_key:
+- customer_dept_id
+- customer_local_id
+properties:
+  description: 'W3 fixture: customer key department + local ID'
+columns:
+- name: customer_dept_id
+  type: CHAR(1)
+  properties:
+    description: 部门，客户和退款关联键的一部分
+- name: customer_local_id
+  type: BIGINT
+  properties:
+    description: 'W3 customer identifier: department-local'
+- name: industry
+  type: VARCHAR
+  properties:
+    description: 客户当前行业，不是订单时点行业

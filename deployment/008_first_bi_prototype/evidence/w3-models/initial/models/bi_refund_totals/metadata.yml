@@ -1,0 +1,20 @@
+name: bi_refund_totals
+primary_key:
+- refund_dept_id
+- refund_order_id
+properties:
+  description: 原始退款先按部门和订单聚合，不能把订单实付关联到退款明细后求和
+columns:
+- name: refund_dept_id
+  type: CHAR(1)
+  properties:
+    description: 退款所属部门
+- name: refund_order_id
+  type: BIGINT
+  properties:
+    description: 退款所属订单
+- name: refund_total
+  type: DECIMAL
+  properties:
+    description: 订单累计退款，人民币元
+    source_type: DECIMAL(38, 2)

@@ -19,6 +19,10 @@
 5. 自查当前变更，交付 review，停止，不提交、不继续下一步。这是用户明确要求的教学节奏。
 6. 用户确认后检查工作区，只提交本步文件，不夹带其他改动；提交失败时报告原因，不视为已提交。然后开始下一步。没有要求时不 push。
 
+## 当前研究优先级
+
+W2已确认并提交，当前按原计划完成W3语义变更维护后等待review；部门隔离暂缓，不作为本阶段前置。保留基本只读与模型范围校验。不要把“暂缓隔离”写成隔离通过，也不要提前推进后续步骤。W3的独立发布包与正常wren项目分开；195不是原245基线的新答案，详见 [W3教程](walkthroughs/005_W3-WALKTHROUGH.md)。
+
 ## 架构与权限边界
 
 用户已确认先接 Superset，再实验 Codex＋Wren 新版。先完成 Superset 基线与跨源对账，再执行 README 的 W1～W3：Wren 建模、Codex 接入、语义变更维护。Superset MCP 管 BI 资产操作，Wren MCP 管语义模型与查询；二者不能混为同一工具，也不能假定自动同步。先固定调用验证工具，再接模型；不先开发 LangGraph、聊天前端、向量数据库或另一套 Agent。
@@ -79,7 +83,7 @@ S7 建立 20～30 个有编号的代表问题，覆盖：同义指标、时间�
 
 ## W2 已验证的 Wren 入口
 
-从本原型目录启动客户端，使用 `bi008_wren`。部署者先运行 `python3 scripts/install_w2.py`；分析者按 get_runtime_contract → get_instructions → 模型/cube 发现 → dry_plan → dry_run → run_sql/query_cube 使用工具。操作与版本见 [W2 教程](W2-WALKTHROUGH.md)。
+从本原型目录启动客户端，使用 `bi008_wren`。部署者先运行 `python3 scripts/install_w2.py`；分析者按 get_runtime_contract → get_instructions → 模型/cube 发现 → dry_plan → dry_run → run_sql/query_cube 使用工具。操作与版本见 [W2 教程](walkthroughs/004_W2-WALKTHROUGH.md)。
 
 只用未限定的 MDL 模型名与可见 CTE，不输入物理 catalog/schema。日期窗口使用显式 DATE 字面量；当前 cube 日期范围已知不支持，无区间分组可用。金额返回精确字符串，继续用 Decimal 核算。规则或模型 revision 不一致时停止查询，走构建、回归、review 和重启流程，不绕过入口。
 

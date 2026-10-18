@@ -1,0 +1,22 @@
+name: net_revenue
+base_object: bi_orders
+measures:
+- name: total
+  expression: SUM(net_amount)
+  type: DECIMAL
+  properties:
+    source_type: DECIMAL(38, 2)
+dimensions:
+- name: industry
+  expression: industry
+  type: VARCHAR
+- name: dept_id
+  expression: dept_id
+  type: VARCHAR
+time_dimensions:
+- name: order_date
+  expression: order_date
+  type: DATE
+properties:
+  description: 'net_revenue@2; W3 synthetic fixture; eligible statuses: ''paid'';
+    CNY; current industry; refunds assigned to order date'

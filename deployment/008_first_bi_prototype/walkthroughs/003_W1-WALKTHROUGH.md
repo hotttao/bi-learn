@@ -105,7 +105,7 @@ scripts/wren.sh dry-plan --sql 'SELECT * FROM mysql.sales.refunds'
 .local/wren-venv/bin/python scripts/verify_w1.py
 ```
 
-脚本只读源数据；缺失客户和一分钱变更在临时内存模型中模拟，不写业务表。检查订单键/粒度、金额、行业、部门、日期、空集、cube、缺失客户、分级精度、运行时拒绝，以及已知问题是否仍需规避。依据见 [w1-verification.json](evidence/w1-verification.json)。
+脚本只读源数据；缺失客户和一分钱变更在临时内存模型中模拟，不写业务表。检查订单键/粒度、金额、行业、部门、日期、空集、cube、缺失客户、分级精度、运行时拒绝，以及已知问题是否仍需规避。依据见 [w1-verification.json](../evidence/w1-verification.json)。
 
 思考三个问题：关系声明为何不能代替唯一性检查？为什么只对 245 不能发现错误行业归属？Wren YAML 改动后，Superset 的 S4 数据集为什么不会自动改变？
 

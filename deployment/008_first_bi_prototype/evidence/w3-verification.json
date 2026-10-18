@@ -1,0 +1,1049 @@
+{
+  "verified_at_utc": "2026-10-18T02:51:45.984437+00:00",
+  "scope": "synthetic fixture, no S2 writes",
+  "run_id": "w3-20261018T025145",
+  "builds": {
+    "initial": [
+      {
+        "command": [
+          "wren",
+          "context",
+          "validate",
+          "--strict"
+        ],
+        "stdout": "Valid — 3 models, 0 views, 2 relationships.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "context",
+          "build"
+        ],
+        "stdout": "Built: 3 models, 0 views → /home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/.local/w3/candidates/w3-20261018T025145/initial/target/mdl.json\n\nNext: wren --sql 'SELECT ...' to query your data.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "memory",
+          "index"
+        ],
+        "stdout": "grep backend: 1 pair(s) in knowledge/sql/ — no index build needed.\n",
+        "stderr": "`wren memory recall` works over grep; semantic schema search (`wren memory fetch`) needs `wren[memory]`.\n"
+      }
+    ],
+    "broken": [
+      {
+        "command": [
+          "wren",
+          "context",
+          "validate",
+          "--strict"
+        ],
+        "stdout": "Valid — 3 models, 0 views, 2 relationships.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "context",
+          "build"
+        ],
+        "stdout": "Built: 3 models, 0 views → /home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/.local/w3/candidates/w3-20261018T025145/broken-relationship/target/mdl.json\n\nNext: wren --sql 'SELECT ...' to query your data.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "memory",
+          "index"
+        ],
+        "stdout": "grep backend: 1 pair(s) in knowledge/sql/ — no index build needed.\n",
+        "stderr": "`wren memory recall` works over grep; semantic schema search (`wren memory fetch`) needs `wren[memory]`.\n"
+      }
+    ],
+    "relationship-v2": [
+      {
+        "command": [
+          "wren",
+          "context",
+          "validate",
+          "--strict"
+        ],
+        "stdout": "Valid — 3 models, 0 views, 2 relationships.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "context",
+          "build"
+        ],
+        "stdout": "Built: 3 models, 0 views → /home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/.local/w3/candidates/w3-20261018T025145/relationship-v2/target/mdl.json\n\nNext: wren --sql 'SELECT ...' to query your data.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "memory",
+          "index"
+        ],
+        "stdout": "grep backend: 1 pair(s) in knowledge/sql/ — no index build needed.\n",
+        "stderr": "`wren memory recall` works over grep; semantic schema search (`wren memory fetch`) needs `wren[memory]`.\n"
+      }
+    ],
+    "metric-v2": [
+      {
+        "command": [
+          "wren",
+          "context",
+          "validate",
+          "--strict"
+        ],
+        "stdout": "Valid — 3 models, 0 views, 2 relationships.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "context",
+          "build"
+        ],
+        "stdout": "Built: 3 models, 0 views → /home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/.local/w3/candidates/w3-20261018T025145/metric-v2/target/mdl.json\n\nNext: wren --sql 'SELECT ...' to query your data.\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "wren",
+          "memory",
+          "index"
+        ],
+        "stdout": "grep backend: 1 pair(s) in knowledge/sql/ — no index build needed.\n",
+        "stderr": "`wren memory recall` works over grep; semantic schema search (`wren memory fetch`) needs `wren[memory]`.\n"
+      }
+    ]
+  },
+  "source_schema_unchanged_by_key_drift": true,
+  "initial_regression": {
+    "total": {
+      "sql": "SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 3, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 4, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "arrow_schema": "amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ]
+    },
+    "industry": {
+      "sql": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 3, '软件'), ('B', 4, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 3, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 4, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "arrow_schema": "industry: string\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "industry": "零售",
+          "amount": "125.0000000000"
+        },
+        {
+          "industry": "软件",
+          "amount": "120.0000000000"
+        }
+      ]
+    },
+    "daily": {
+      "sql": "SELECT order_date,SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 3, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 4, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "arrow_schema": "order_date: date32[day]\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_date": "2026-10-02",
+          "amount": "125.0000000000"
+        },
+        {
+          "order_date": "2026-10-01",
+          "amount": "120.0000000000"
+        }
+      ]
+    },
+    "orders": {
+      "sql": "SELECT order_id,industry,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_id FROM (SELECT __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 3, '软件'), ('B', 4, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 3, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 4, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, industry, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int32\nindustry: string\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "industry": "软件",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "industry": "零售",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 3,
+          "industry": "软件",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "industry": "零售",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    }
+  },
+  "initial_quality": {
+    "customer_key": "customer_id",
+    "duplicate_key_groups": 0,
+    "query_id": "20261018_025148_00132_ujdet",
+    "passed": true
+  },
+  "relationship_drift": {
+    "quality": {
+      "customer_key": "customer_id",
+      "duplicate_key_groups": 2,
+      "query_id": "20261018_025149_00136_ujdet",
+      "passed": false
+    },
+    "misleading_correct_total": {
+      "sql": "SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "arrow_schema": "amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ]
+    },
+    "wrong_industry": {
+      "sql": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "arrow_schema": "industry: string\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "industry": "软件",
+          "amount": "240.0000000000"
+        },
+        {
+          "industry": "零售",
+          "amount": "250.0000000000"
+        }
+      ]
+    },
+    "wrong_details": {
+      "sql": "SELECT order_id,industry,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_id FROM (SELECT __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, industry, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int32\nindustry: string\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "industry": "软件",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 1,
+          "industry": "软件",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "industry": "零售",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 2,
+          "industry": "零售",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 3,
+          "industry": "软件",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 3,
+          "industry": "软件",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "industry": "零售",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "industry": "零售",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    },
+    "publication_refused": "BI008_RELEASE_CHECKS: failed or missing gates; pointer unchanged",
+    "previous_pointer_retained": true
+  },
+  "repaired_quality": {
+    "customer_key": "dept_id,customer_id",
+    "duplicate_key_groups": 0,
+    "query_id": "20261018_025151_00143_ujdet",
+    "passed": true
+  },
+  "relationship_regression": {
+    "total": {
+      "sql": "SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "arrow_schema": "amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ]
+    },
+    "industry": {
+      "sql": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "arrow_schema": "industry: string\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "industry": "软件",
+          "amount": "120.0000000000"
+        },
+        {
+          "industry": "零售",
+          "amount": "125.0000000000"
+        }
+      ]
+    },
+    "daily": {
+      "sql": "SELECT order_date,SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "arrow_schema": "order_date: date32[day]\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_date": "2026-10-02",
+          "amount": "125.0000000000"
+        },
+        {
+          "order_date": "2026-10-01",
+          "amount": "120.0000000000"
+        }
+      ]
+    },
+    "orders": {
+      "sql": "SELECT order_id,industry,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_id FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid', 'settled')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, industry, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int32\nindustry: string\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "industry": "软件",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "industry": "零售",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 3,
+          "industry": "软件",
+          "net_amount": "50.0000000000"
+        },
+        {
+          "order_id": 4,
+          "industry": "零售",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    }
+  },
+  "impact": {
+    "derived_from_compiled_mdl": {
+      "relationship": {
+        "name": "orders_customers",
+        "models": [
+          "bi_orders",
+          "bi_customers"
+        ],
+        "joinType": "MANY_TO_ONE",
+        "condition": "bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id = bi_customers.customer_local_id"
+      },
+      "direct_model_fields": [
+        "bi_orders.customer"
+      ],
+      "affected_models_conservative": [
+        "bi_orders"
+      ],
+      "affected_cubes_conservative": [
+        "net_revenue"
+      ]
+    },
+    "manually_registered_consumers": [
+      "knowledge/rules/general.md",
+      "knowledge/sql/verified.md",
+      "Codex MCP session"
+    ],
+    "superset": {
+      "dataset_id": 2,
+      "chart_ids": [
+        3
+      ],
+      "actual_fixture_dependency": false,
+      "note": "S4 dataset uses independent SQL. Only if promoting the equivalent real rule must this manually mapped consumer be reviewed; no automatic sync performed."
+    }
+  },
+  "mcp_initial_to_relationship": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@1",
+      "mdl_sha256": "9826ded9184450e30800f526d93d11e15f7745351427daa95628c0ed24bb40e7",
+      "source_revision": "d8220cfe038c90b8879e220de95fd18da0be1ecd5ad01dc88e3c484897175d94",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-v1",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 initial\n指标：net_revenue@1，受控别名净销售额；仅含订单状态 'paid','settled'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：全局客户 ID。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "initial net_revenue@1 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "软件",
+          "total": "120.0000000000"
+        },
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    },
+    "old_session_after_publication": {
+      "contract": {
+        "project": "bi008_w3_fixture",
+        "metric": "net_revenue@1",
+        "mdl_sha256": "9826ded9184450e30800f526d93d11e15f7745351427daa95628c0ed24bb40e7",
+        "source_revision": "d8220cfe038c90b8879e220de95fd18da0be1ecd5ad01dc88e3c484897175d94",
+        "source_matches_startup": true,
+        "wrenai": "0.16.0",
+        "mcp": "1.26.0",
+        "strict_mode": true,
+        "fallback": false,
+        "table_references": "unqualified MDL models or visible CTEs only",
+        "money_json": "Decimal as exact decimal string",
+        "allow_write": false,
+        "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+        "department_isolation": "NOT implemented; local synthetic-data experiment",
+        "transport": "stdio",
+        "superset_sync": "not implemented",
+        "release_id": "w3-20261018T025145-v1",
+        "active_release_matches_session": false,
+        "scope": "W3 synthetic fixture, not S2 baseline",
+        "publication_review": {
+          "scope": "synthetic_fixture",
+          "reviewer": "regression_harness",
+          "decision": "approve"
+        }
+      },
+      "refusal": {
+        "error": "Error executing tool run_sql: BI008_RELEASE_REVISION: active release changed; restart client before querying"
+      },
+      "old_context_retained": true
+    }
+  },
+  "mcp_relationship": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@1",
+      "mdl_sha256": "1a1d66c1db3b20064b9cc82137394d1866edb777940da80f67406d6084347e0a",
+      "source_revision": "db10b727a3f252bca083ae5732b6ccbd6f80be4f0f5f51e8384507e169a54a0f",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-relationship-v2",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 relationship-v2\n指标：net_revenue@1，受控别名净销售额；仅含订单状态 'paid','settled'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：部门与客户 ID 的复合键。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "relationship-v2 net_revenue@1 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "软件",
+          "total": "120.0000000000"
+        },
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    }
+  },
+  "metric_regression": {
+    "total": {
+      "sql": "SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS amount FROM bi_orders",
+      "arrow_schema": "amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "amount": "195.0000000000"
+        }
+      ]
+    },
+    "industry": {
+      "sql": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT industry, SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+      "arrow_schema": "industry: string\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "industry": "软件",
+          "amount": "70.0000000000"
+        },
+        {
+          "industry": "零售",
+          "amount": "125.0000000000"
+        }
+      ]
+    },
+    "daily": {
+      "sql": "SELECT order_date,SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT order_date, SUM(net_amount) AS amount FROM bi_orders GROUP BY order_date",
+      "arrow_schema": "order_date: date32[day]\namount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_date": "2026-10-02",
+          "amount": "125.0000000000"
+        },
+        {
+          "order_date": "2026-10-01",
+          "amount": "70.0000000000"
+        }
+      ]
+    },
+    "orders": {
+      "sql": "SELECT order_id,industry,net_amount FROM bi_orders ORDER BY order_id",
+      "planned_sql": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_id FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM (SELECT * FROM (VALUES ('A', 1, '软件'), ('A', 2, '零售'), ('B', 1, '软件'), ('B', 2, '零售')) AS fixture(dept_id, customer_id, industry)) AS c) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM (SELECT * FROM (VALUES ('A', 1, CAST('10.00' AS DECIMAL(12, 2))), ('A', 1, CAST('20.00' AS DECIMAL(12, 2))), ('A', 2, CAST('5.00' AS DECIMAL(12, 2))), ('B', 4, CAST('10.00' AS DECIMAL(12, 2)))) AS fixture(dept_id, order_id, refund_amount)) AS r GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM (SELECT * FROM (SELECT * FROM (VALUES (1, 'A', 1, CAST('2026-10-01' AS DATE), CAST('100.00' AS DECIMAL(12, 2)), 'paid'), (2, 'A', 2, CAST('2026-10-02' AS DATE), CAST('80.00' AS DECIMAL(12, 2)), 'paid'), (3, 'B', 1, CAST('2026-10-01' AS DATE), CAST('50.00' AS DECIMAL(12, 2)), 'settled'), (4, 'B', 2, CAST('2026-10-02' AS DATE), CAST('60.00' AS DECIMAL(12, 2)), 'paid')) AS fixture(order_id, dept_id, customer_id, order_date, paid_amount, status)) AS s WHERE status IN ('paid')) AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, industry, net_amount FROM bi_orders ORDER BY order_id",
+      "arrow_schema": "order_id: int32\nindustry: string\nnet_amount: decimal128(38, 10)",
+      "rows": [
+        {
+          "order_id": 1,
+          "industry": "软件",
+          "net_amount": "70.0000000000"
+        },
+        {
+          "order_id": 2,
+          "industry": "零售",
+          "net_amount": "75.0000000000"
+        },
+        {
+          "order_id": 4,
+          "industry": "零售",
+          "net_amount": "50.0000000000"
+        }
+      ]
+    }
+  },
+  "metric_drift": {
+    "schema_unchanged": true,
+    "data_unchanged": true,
+    "old_statuses": [
+      "paid",
+      "settled"
+    ],
+    "new_statuses": [
+      "paid"
+    ],
+    "old_metric": "net_revenue@1",
+    "new_metric": "net_revenue@2",
+    "independent_expected": {
+      "total": "195.00",
+      "industry": {
+        "软件": "70.00",
+        "零售": "125.00"
+      },
+      "daily": {
+        "2026-10-01": "70.00",
+        "2026-10-02": "125.00"
+      },
+      "orders": 3
+    },
+    "business_decision_source": "explicit fixture policy; not inferred from schema"
+  },
+  "mixed_context_publication": {
+    "refused": "BI008_RELEASE_CHECKS: failed or missing gates; pointer unchanged",
+    "detected_before_activation": true
+  },
+  "mcp_relationship_to_metric": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@1",
+      "mdl_sha256": "1a1d66c1db3b20064b9cc82137394d1866edb777940da80f67406d6084347e0a",
+      "source_revision": "db10b727a3f252bca083ae5732b6ccbd6f80be4f0f5f51e8384507e169a54a0f",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-relationship-v2",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 relationship-v2\n指标：net_revenue@1，受控别名净销售额；仅含订单状态 'paid','settled'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：部门与客户 ID 的复合键。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "relationship-v2 net_revenue@1 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "软件",
+          "total": "120.0000000000"
+        },
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    },
+    "old_session_after_publication": {
+      "contract": {
+        "project": "bi008_w3_fixture",
+        "metric": "net_revenue@1",
+        "mdl_sha256": "1a1d66c1db3b20064b9cc82137394d1866edb777940da80f67406d6084347e0a",
+        "source_revision": "db10b727a3f252bca083ae5732b6ccbd6f80be4f0f5f51e8384507e169a54a0f",
+        "source_matches_startup": true,
+        "wrenai": "0.16.0",
+        "mcp": "1.26.0",
+        "strict_mode": true,
+        "fallback": false,
+        "table_references": "unqualified MDL models or visible CTEs only",
+        "money_json": "Decimal as exact decimal string",
+        "allow_write": false,
+        "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+        "department_isolation": "NOT implemented; local synthetic-data experiment",
+        "transport": "stdio",
+        "superset_sync": "not implemented",
+        "release_id": "w3-20261018T025145-relationship-v2",
+        "active_release_matches_session": false,
+        "scope": "W3 synthetic fixture, not S2 baseline",
+        "publication_review": {
+          "scope": "synthetic_fixture",
+          "reviewer": "regression_harness",
+          "decision": "approve"
+        }
+      },
+      "refusal": {
+        "error": "Error executing tool run_sql: BI008_RELEASE_REVISION: active release changed; restart client before querying"
+      },
+      "old_context_retained": true
+    }
+  },
+  "mcp_metric": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@2",
+      "mdl_sha256": "e7852fdd5579906b4cc9705c1c10f7762ca400e3a718c0a31f42b195f049608c",
+      "source_revision": "76bbbaebd8ce05226e93c951d42a1549da41a33564d2b8119b9b91fdb8093c57",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-metric-v2",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 metric-v2\n指标：net_revenue@2，受控别名净销售额；仅含订单状态 'paid'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：部门与客户 ID 的复合键。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "metric-v2 net_revenue@2 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "195.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        },
+        {
+          "industry": "软件",
+          "total": "70.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    }
+  },
+  "tampered_bundle": "BI008_RELEASE_INTEGRITY: bundle contents differ from reviewed model/knowledge snapshot",
+  "rollback": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@1",
+      "mdl_sha256": "1a1d66c1db3b20064b9cc82137394d1866edb777940da80f67406d6084347e0a",
+      "source_revision": "db10b727a3f252bca083ae5732b6ccbd6f80be4f0f5f51e8384507e169a54a0f",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-relationship-v2",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 relationship-v2\n指标：net_revenue@1，受控别名净销售额；仅含订单状态 'paid','settled'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：部门与客户 ID 的复合键。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "relationship-v2 net_revenue@1 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "245.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        },
+        {
+          "industry": "软件",
+          "total": "120.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    }
+  },
+  "recovery": {
+    "contract": {
+      "project": "bi008_w3_fixture",
+      "metric": "net_revenue@2",
+      "mdl_sha256": "e7852fdd5579906b4cc9705c1c10f7762ca400e3a718c0a31f42b195f049608c",
+      "source_revision": "76bbbaebd8ce05226e93c951d42a1549da41a33564d2b8119b9b91fdb8093c57",
+      "source_matches_startup": true,
+      "wrenai": "0.16.0",
+      "mcp": "1.26.0",
+      "strict_mode": true,
+      "fallback": false,
+      "table_references": "unqualified MDL models or visible CTEs only",
+      "money_json": "Decimal as exact decimal string",
+      "allow_write": false,
+      "cube_date_range": "unsupported; use run_sql with explicit DATE literals",
+      "department_isolation": "NOT implemented; local synthetic-data experiment",
+      "transport": "stdio",
+      "superset_sync": "not implemented",
+      "release_id": "w3-20261018T025145-metric-v2",
+      "active_release_matches_session": true,
+      "scope": "W3 synthetic fixture, not S2 baseline",
+      "publication_review": {
+        "scope": "synthetic_fixture",
+        "reviewer": "regression_harness",
+        "decision": "approve"
+      }
+    },
+    "instructions": {
+      "instructions": "# W3 metric-v2\n指标：net_revenue@2，受控别名净销售额；仅含订单状态 'paid'。\n净额为实付减已记录退款，人民币元；退款回溯原订单日，行业为客户当前行业。\n客户键：部门与客户 ID 的复合键。\n只用模型名，不用物理表；先 dry_plan/dry_run 再查询；金额为精确字符串。\n这是独立合成实验，不是 S2 基准，不是企业发布；收入含糊时澄清。",
+      "used_legacy": false
+    },
+    "recall": {
+      "matches": [
+        {
+          "nl_query": "metric-v2 net_revenue@2 按当前行业比较净销售额",
+          "sql_query": "SELECT industry,SUM(net_amount) AS amount FROM bi_orders GROUP BY industry",
+          "datasource": "trino",
+          "tags": "",
+          "path": "knowledge/sql/verified.md",
+          "score": 5
+        }
+      ]
+    },
+    "total": {
+      "columns": [
+        "amount"
+      ],
+      "rows": [
+        {
+          "amount": "195.0000000000"
+        }
+      ],
+      "row_count": 1,
+      "truncated": false
+    },
+    "cube": {
+      "columns": [
+        "industry",
+        "total"
+      ],
+      "rows": [
+        {
+          "industry": "零售",
+          "total": "125.0000000000"
+        },
+        {
+          "industry": "软件",
+          "total": "70.0000000000"
+        }
+      ],
+      "row_count": 2,
+      "truncated": false
+    }
+  },
+  "release_ids": {
+    "initial": "w3-20261018T025145-v1",
+    "relationship-v2": "w3-20261018T025145-relationship-v2",
+    "metric-v2": "w3-20261018T025145-metric-v2"
+  },
+  "active_release": {
+    "release_id": "w3-20261018T025145-metric-v2",
+    "metric": "net_revenue@2",
+    "scope": "synthetic_fixture",
+    "checks": {
+      "quality": true,
+      "regression": true,
+      "context": true
+    },
+    "review": {
+      "scope": "synthetic_fixture",
+      "reviewer": "regression_harness",
+      "decision": "approve"
+    },
+    "files": {
+      ".gitignore": "2c2c29d2328f63f007ed4cc9f7a4a05da049752b123d26ada35e01bad4c100b1",
+      "AGENTS.md": "01d3413771a0aaefae4a382721df4e26c4fe67b9c15f67a4efa80293f024f1b6",
+      "cubes/net_revenue/metadata.yml": "769d7be32532567c6b40011895dd7a71f5281ea9183767dfae1830e378a3a7c2",
+      "knowledge/rules/general.md": "1dfbd19906dbc173466a2107d9e3b207956f167b5c8ce16f29155ed24c4cb78d",
+      "knowledge/sql/verified.md": "1dc7c8730f3dfeb493ac742de62637dab20e8f05055a03cb81eb11b079543b3f",
+      "models/bi_customers/metadata.yml": "b2c0a7ceda71ccbdbfb04bcbbe35c3fdea88545456514f2688af385152f6ccb7",
+      "models/bi_customers/ref_sql.sql": "f006025465487ef17438c739145df6af95eb0514634c8f597bb34791a5fb9dac",
+      "models/bi_orders/metadata.yml": "eb42434d9c99a9c57a8bcc927bb96fe2617aaa47cf73a0e6805b7acef3e2a453",
+      "models/bi_orders/ref_sql.sql": "31d4a4efd21b92926514003e0a3a5c784ddfacdd2c98bfd8945e10088c9ec31f",
+      "models/bi_refund_totals/metadata.yml": "b86ad063cf3e8acfd490f9ef1df3a3e9e6f586f85f4ae0ff77b8f9475e633342",
+      "models/bi_refund_totals/ref_sql.sql": "464cac76ec18037c6d20fc9c757ec78f0309c700832e6402d4a7e8f7b6db3c8d",
+      "relationships.yml": "1a73e960f7f8a05e941628a0f72d68e92969f059eeee8222e1de83eb6b785b65",
+      "requirements-mcp.in": "0e4778359cd7301a2cd6314709fd1eca4fbf105a8d1f4f56eb567e983900715a",
+      "requirements-mcp.lock": "7761600b5cf93501d6f707c60bd93e31cfbfd7637437af5f265387aa2a40fa3b",
+      "runtime/config.json": "ab7b6387150314459aa339661b851ae9ffdb682426ec0ea67b8ffc23cd30b136",
+      "runtime/profiles.yml": "df7f5d1d5df505b419b590bfee25ad80c5025498a9170afc98291430aeb67749",
+      "runtime/trino-connection.json": "325c27623c0aacaf7711a7af8af8f54a9f41369dc30abcb8b67916d95ee6e6d6",
+      "semantic-contract.json": "1d5e3734840e7e309bf8c0c63ebda8fac820403c2e7b299929556caf60c5bfd4",
+      "target/mdl.json": "e7852fdd5579906b4cc9705c1c10f7762ca400e3a718c0a31f42b195f049608c",
+      "wren_project.yml": "f3caf85c965fa08707c10ebf0d2feec31b72bd6c11140dc6201e8b88d04b4fe0"
+    }
+  },
+  "not_verified": [
+    "real company semantics or business approval",
+    "automatic schema/quality polling",
+    "production atomic rollout",
+    "vector index publication (grep index is no-op)",
+    "automatic Superset sync",
+    "schema-breaking database rollback",
+    "department isolation (deferred)"
+  ]
+}

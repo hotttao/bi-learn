@@ -1,0 +1,36 @@
+{
+  "verified_at_utc": "2026-10-18T02:53:01.916965+00:00",
+  "release_id": "w3-20261018T025145-metric-v2",
+  "metric": "net_revenue@2",
+  "fixture_result": "195.00",
+  "source_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "main_wren_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "independent_context_rejection": "BI008_RELEASE_CONTEXT: metric versions differ across contract/model/rules/examples",
+  "rejected_pointer_unchanged": true,
+  "codex_mcp_calls": 18,
+  "superset": {
+    "healthy": true,
+    "url": "http://192.168.2.46:8088/superset/dashboard/1/",
+    "s4_sql_unchanged": true,
+    "chart_ids": [
+      1,
+      2,
+      3
+    ],
+    "result_baseline": "245.00"
+  },
+  "trino": {
+    "nodeId": "bi008-single",
+    "state": "ACTIVE",
+    "nodeVersion": {
+      "version": "481"
+    },
+    "environment": "bi008",
+    "coordinator": true,
+    "coordinatorId": "ujdet",
+    "starting": false,
+    "uptime": "44.99m"
+  },
+  "standard_codex_config_changed": false,
+  "scope": "W3 isolated fixture only; no enterprise business approval; department isolation deferred"
+}

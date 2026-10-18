@@ -1,0 +1,75 @@
+{
+  "type": "object",
+  "properties": {
+    "mdl_sha256": {
+      "type": "string"
+    },
+    "total": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "daily": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "notes": {
+      "type": "string"
+    },
+    "release_id": {
+      "type": "string"
+    },
+    "metric": {
+      "type": "string"
+    },
+    "eligible_statuses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "mdl_sha256",
+    "total",
+    "industry",
+    "daily",
+    "notes",
+    "release_id",
+    "metric",
+    "eligible_statuses"
+  ],
+  "additionalProperties": false
+}

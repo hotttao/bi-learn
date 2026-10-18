@@ -1,0 +1,60 @@
+name: bi_orders
+primary_key: order_id
+properties:
+  description: 'W3 fixture: one row per eligible order; net_revenue@1'
+columns:
+- name: order_id
+  type: BIGINT
+  properties:
+    description: 全局唯一订单 ID
+- name: dept_id
+  type: CHAR(1)
+  properties:
+    description: 部门，客户和退款关联键的一部分
+- name: customer_id
+  type: BIGINT
+  properties:
+    description: 'W3 customer identifier: globally unique'
+- name: order_date
+  type: DATE
+  properties:
+    description: Asia/Shanghai 业务日期，退款归属原订单日
+- name: paid_amount
+  type: DECIMAL
+  properties:
+    description: 订单实付，人民币元，定点数
+    source_type: DECIMAL(12, 2)
+- name: status
+  type: VARCHAR
+  properties:
+    description: fixture order state
+- name: refund
+  type: bi_refund_totals
+  relationship: orders_refund_totals
+  properties:
+    description: 退款已按部门和订单汇总，至多一行
+- name: customer
+  type: bi_customers
+  relationship: orders_customers
+  properties:
+    description: W3 customer relation uses global customer ID
+- name: refund_total
+  type: DECIMAL
+  is_calculated: true
+  expression: coalesce(refund.refund_total, 0)
+  properties:
+    description: 订单累计已记录退款，无退款为零，归属订单日
+    source_type: DECIMAL(38, 2)
+- name: net_amount
+  type: DECIMAL
+  is_calculated: true
+  expression: paid_amount - coalesce(refund.refund_total, 0)
+  properties:
+    description: 净收入行值=实付-累计退款，人民币元；SUM 为净收入
+    source_type: DECIMAL(38, 2)
+- name: industry
+  type: VARCHAR
+  is_calculated: true
+  expression: coalesce(customer.industry, '未知行业')
+  properties:
+    description: 客户当前行业，缺失保留订单为未知行业
