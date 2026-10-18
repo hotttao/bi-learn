@@ -60,9 +60,10 @@ services:
     volumes:
       - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
       - ./superset_mcp/superset_mcp_config.py:/app/pythonpath/superset_mcp_config.py:ro
+      - ./superset_mcp/start_mcp.py:/app/pythonpath/start_mcp.py:ro
     ports:
       - 127.0.0.1:5008:5008
-    command: [superset, mcp, run, --host, 0.0.0.0, --port, '5008']
+    command: [python, /app/pythonpath/start_mcp.py]
     healthcheck:
       test: [CMD, python, -c, "import socket; socket.create_connection(('127.0.0.1',5008),timeout=3).close()"]
       interval: 10s

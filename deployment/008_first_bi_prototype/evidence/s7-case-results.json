@@ -1,0 +1,458 @@
+{
+  "verified_at_utc": "2026-10-18T10:01:12.762972+00:00",
+  "counting": "24 acceptance items, not 24 independent prompts; multiple items may share a conversation step; unfinished cases are not passes",
+  "stage_complete": true,
+  "passed": 22,
+  "pending": 0,
+  "blocked": 0,
+  "deferred": 2,
+  "cases": [
+    {
+      "id": "Q01",
+      "question": "2026年10月净收入日趋势",
+      "evidence": "s7-turn-1.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 29,
+      "usage": {
+        "input_tokens": 372901,
+        "cached_input_tokens": 329600,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2468,
+        "reasoning_output_tokens": 120
+      },
+      "observed_status": "saved"
+    },
+    {
+      "id": "Q02",
+      "question": "日趋势与当月合计对账",
+      "evidence": "s7-turn-1.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 29,
+      "usage": {
+        "input_tokens": 372901,
+        "cached_input_tokens": 329600,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2468,
+        "reasoning_output_tokens": 120
+      },
+      "observed_status": "saved"
+    },
+    {
+      "id": "Q03",
+      "question": "按当前客户行业比较净销售额",
+      "evidence": "s7-turn-2.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 26,
+      "usage": {
+        "input_tokens": 808726,
+        "cached_input_tokens": 746368,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5057,
+        "reasoning_output_tokens": 317
+      },
+      "observed_status": "saved"
+    },
+    {
+      "id": "Q04",
+      "question": "预览后保存到指定现有看板并读回",
+      "evidence": "s7-turn-2.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 26,
+      "usage": {
+        "input_tokens": 808726,
+        "cached_input_tokens": 746368,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 5057,
+        "reasoning_output_tokens": 317
+      },
+      "observed_status": "saved"
+    },
+    {
+      "id": "Q05",
+      "question": "只把行业图改成横向",
+      "evidence": "s7-turn-3.json",
+      "kind": "real_codex_with_documented_adapter",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 18,
+      "usage": {
+        "input_tokens": 1848206,
+        "cached_input_tokens": 1757440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9853,
+        "reasoning_output_tokens": 970
+      },
+      "observed_status": "updated"
+    },
+    {
+      "id": "Q06",
+      "question": "保留目标图最新名称、金额格式、行数、配色",
+      "evidence": "s7-turn-3.json",
+      "kind": "real_codex_with_documented_adapter",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 18,
+      "usage": {
+        "input_tokens": 1848206,
+        "cached_input_tokens": 1757440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9853,
+        "reasoning_output_tokens": 970
+      },
+      "observed_status": "updated"
+    },
+    {
+      "id": "Q07",
+      "question": "保留其他图表和已有布局/备注",
+      "evidence": "s7-turn-3.json",
+      "kind": "real_codex_with_documented_adapter",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 18,
+      "usage": {
+        "input_tokens": 1848206,
+        "cached_input_tokens": 1757440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9853,
+        "reasoning_output_tokens": 970
+      },
+      "observed_status": "updated"
+    },
+    {
+      "id": "Q08",
+      "question": "重复保存复用ID、不重复创建或加入",
+      "evidence": "s7-turn-4.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 4,
+      "usage": {
+        "input_tokens": 2136190,
+        "cached_input_tokens": 2041088,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 10297,
+        "reasoning_output_tokens": 970
+      },
+      "observed_status": "unchanged"
+    },
+    {
+      "id": "Q09",
+      "question": "净销售额同义问法",
+      "evidence": "s7-case-synonym.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 6,
+      "usage": {
+        "input_tokens": 125005,
+        "cached_input_tokens": 104704,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 418,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "answered"
+    },
+    {
+      "id": "Q10",
+      "question": "收入与时间含糊时澄清",
+      "evidence": "s7-case-ambiguity.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 2,
+      "usage": {
+        "input_tokens": 46084,
+        "cached_input_tokens": 29440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 355,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "needs_clarification"
+    },
+    {
+      "id": "Q11",
+      "question": "财务确认收入不能用净收入冒充",
+      "evidence": "s7-case-financial_income.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 2,
+      "usage": {
+        "input_tokens": 46126,
+        "cached_input_tokens": 29440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 360,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "unavailable"
+    },
+    {
+      "id": "Q12",
+      "question": "固定基准日下本月的边界解释",
+      "evidence": "s7-case-relative_month.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 0,
+      "usage": {
+        "input_tokens": 14753,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 315,
+        "reasoning_output_tokens": 93
+      },
+      "observed_status": "answered"
+    },
+    {
+      "id": "Q13",
+      "question": "无订单与零收入区分",
+      "evidence": "s7-case-no_data.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 7,
+      "usage": {
+        "input_tokens": 106674,
+        "cached_input_tokens": 86272,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 474,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "no_data"
+    },
+    {
+      "id": "Q14",
+      "question": "没有毛利口径时说明缺失",
+      "evidence": "s7-case-unknown_metric.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 7,
+      "usage": {
+        "input_tokens": 86189,
+        "cached_input_tokens": 66048,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 492,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "unavailable"
+    },
+    {
+      "id": "Q15",
+      "question": "没有历史行业关系时不替换成当前值",
+      "evidence": "s7-case-historical_industry.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 5,
+      "usage": {
+        "input_tokens": 81199,
+        "cached_input_tokens": 62592,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 457,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "unavailable"
+    },
+    {
+      "id": "Q16",
+      "question": "明细四行核对与原生表预览",
+      "evidence": "s7-case-details_preview.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 10,
+      "usage": {
+        "input_tokens": 191099,
+        "cached_input_tokens": 157568,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1056,
+        "reasoning_output_tokens": 162
+      },
+      "observed_status": "previewed"
+    },
+    {
+      "id": "Q17",
+      "question": "净收入指标卡预览",
+      "evidence": "s7-case-kpi_preview.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 10,
+      "usage": {
+        "input_tokens": 192883,
+        "cached_input_tokens": 128512,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 846,
+        "reasoning_output_tokens": 92
+      },
+      "observed_status": "previewed"
+    },
+    {
+      "id": "Q18",
+      "question": "缺失客户规则解释，不伪称做了数据fixture",
+      "evidence": "s7-case-missing_customer_rule.json",
+      "kind": "real_codex_rule_explanation_only",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 4,
+      "usage": {
+        "input_tokens": 67329,
+        "cached_input_tokens": 48384,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 387,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "answered",
+      "limitation": "rule explanation only; missing-customer data fixture belongs to prior W1, not rerun as an S7 model test"
+    },
+    {
+      "id": "Q19",
+      "question": "退款一对多扇出风险与实际合计核对",
+      "evidence": "s7-case-refund_fanout.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 12,
+      "usage": {
+        "input_tokens": 186200,
+        "cached_input_tokens": 154368,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 915,
+        "reasoning_output_tokens": 30
+      },
+      "observed_status": "answered"
+    },
+    {
+      "id": "Q20",
+      "question": "无数据/BI时间范围不匹配时不保存错误图表",
+      "evidence": "s7-case-unsupported_window_save.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 7,
+      "usage": {
+        "input_tokens": 154372,
+        "cached_input_tokens": 123904,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 641,
+        "reasoning_output_tokens": 66
+      },
+      "observed_status": "no_data"
+    },
+    {
+      "id": "Q21",
+      "question": "不通过改图表冒充重定义财务指标",
+      "evidence": "s7-case-metric_redefinition.json",
+      "kind": "real_codex",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 2,
+      "usage": {
+        "input_tokens": 46116,
+        "cached_input_tokens": 29440,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 304,
+        "reasoning_output_tokens": 0
+      },
+      "observed_status": "unchanged"
+    },
+    {
+      "id": "Q22",
+      "question": "模型指纹与绑定版本不一致时停止",
+      "evidence": "s7-binding-refusal.json",
+      "kind": "fixed_preflight_fixture_not_llm",
+      "status": "passed",
+      "metric": "net_revenue@1",
+      "dataset_id": 3,
+      "model_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+      "identity_scope": "local admin synthetic experiment",
+      "tool_calls": 0
+    },
+    {
+      "id": "Q23",
+      "question": "真实网络断连与不明保存结果恢复",
+      "kind": "deferred",
+      "reason": "S6只模拟本地未记ID；本步不冒充真实网络故障验证",
+      "status": "deferred"
+    },
+    {
+      "id": "Q24",
+      "question": "部门越权、敏感列、撤权与缓存隔离",
+      "kind": "deferred",
+      "reason": "按用户要求暂缓S5；admin研究会话不能证明部门隔离",
+      "status": "deferred"
+    }
+  ]
+}

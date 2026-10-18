@@ -1,0 +1,28 @@
+{
+  "verified_at_utc": "2026-10-18T03:34:10.548952+00:00",
+  "case": "relative_month",
+  "prompt": "以2026-10-18、Asia/Shanghai为分析基准日，我说“本月净收入”时应该解析成哪个起止区间？只解释日期边界和口径，不查询、不保存。",
+  "expected": {
+    "statuses": [
+      "answered"
+    ],
+    "no_query": true
+  },
+  "calls": [],
+  "answer": {
+    "status": "answered",
+    "metric": "net_revenue@1",
+    "mdl_sha256": null,
+    "dataset_id": null,
+    "dashboard_id": null,
+    "chart_ids": [],
+    "total": null,
+    "daily": [],
+    "industry": [],
+    "rows": [],
+    "summary": "以 2026-10-18、Asia/Shanghai 为基准，“本月”按自然月解析为 [2026-10-01 00:00:00, 2026-11-01 00:00:00)，左闭右开，均为上海时间。基准日用于确定月份，不自动把截止日截到 10 月 18 日；若想表达“本月至今”，需明确截至当前时刻还是包含 10 月 18 日全天。\n“净收入”按 net_revenue@1：实付减累计已记录退款，单位为人民币元，退款归属原订单日；不代表财务确认收入。这里仅适用于本地合成数据。未查询、未保存。"
+  },
+  "new_saved_charts": 0,
+  "checks_passed": true,
+  "scope": "one real independent Codex question; no department isolation claim"
+}

@@ -1,0 +1,37 @@
+{
+  "failures": [
+    {
+      "id": "date-preview-readback",
+      "expected_single_day_total": "120",
+      "observed": "245.00",
+      "cause": "native cached get_chart_data path ignored adhoc time filters/time_range",
+      "correction": "carry the same validated native TEMPORAL_RANGE as QueryObject filters in mapped form_data",
+      "source_mutated": false
+    },
+    {
+      "id": "mcp-not-ready-after-restart",
+      "error": "httpx.ReadError",
+      "cause": "test connected immediately after container restart, before service readiness",
+      "correction": "docker-compose up -d --no-deps --wait superset-mcp before starting regression",
+      "counts_as_network_recovery_test": false
+    },
+    {
+      "id": "detail-browser-format-check",
+      "expected_display": "70.00",
+      "observed_display": "70",
+      "cause": "test assumed a display format not required for raw detail table",
+      "correction": "accept equivalent numeric display and assert four rendered rows and original amounts"
+    },
+    {
+      "id": "metric-redefinition-status",
+      "expected_statuses": [
+        "unavailable",
+        "needs_clarification"
+      ],
+      "observed_status": "unchanged",
+      "cause": "model explicitly refused semantic overwrite but reported unchanged; enum expectation too narrow",
+      "correction": "accept unchanged only with no query/no chart writes and explicit missing financial definition/refusal; recollect original run without another model call"
+    }
+  ],
+  "scope": "actual failed attempts retained; successful regression recorded separately"
+}

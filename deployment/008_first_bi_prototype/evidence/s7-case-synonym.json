@@ -1,0 +1,148 @@
+{
+  "verified_at_utc": "2026-10-18T03:33:00.250724+00:00",
+  "case": "synonym",
+  "prompt": "2026年10月净销售额合计多少？用已审核口径实际查询，只问数，不做图。",
+  "expected": {
+    "statuses": [
+      "answered"
+    ],
+    "total": "245",
+    "query": true
+  },
+  "calls": [
+    {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "get_instructions",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"instructions\": \"# 008 销售语义规则 v1\\n\\n## 指标和时间\\n\\n净收入 net_revenue@1（受控别名“净销售额”）=实付减已记录退款。单位人民币元，展示两位小数。它不是财务收入确认；仅问“收入”时澄清。优先使用 net_revenue cube 的 total；也可 SUM(bi_orders.net_amount)。默认回归窗口为 [2026-10-01, 2026-11-01)，不是随时钟变化的“本月”。业务日期 Asia/Shanghai，退款回溯原订单日。\\n\\n## 关系与粒度\\n\\nbi_orders 每行一订单，order_id 全局唯一。bi_refund_totals 是原始退款按 (dept_id, order_id) 汇总的结果，再与 bi_orders 关联；不关联退款明细后重复求和实付。bi_customers 主键为 (dept_id, customer_id)，关联必须保留两个字段。缺失客户时保留订单，行业为“未知行业”。原始退款明细不是本项目的查询模型。\\n\\n## 行业、质量与权限\\n\\n行业为客户当前行业，更新后历史订单重新分组；无法回答下单时行业。重复客户键、累计退款超过实付等需要外部质量检查拒绝发布，MDL 的基数声明不能代替实际数据质量校验。\\n\\nstrict_mode 只约束本入口的模型引用和只读语句；本实验没有部门认证/隔离。部署会话能访问 Trino 原始源，不代表普通用户已受保护。不要将本地未认证入口当作团队服务。\\n\\n## 变更和 BI\\n\\n模型源 YAML → validate → build → 回归。当前使用 grep 知识后端，memory index 是无索引可构建的 no-op；尚未测试向量检索。MCP 和 Codex 工具接入在 W2，语义变更发布在 W3。Superset 仍使用 S4 SQL，不会因 Wren YAML 改动自动更新。知识 Markdown 是 Agent 上下文，不是引擎强制规则。\\n\\n## 已知兼容限制\\n\\n当前引擎对同名物理表的限定名存在模型范围绕过，模型统一用 bi_ 前缀避开已连接物理表名；仍不得将 strict_mode 宣称为完整授权边界。当前项目没有与 bi_ 模型同名的物理表；新增源表时需重新检查名称冲突与范围测试。关联目标键使用不同别名，避免引擎在外关联时从无匹配一侧投影同名键。\\n\\n## 金额兼容约定\\n\\n当前版本在 MDL 列类型使用通用 DECIMAL，源字段精度另存 properties.source_type；这份属性不是引擎精度保证。SQL 中的非整数金额常量使用显式 CAST('0.01' AS DECIMAL(12,2))，不要使用会被本版本翻译丢失标度的 DECIMAL '0.01'。回归必须包含“分”级值并使用 Decimal 对账，不能只看整数 245。\\n\\n\\n## W2 MCP 能力边界\\n\\nbi008_wren 入口额外禁止输入中的 catalog/schema 限定名、多个语句和表函数，使用启动时的模型/知识快照，金额以精确十进制字符串返回。原生 Wren 缺口仍存在，不能直接改连未适配服务。源变化会拒绝执行，需要构建、回归、review、重启后生效；这不是自动发布。\\n\\nquery_cube 当前支持无范围的聚合/日期分组。带日期范围的 cube 在本 Trino DATE 字段上存在上游翻译错误，入口主动拒绝并要求改用 run_sql 的显式 DATE 字面量。默认回归窗口和退款、行业口径不变。MCP 元数据不是业务授权，部门隔离仍未实现。\",\n  \"used_legacy\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "get_runtime_contract",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"project\": \"bi008_semantics\",\n  \"metric\": \"net_revenue@1\",\n  \"mdl_sha256\": \"a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83\",\n  \"source_revision\": \"2db98036b40bca76d5e094ff5169bd291e6bbd26334c49ac481ec88d4ee400f4\",\n  \"source_matches_startup\": true,\n  \"wrenai\": \"0.16.0\",\n  \"mcp\": \"1.26.0\",\n  \"strict_mode\": true,\n  \"fallback\": false,\n  \"table_references\": \"unqualified MDL models or visible CTEs only\",\n  \"money_json\": \"Decimal as exact decimal string\",\n  \"allow_write\": false,\n  \"cube_date_range\": \"unsupported; use run_sql with explicit DATE literals\",\n  \"department_isolation\": \"NOT implemented; local synthetic-data experiment\",\n  \"transport\": \"stdio\",\n  \"superset_sync\": \"not implemented\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "bi_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"bi_orders\",\n  \"columns\": [\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": \"全局唯一订单 ID\"\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"CHAR(1)\",\n      \"description\": \"部门，客户和退款关联键的一部分\"\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": \"部门内客户 ID，不能单独关联\"\n    },\n    {\n      \"name\": \"order_date\",\n      \"type\": \"DATE\",\n      \"description\": \"Asia/Shanghai 业务日期，退款归属原订单日\"\n    },\n    {\n      \"name\": \"paid_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"订单实付，人民币元，定点数\"\n    },\n    {\n      \"name\": \"refund\",\n      \"type\": \"bi_refund_totals\",\n      \"description\": \"退款已按部门和订单汇总，至多一行\"\n    },\n    {\n      \"name\": \"customer\",\n      \"type\": \"bi_customers\",\n      \"description\": \"按部门和客户复合键匹配当前客户，允许无匹配\"\n    },\n    {\n      \"name\": \"refund_total\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"订单累计已记录退款，无退款为零，归属订单日\"\n    },\n    {\n      \"name\": \"net_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"净收入行值=实付-累计退款，人民币元；SUM 为净收入\"\n    },\n    {\n      \"name\": \"industry\",\n      \"type\": \"VARCHAR\",\n      \"description\": \"客户当前行业，缺失保留订单为未知行业\"\n    }\n  ],\n  \"primary_key\": \"order_id\",\n  \"ref_sql\": null,\n  \"relationships\": [\n    {\n      \"name\": \"orders_refund_totals\",\n      \"models\": [\n        \"bi_orders\",\n        \"bi_refund_totals\"\n      ],\n      \"join_type\": \"MANY_TO_ONE\",\n      \"condition\": \"bi_orders.dept_id = bi_refund_totals.refund_dept_id AND bi_orders.order_id = bi_refund_totals.refund_order_id\"\n    },\n    {\n      \"name\": \"orders_customers\",\n      \"models\": [\n        \"bi_orders\",\n        \"bi_customers\"\n      ],\n      \"join_type\": \"MANY_TO_ONE\",\n      \"condition\": \"bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id = bi_customers.customer_local_id\"\n    }\n  ]\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT SUM(net_amount) AS net_revenue FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"net_revenue\"\n  ],\n  \"rows\": [\n    {\n      \"net_revenue\": \"245.0000000000\"\n    }\n  ],\n  \"row_count\": 1,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "answered",
+    "metric": "net_revenue@1",
+    "mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+    "dataset_id": null,
+    "dashboard_id": null,
+    "chart_ids": [],
+    "total": "245.00",
+    "daily": [],
+    "industry": [],
+    "rows": [],
+    "summary": "2026年10月净销售额合计245.00元人民币（本地合成数据，已按核验口径实际查询）。"
+  },
+  "new_saved_charts": 0,
+  "checks_passed": true,
+  "scope": "one real independent Codex question; no department isolation claim"
+}

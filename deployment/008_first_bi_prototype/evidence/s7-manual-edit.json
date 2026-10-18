@@ -1,0 +1,31 @@
+{
+  "chart_id": 8,
+  "name": "008 S7 行业净收入（模拟人工改名）",
+  "params": {
+    "viz_type": "echarts_timeseries_bar",
+    "metrics": [
+      {
+        "aggregate": "SUM",
+        "column": {
+          "column_name": "net_amount"
+        },
+        "expressionType": "SIMPLE",
+        "label": "net_revenue",
+        "optionName": "metric_net_amount",
+        "sqlExpression": null,
+        "hasCustomLabel": true,
+        "datasourceWarning": false
+      }
+    ],
+    "x_axis": "industry",
+    "x_axis_sort_series_type": "name",
+    "x_axis_sort_series_ascending": true,
+    "time_grain_sqla": null,
+    "granularity_sqla": null,
+    "row_limit": 77,
+    "y_axis_title": "净销售额（人民币元）",
+    "y_axis_format": ",.1f",
+    "color_scheme": "d3Category10"
+  },
+  "scope": "fixture simulates prior human edits; REST setup, not Agent action"
+}

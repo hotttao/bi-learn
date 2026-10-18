@@ -21,7 +21,9 @@
 
 ## 当前研究优先级
 
-W3与教程整理已确认并提交为8aa1f0e；当前步骤为S6官方Superset MCP固定调用，完成后等待review，不提前进入S7；部门隔离暂缓，不作为本阶段前置。保留基本只读与模型范围校验。不要把“暂缓隔离”写成隔离通过，也不要提前推进后续步骤。W3的独立发布包与正常wren项目分开；195不是原245基线的新答案，详见 [W3教程](walkthroughs/005_W3-WALKTHROUGH.md)。
+S6 已提交为 `5c443ae`。当前 S7 完成本轮实现和完整验收，待 review、未提交，不进入 S8。原 24 个验收条目 22 通过、2 延期，13 个独立问题全部通过；新增自选业务日期、实时源变化、真实 Codex 单日预览及浏览器筛选均通过。最终状态见 `evidence/s7-final-state.json`、[007 教程](walkthroughs/007_S7-WALKTHROUGH.md)。自动语义同步、并发编辑保护按用户最新要求暂不处理。
+
+部门隔离暂缓，不作为当前前置；不宣称隔离通过。W3 独立 v2/195 fixture 与正常 v1/245 分开。S7 已启用限定版本的 MCP 同类型更新参数合并适配，原生失败必须保留，不将其描述为无需适配通过。
 
 ## 架构与权限边界
 
@@ -91,6 +93,12 @@ S7 建立 20～30 个有编号的代表问题，覆盖：同义指标、时间�
 
 ## S6 官方Superset MCP入口
 
-本机http://127.0.0.1:5008/mcp，24个实际工具/输入schema见evidence/s6-discovery.json。当前仅固定调用验收，未为Codex启用资产操作；S7再接入。多数工具使用request包装；generate_chart需save_chart=true才保存，update_chart需generate_preview=false才直接保存。动态日期过滤在当前Trino源上有已复现问题，S6数据集3仅固定十月窗口，不可冒充任意时间范围。详见 [006教程](walkthroughs/006_S6-WALKTHROUGH.md)。
+本机http://127.0.0.1:5008/mcp，24个实际工具/输入schema见evidence/s6-discovery.json。S6固定调用已提交；S7已为本原型分析会话启用筛选后的13个工具，当前验收尚未结束。多数工具使用request包装；generate_chart需save_chart=true才保存，update_chart需generate_preview=false才直接保存。动态日期过滤在当前Trino源上有已复现问题，S6数据集3仅固定十月窗口，不可冒充任意时间范围。详见 [006教程](walkthroughs/006_S6-WALKTHROUGH.md)。
 
 S7接入时先使用已核验数据集/指标允许清单，不能把本步发现的24个工具全部无筛选开放。Superset MCP并未自动绑定Wren；不要让分析Agent通过execute_sql或create_virtual_dataset自行重定义业务关系与指标。S6建固定窗口数据集是部署者的受控实验，不代表Agent可任意造口径。语义版本变化后应重新核验消费映射，不静默沿用旧BI资产。
+
+## S7 分析入口和验收边界
+
+当前交互入口 `sh scripts/analyze_s7.sh`，先校验全日期绑定并调用 `configure_s7_dates.py`，上下文为 `s7/DATE_ANALYSIS.md` 和数据集 2 的版本/资产映射。旧 `s7/ANALYSIS.md` 与固定十月数据集 3 仅保留历史回归。自选日期使用 >=起日、<止日的 ISO 日期条件，由限定范围的服务端适配转换为原生时间筛选；不是新建每月数据集，不修改指标公式。
+
+原六项待测和完整 `finish_s7.py` 已完成；中途 partial/用量失败证据作为历史保留。当前 24 条验收复用部分对话证据，不冒充 24 个独立问题；新增日期扩展另列证据。真实网络断连恢复、部门权限等仍延期；自动语义同步和并发编辑保护暂不处理。当前停在用户 review，未经确认不提交或进入 S8。

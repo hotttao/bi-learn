@@ -1,0 +1,3015 @@
+{
+  "verified_at_utc": "2026-10-18T09:55:11.147143+00:00",
+  "dataset_id": 2,
+  "native_calls": [
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-10-02"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=N2qwhrkXqj8",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-10-02"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-10-02"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-10-02",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "N2qwhrkXqj8",
+        "performance": {
+          "query_duration_ms": 661,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "N2qwhrkXqj8",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "120.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "120.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-02"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-10-03"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=-Depf86ohm4",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-02 : 2026-10-03"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-02 : 2026-10-03"
+            }
+          ],
+          "time_range": "2026-10-02 : 2026-10-03",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "-Depf86ohm4",
+        "performance": {
+          "query_duration_ms": 420,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "-Depf86ohm4",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "125.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "125.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-09-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-10-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=SnwpdcqTYAQ",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-09-01 : 2026-10-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-09-01 : 2026-10-01"
+            }
+          ],
+          "time_range": "2026-09-01 : 2026-10-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "SnwpdcqTYAQ",
+        "performance": {
+          "query_duration_ms": 406,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "SnwpdcqTYAQ",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [],
+            "null_count": 1,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": null
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 0.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-09-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=-8TTc_S0LAs",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-09-01 : 2026-11-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-09-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-09-01 : 2026-11-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "-8TTc_S0LAs",
+        "performance": {
+          "query_duration_ms": 423,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "-8TTc_S0LAs",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "245.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "245.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-01-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2027-01-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=FIC4eRhwrq4",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-01-01 : 2027-01-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-01-01 : 2027-01-01"
+            }
+          ],
+          "time_range": "2026-01-01 : 2027-01-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "FIC4eRhwrq4",
+        "performance": {
+          "query_duration_ms": 505,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "FIC4eRhwrq4",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "245.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "245.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-11-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-12-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=YgJYkADqkJQ",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-11-01 : 2026-12-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-11-01 : 2026-12-01"
+            }
+          ],
+          "time_range": "2026-11-01 : 2026-12-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "YgJYkADqkJQ",
+        "performance": {
+          "query_duration_ms": 350,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "YgJYkADqkJQ",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [],
+            "null_count": 1,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": null
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 0.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-09-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-10-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=k2jxM1BVN4k",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-09-01 : 2026-10-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-09-01 : 2026-10-01"
+            }
+          ],
+          "time_range": "2026-09-01 : 2026-10-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "k2jxM1BVN4k",
+        "performance": {
+          "query_duration_ms": 657,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "k2jxM1BVN4k",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "85.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "85.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=ocJj5JssGrs",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-11-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "ocJj5JssGrs",
+        "performance": {
+          "query_duration_ms": 362,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "ocJj5JssGrs",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "170.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "170.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-09-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=YjpWBJyTQAA",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-09-01 : 2026-11-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-09-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-09-01 : 2026-11-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "YjpWBJyTQAA",
+        "performance": {
+          "query_duration_ms": 553,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "YjpWBJyTQAA",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "255.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "255.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "save_chart": false,
+        "generate_preview": true,
+        "preview_formats": [
+          "url"
+        ],
+        "force_refresh": true
+      },
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=pLGqxfcVZBw",
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-11-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "pLGqxfcVZBw",
+        "performance": {
+          "query_duration_ms": 656,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing Big Number (net_revenue)",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "get_chart_data",
+      "request": {
+        "form_data_key": "pLGqxfcVZBw",
+        "force_refresh": true
+      },
+      "result": {
+        "chart_id": 0,
+        "chart_name": "Unsaved chart",
+        "chart_type": "big_number_total",
+        "columns": [
+          {
+            "name": "net_revenue",
+            "display_name": "Net Revenue",
+            "data_type": "string",
+            "sample_values": [
+              "245.00"
+            ],
+            "null_count": 0,
+            "unique_count": 1,
+            "statistics": null,
+            "semantic_type": null
+          }
+        ],
+        "data": [
+          {
+            "net_revenue": "245.00"
+          }
+        ],
+        "row_count": 1,
+        "total_rows": 1,
+        "data_freshness": null,
+        "summary": "Unsaved chart (big_number_total). Contains 1 rows across 1 columns.",
+        "insights": [
+          "This is an unsaved chart queried from cached form_data."
+        ],
+        "data_quality": {
+          "completeness": 1.0
+        },
+        "recommended_visualizations": [],
+        "performance": {
+          "query_duration_ms": 0,
+          "estimated_cost": null,
+          "cache_status": "fresh_query",
+          "optimization_suggestions": []
+        },
+        "cache_status": {
+          "cache_hit": false,
+          "cache_type": "none",
+          "cache_age_seconds": null,
+          "cache_key": null,
+          "refreshed": true
+        },
+        "csv_data": null,
+        "excel_data": null,
+        "format": null,
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.2f"
+        },
+        "chart_name": "008 S7 自选日期 kpi",
+        "save_chart": true,
+        "generate_preview": false,
+        "force_refresh": true
+      },
+      "result": {
+        "chart": {
+          "id": 9,
+          "slice_name": "008 S7 自选日期 kpi",
+          "viz_type": "big_number_total",
+          "datasource_name": "sales.008_orders_enriched_v1",
+          "datasource_type": "table",
+          "url": "http://192.168.2.46:8088/explore/?slice_id=9",
+          "description": null,
+          "cache_timeout": null,
+          "changed_by": "BI Research",
+          "changed_by_name": "BI Research",
+          "changed_on": "2026-10-18T09:55:32.444416",
+          "changed_on_humanized": "now",
+          "created_by": "BI Research",
+          "created_on": "2026-10-18T09:55:32.444408",
+          "created_on_humanized": "now",
+          "certified_by": null,
+          "certification_details": null,
+          "uuid": "7b90971e-a55c-4f00-8d9f-052fcf531d2b",
+          "tags": [],
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "form_data": {
+            "viz_type": "big_number_total",
+            "metric": {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            },
+            "y_axis_format": ",.2f",
+            "adhoc_filters": [
+              {
+                "clause": "WHERE",
+                "expressionType": "SIMPLE",
+                "subject": "order_date",
+                "operator": "TEMPORAL_RANGE",
+                "comparator": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "filters": [
+              {
+                "col": "order_date",
+                "op": "TEMPORAL_RANGE",
+                "val": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "time_range": "2026-10-01 : 2026-11-01",
+            "granularity_sqla": "order_date"
+          },
+          "form_data_key": null,
+          "is_unsaved_state": false
+        },
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?slice_id=9",
+        "embed_code": null,
+        "api_endpoints": {
+          "data": "http://192.168.2.46:8088/api/v1/chart/9/data/",
+          "export": "http://192.168.2.46:8088/api/v1/chart/9/export/"
+        },
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "y_axis_format": ",.2f",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-11-01",
+          "granularity_sqla": "order_date"
+        },
+        "form_data_key": "_5PvTNfswY4",
+        "performance": {
+          "query_duration_ms": 458,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing 008 S7 自选日期 kpi",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [
+          "This chart uses a virtual dataset (SQL-based). If the dataset '008_orders_enriched_v1' is deleted, this chart will break."
+        ],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "xy",
+          "kind": "line",
+          "x": {
+            "name": "order_date"
+          },
+          "y": [
+            {
+              "name": "net_amount",
+              "aggregate": "SUM",
+              "label": "net_revenue"
+            }
+          ],
+          "time_grain": "P1D",
+          "y_axis": {
+            "format": ",.2f"
+          },
+          "row_limit": 1000
+        },
+        "chart_name": "008 S7 自选日期 trend",
+        "save_chart": true,
+        "generate_preview": false,
+        "force_refresh": true
+      },
+      "result": {
+        "chart": {
+          "id": 10,
+          "slice_name": "008 S7 自选日期 trend",
+          "viz_type": "echarts_timeseries_line",
+          "datasource_name": "sales.008_orders_enriched_v1",
+          "datasource_type": "table",
+          "url": "http://192.168.2.46:8088/explore/?slice_id=10",
+          "description": null,
+          "cache_timeout": null,
+          "changed_by": "BI Research",
+          "changed_by_name": "BI Research",
+          "changed_on": "2026-10-18T09:55:33.812609",
+          "changed_on_humanized": "now",
+          "created_by": "BI Research",
+          "created_on": "2026-10-18T09:55:33.812601",
+          "created_on_humanized": "now",
+          "certified_by": null,
+          "certification_details": null,
+          "uuid": "1408a8c1-78f8-481d-ab8c-8c839c29566f",
+          "tags": [],
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "form_data": {
+            "viz_type": "echarts_timeseries_line",
+            "metrics": [
+              {
+                "aggregate": "SUM",
+                "column": {
+                  "column_name": "net_amount"
+                },
+                "expressionType": "SIMPLE",
+                "label": "net_revenue",
+                "optionName": "metric_net_amount",
+                "sqlExpression": null,
+                "hasCustomLabel": true,
+                "datasourceWarning": false
+              }
+            ],
+            "x_axis": "order_date",
+            "granularity_sqla": "order_date",
+            "time_grain_sqla": "P1D",
+            "adhoc_filters": [
+              {
+                "clause": "WHERE",
+                "expressionType": "SIMPLE",
+                "subject": "order_date",
+                "operator": "TEMPORAL_RANGE",
+                "comparator": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "row_limit": 1000,
+            "y_axis_format": ",.2f",
+            "filters": [
+              {
+                "col": "order_date",
+                "op": "TEMPORAL_RANGE",
+                "val": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "time_range": "2026-10-01 : 2026-11-01"
+          },
+          "form_data_key": null,
+          "is_unsaved_state": false
+        },
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": true,
+          "supports_real_time": true,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "interactive",
+            "vega_lite",
+            "ascii",
+            "table"
+          ],
+          "data_types": [
+            "categorical",
+            "metric",
+            "time_series"
+          ]
+        },
+        "semantics": {
+          "primary_insight": "Shows trends and changes over time",
+          "data_story": "This echarts_timeseries_line chart analyzes order_date, net_amount",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing",
+            "Analyze seasonal patterns or cyclical trends"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?slice_id=10",
+        "embed_code": null,
+        "api_endpoints": {
+          "data": "http://192.168.2.46:8088/api/v1/chart/10/data/",
+          "export": "http://192.168.2.46:8088/api/v1/chart/10/export/"
+        },
+        "form_data": {
+          "viz_type": "echarts_timeseries_line",
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            }
+          ],
+          "x_axis": "order_date",
+          "granularity_sqla": "order_date",
+          "time_grain_sqla": "P1D",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "row_limit": 1000,
+          "y_axis_format": ",.2f",
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-11-01"
+        },
+        "form_data_key": "H-vm19qSzyE",
+        "performance": {
+          "query_duration_ms": 586,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing 008 S7 自选日期 trend",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [
+          "This chart uses a virtual dataset (SQL-based). If the dataset '008_orders_enriched_v1' is deleted, this chart will break."
+        ],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 2,
+        "config": {
+          "filters": [
+            {
+              "column": "order_date",
+              "op": ">=",
+              "value": "2026-10-01"
+            },
+            {
+              "column": "order_date",
+              "op": "<",
+              "value": "2026-11-01"
+            }
+          ],
+          "chart_type": "xy",
+          "kind": "bar",
+          "x": {
+            "name": "industry"
+          },
+          "y": [
+            {
+              "name": "net_amount",
+              "aggregate": "SUM",
+              "label": "net_revenue"
+            }
+          ],
+          "y_axis": {
+            "format": ",.2f"
+          },
+          "row_limit": 1000
+        },
+        "chart_name": "008 S7 自选日期 industry",
+        "save_chart": true,
+        "generate_preview": false,
+        "force_refresh": true
+      },
+      "result": {
+        "chart": {
+          "id": 11,
+          "slice_name": "008 S7 自选日期 industry",
+          "viz_type": "echarts_timeseries_bar",
+          "datasource_name": "sales.008_orders_enriched_v1",
+          "datasource_type": "table",
+          "url": "http://192.168.2.46:8088/explore/?slice_id=11",
+          "description": null,
+          "cache_timeout": null,
+          "changed_by": "BI Research",
+          "changed_by_name": "BI Research",
+          "changed_on": "2026-10-18T09:55:35.419134",
+          "changed_on_humanized": "now",
+          "created_by": "BI Research",
+          "created_on": "2026-10-18T09:55:35.419126",
+          "created_on_humanized": "now",
+          "certified_by": null,
+          "certification_details": null,
+          "uuid": "25564e51-4f79-4d01-b9f9-c05e2dfa2178",
+          "tags": [],
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "form_data": {
+            "viz_type": "echarts_timeseries_bar",
+            "metrics": [
+              {
+                "aggregate": "SUM",
+                "column": {
+                  "column_name": "net_amount"
+                },
+                "expressionType": "SIMPLE",
+                "label": "net_revenue",
+                "optionName": "metric_net_amount",
+                "sqlExpression": null,
+                "hasCustomLabel": true,
+                "datasourceWarning": false
+              }
+            ],
+            "x_axis": "industry",
+            "x_axis_sort_series_type": "name",
+            "x_axis_sort_series_ascending": true,
+            "time_grain_sqla": null,
+            "granularity_sqla": "order_date",
+            "adhoc_filters": [
+              {
+                "clause": "WHERE",
+                "expressionType": "SIMPLE",
+                "subject": "order_date",
+                "operator": "TEMPORAL_RANGE",
+                "comparator": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "row_limit": 1000,
+            "y_axis_format": ",.2f",
+            "filters": [
+              {
+                "col": "order_date",
+                "op": "TEMPORAL_RANGE",
+                "val": "2026-10-01 : 2026-11-01"
+              }
+            ],
+            "time_range": "2026-10-01 : 2026-11-01"
+          },
+          "form_data_key": null,
+          "is_unsaved_state": false
+        },
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": true,
+          "supports_real_time": true,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "interactive",
+            "vega_lite",
+            "ascii",
+            "table"
+          ],
+          "data_types": [
+            "categorical",
+            "metric",
+            "time_series"
+          ]
+        },
+        "semantics": {
+          "primary_insight": "Compares values across categories or time periods",
+          "data_story": "This echarts_timeseries_bar chart analyzes industry, net_amount",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing",
+            "Analyze seasonal patterns or cyclical trends"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?slice_id=11",
+        "embed_code": null,
+        "api_endpoints": {
+          "data": "http://192.168.2.46:8088/api/v1/chart/11/data/",
+          "export": "http://192.168.2.46:8088/api/v1/chart/11/export/"
+        },
+        "form_data": {
+          "viz_type": "echarts_timeseries_bar",
+          "metrics": [
+            {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            }
+          ],
+          "x_axis": "industry",
+          "x_axis_sort_series_type": "name",
+          "x_axis_sort_series_ascending": true,
+          "time_grain_sqla": null,
+          "granularity_sqla": "order_date",
+          "adhoc_filters": [
+            {
+              "clause": "WHERE",
+              "expressionType": "SIMPLE",
+              "subject": "order_date",
+              "operator": "TEMPORAL_RANGE",
+              "comparator": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "row_limit": 1000,
+          "y_axis_format": ",.2f",
+          "filters": [
+            {
+              "col": "order_date",
+              "op": "TEMPORAL_RANGE",
+              "val": "2026-10-01 : 2026-11-01"
+            }
+          ],
+          "time_range": "2026-10-01 : 2026-11-01"
+        },
+        "form_data_key": "KcxH4Uxq6ys",
+        "performance": {
+          "query_duration_ms": 485,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing 008 S7 自选日期 industry",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [
+          "This chart uses a virtual dataset (SQL-based). If the dataset '008_orders_enriched_v1' is deleted, this chart will break."
+        ],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_dashboard",
+      "request": {
+        "dashboard_title": "008 S7 自选日期与实时数据",
+        "chart_ids": [
+          9,
+          10,
+          11
+        ],
+        "published": true
+      },
+      "result": {
+        "dashboard": {
+          "id": 4,
+          "dashboard_title": "008 S7 自选日期与实时数据",
+          "slug": null,
+          "description": null,
+          "css": null,
+          "certified_by": null,
+          "certification_details": null,
+          "published": true,
+          "is_managed_externally": null,
+          "external_url": null,
+          "created_on": "2026-10-18T09:55:36.012863",
+          "changed_on": "2026-10-18T09:55:36.012871",
+          "created_by": "BI Research",
+          "changed_by": "BI Research",
+          "uuid": "4ef35890-9430-4788-8e1b-6462a54bd9e6",
+          "url": "http://192.168.2.46:8088/superset/dashboard/4/",
+          "created_on_humanized": null,
+          "changed_on_humanized": null,
+          "chart_count": 3,
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "tags": [],
+          "roles": [],
+          "charts": [
+            {
+              "id": 9,
+              "slice_name": "008 S7 自选日期 kpi",
+              "viz_type": "big_number_total",
+              "datasource_name": "sales.008_orders_enriched_v1",
+              "url": "http://192.168.2.46:8088/explore/?slice_id=9",
+              "description": null
+            },
+            {
+              "id": 10,
+              "slice_name": "008 S7 自选日期 trend",
+              "viz_type": "echarts_timeseries_line",
+              "datasource_name": "sales.008_orders_enriched_v1",
+              "url": "http://192.168.2.46:8088/explore/?slice_id=10",
+              "description": null
+            },
+            {
+              "id": 11,
+              "slice_name": "008 S7 自选日期 industry",
+              "viz_type": "echarts_timeseries_bar",
+              "datasource_name": "sales.008_orders_enriched_v1",
+              "url": "http://192.168.2.46:8088/explore/?slice_id=11",
+              "description": null
+            }
+          ],
+          "native_filters": [],
+          "cross_filters_enabled": null,
+          "omitted_fields": {},
+          "permalink_key": null,
+          "filter_state": null,
+          "is_permalink_state": false
+        },
+        "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/4/",
+        "error": null
+      }
+    }
+  ],
+  "wren_calls": [
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-10-02' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "120.0000000000",
+            "order_count": 2
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-02' AND order_date < DATE '2026-10-03'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-10-02' AS DATE) AND order_date < CAST('2026-10-03' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-02' AND order_date < DATE '2026-10-03'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-02' AND order_date < DATE '2026-10-03'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "125.0000000000",
+            "order_count": 2
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-09-01' AS DATE) AND order_date < CAST('2026-10-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": null,
+            "order_count": 0
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-09-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "245.0000000000",
+            "order_count": 4
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-01-01' AND order_date < DATE '2027-01-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-01-01' AS DATE) AND order_date < CAST('2027-01-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-01-01' AND order_date < DATE '2027-01-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-01-01' AND order_date < DATE '2027-01-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "245.0000000000",
+            "order_count": 4
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-11-01' AS DATE) AND order_date < CAST('2026-12-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": null,
+            "order_count": 0
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-09-01' AS DATE) AND order_date < CAST('2026-10-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "85.0000000000",
+            "order_count": 1
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "170.0000000000",
+            "order_count": 3
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-09-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "255.0000000000",
+            "order_count": 4
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "tool": "dry_plan",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".net_amount AS net_amount, \"wren_src_bi_orders\".order_date AS order_date FROM (SELECT __relation__1.paid_amount - COALESCE(__relation__1.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__1.order_date FROM (SELECT bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1) AS \"wren_src_bi_orders\") SELECT SUM(net_amount) AS net_revenue, COUNT(*) AS order_count FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE)"
+    },
+    {
+      "tool": "dry_run",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "ok": true
+      }
+    },
+    {
+      "tool": "run_sql",
+      "sql": "SELECT SUM(net_amount) AS net_revenue,COUNT(*) AS order_count FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'",
+      "result": {
+        "columns": [
+          "net_revenue",
+          "order_count"
+        ],
+        "rows": [
+          {
+            "net_revenue": "245.0000000000",
+            "order_count": 4
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    }
+  ],
+  "baseline_ranges": [
+    {
+      "start_inclusive": "2026-10-01",
+      "end_exclusive": "2026-10-02",
+      "expected": "120",
+      "wren_rows": [
+        {
+          "net_revenue": "120.0000000000",
+          "order_count": 2
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "120.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=N2qwhrkXqj8"
+    },
+    {
+      "start_inclusive": "2026-10-02",
+      "end_exclusive": "2026-10-03",
+      "expected": "125",
+      "wren_rows": [
+        {
+          "net_revenue": "125.0000000000",
+          "order_count": 2
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "125.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-02' AND order_date < DATE '2026-10-03'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=-Depf86ohm4"
+    },
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "expected": null,
+      "wren_rows": [
+        {
+          "net_revenue": null,
+          "order_count": 0
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": null
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=SnwpdcqTYAQ"
+    },
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-11-01",
+      "expected": "245",
+      "wren_rows": [
+        {
+          "net_revenue": "245.0000000000",
+          "order_count": 4
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "245.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=-8TTc_S0LAs"
+    },
+    {
+      "start_inclusive": "2026-01-01",
+      "end_exclusive": "2027-01-01",
+      "expected": "245",
+      "wren_rows": [
+        {
+          "net_revenue": "245.0000000000",
+          "order_count": 4
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "245.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-01-01' AND order_date < DATE '2027-01-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=FIC4eRhwrq4"
+    },
+    {
+      "start_inclusive": "2026-11-01",
+      "end_exclusive": "2026-12-01",
+      "expected": null,
+      "wren_rows": [
+        {
+          "net_revenue": null,
+          "order_count": 0
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": null
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-11-01' AND order_date < DATE '2026-12-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=YgJYkADqkJQ"
+    },
+    {
+      "start_inclusive": "2026-10-01",
+      "end_exclusive": "2026-11-01",
+      "expected": "245",
+      "wren_rows": [
+        {
+          "net_revenue": "245.0000000000",
+          "order_count": 4
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "245.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=pLGqxfcVZBw"
+    }
+  ],
+  "changed_source_ranges": [
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "expected": "85",
+      "wren_rows": [
+        {
+          "net_revenue": "85.0000000000",
+          "order_count": 1
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "85.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=k2jxM1BVN4k"
+    },
+    {
+      "start_inclusive": "2026-10-01",
+      "end_exclusive": "2026-11-01",
+      "expected": "170",
+      "wren_rows": [
+        {
+          "net_revenue": "170.0000000000",
+          "order_count": 3
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "170.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=ocJj5JssGrs"
+    },
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-11-01",
+      "expected": "255",
+      "wren_rows": [
+        {
+          "net_revenue": "255.0000000000",
+          "order_count": 4
+        }
+      ],
+      "bi_data": [
+        {
+          "net_revenue": "255.00"
+        }
+      ],
+      "typed_sql": "SELECT SUM(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'\nLIMIT 1000;\n\n",
+      "explore_url": "http://192.168.2.46:8088/explore/?form_data_key=YjpWBJyTQAA"
+    }
+  ],
+  "source_restored": true,
+  "invalid_ranges": [
+    {
+      "start": "2026-10-02",
+      "end": "2026-10-01",
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": null,
+        "semantics": null,
+        "explore_url": null,
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {},
+        "form_data_key": null,
+        "performance": {
+          "query_duration_ms": 14,
+          "estimated_cost": null,
+          "cache_status": "error",
+          "optimization_suggestions": []
+        },
+        "accessibility": null,
+        "success": false,
+        "error": {
+          "error_type": "chart_generation_error",
+          "message": "Chart generation failed: BI008_DATE_RANGE: start must precede exclusive end",
+          "details": "Failed to create big_number chart for dataset 2. BI008_DATE_RANGE: start must precede exclusive end",
+          "validation_errors": [],
+          "dataset_context": null,
+          "query_info": null,
+          "suggestions": [
+            "Check that the dataset exists and is accessible",
+            "Verify chart configuration is valid for the selected chart type",
+            "Ensure all referenced columns exist in the dataset",
+            "Check Superset logs for detailed error information"
+          ],
+          "help_url": null,
+          "error_code": "CHART_GENERATION_FAILED"
+        },
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "start": "2026-02-30",
+      "end": "2026-03-01",
+      "result": {
+        "chart": null,
+        "previews": {},
+        "capabilities": null,
+        "semantics": null,
+        "explore_url": null,
+        "embed_code": null,
+        "api_endpoints": {},
+        "form_data": {},
+        "form_data_key": null,
+        "performance": {
+          "query_duration_ms": 20,
+          "estimated_cost": null,
+          "cache_status": "error",
+          "optimization_suggestions": []
+        },
+        "accessibility": null,
+        "success": false,
+        "error": {
+          "error_type": "chart_generation_error",
+          "message": "Chart generation failed: day is out of range for month",
+          "details": "Failed to create big_number chart for dataset 2. day is out of range for month",
+          "validation_errors": [],
+          "dataset_context": null,
+          "query_info": null,
+          "suggestions": [
+            "Check that the dataset exists and is accessible",
+            "Verify chart configuration is valid for the selected chart type",
+            "Ensure all referenced columns exist in the dataset",
+            "Check Superset logs for detailed error information"
+          ],
+          "help_url": null,
+          "error_code": "CHART_GENERATION_FAILED"
+        },
+        "warnings": [],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    }
+  ],
+  "checks_passed": true
+}

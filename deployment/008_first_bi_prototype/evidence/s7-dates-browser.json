@@ -1,0 +1,116 @@
+{
+  "verified_at_utc": "2026-10-18T10:00:28.691Z",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/4/",
+  "ranges": [
+    {
+      "start_inclusive": "2026-10-01",
+      "end_exclusive": "2026-10-02",
+      "total": 120,
+      "daily": [
+        {
+          "order_date": 1790812800000,
+          "net_revenue": 120
+        }
+      ],
+      "industry": [
+        {
+          "industry": "软件",
+          "net_revenue": 120
+        }
+      ],
+      "query": "SELECT sum(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-10-02'\nLIMIT 50000;\n\n",
+      "rendered": true
+    },
+    {
+      "start_inclusive": "2026-10-02",
+      "end_exclusive": "2026-10-03",
+      "total": 125,
+      "daily": [
+        {
+          "order_date": 1790899200000,
+          "net_revenue": 125
+        }
+      ],
+      "industry": [
+        {
+          "industry": "零售",
+          "net_revenue": 125
+        }
+      ],
+      "query": "SELECT sum(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-02' AND order_date < DATE '2026-10-03'\nLIMIT 50000;\n\n",
+      "rendered": true
+    },
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "total": null,
+      "daily": [],
+      "industry": [],
+      "query": "SELECT sum(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-10-01'\nLIMIT 50000;\n\n",
+      "rendered": true
+    },
+    {
+      "start_inclusive": "2026-09-01",
+      "end_exclusive": "2026-11-01",
+      "total": 245,
+      "daily": [
+        {
+          "order_date": 1790812800000,
+          "net_revenue": 120
+        },
+        {
+          "order_date": 1790899200000,
+          "net_revenue": 125
+        }
+      ],
+      "industry": [
+        {
+          "industry": "软件",
+          "net_revenue": 120
+        },
+        {
+          "industry": "零售",
+          "net_revenue": 125
+        }
+      ],
+      "query": "SELECT sum(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-09-01' AND order_date < DATE '2026-11-01'\nLIMIT 50000;\n\n",
+      "rendered": true
+    }
+  ],
+  "baseline": {
+    "total": 245,
+    "daily": [
+      {
+        "order_date": 1790812800000,
+        "net_revenue": 120
+      },
+      {
+        "order_date": 1790899200000,
+        "net_revenue": 125
+      }
+    ],
+    "industry": [
+      {
+        "industry": "软件",
+        "net_revenue": 120
+      },
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ],
+    "query": "SELECT sum(net_amount) AS net_revenue \nFROM (-- Grain: one row per order. Industry is CURRENT, not as-of-order.\nWITH refund_totals AS (\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\n    FROM mysql.sales.refunds\n    GROUP BY dept_id, order_id\n)\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\n       COALESCE(c.industry, '未知行业') AS industry,\n       o.paid_amount,\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\nFROM mysql.sales.orders o\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\n) AS virtual_table \nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'\nLIMIT 50000;\n\n",
+    "rendered": true
+  },
+  "default_restored": true,
+  "codex_preview": {
+    "url": "http://192.168.2.46:8088/explore/?form_data_key=Mk20tPhVIOw",
+    "data": [
+      {
+        "industry": "零售",
+        "net_revenue": 125
+      }
+    ],
+    "rendered": true
+  }
+}

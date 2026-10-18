@@ -1,0 +1,55 @@
+{
+  "verified_at_utc": "2026-10-18T03:21:11.745537+00:00",
+  "scope": "synthetic fixture; verified mapping, not enterprise semantic publication",
+  "metric": "net_revenue@1",
+  "wren_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "wren_source_revision": "2db98036b40bca76d5e094ff5169bd291e6bbd26334c49ac481ec88d4ee400f4",
+  "dataset_id": 3,
+  "dataset_uuid": "8239d2bf-21ca-47ed-b1de-5a87c6297be1",
+  "database_id": 2,
+  "dataset_sql_sha256": "27a53ae70d119cff3c5e9f39dee51227f10f311a921db03ba54ea2790511473f",
+  "window": {
+    "start_inclusive": "2026-10-01",
+    "end_exclusive": "2026-11-01"
+  },
+  "unit": "CNY_yuan",
+  "metric_expression": "SUM(net_amount)",
+  "industry_semantics": "current",
+  "refund_time": "original_order_date",
+  "comparison": {
+    "wren_sql": "SELECT order_id,dept_id,industry,order_date,net_amount FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' ORDER BY order_id",
+    "bi_query_id": "20261018_032111_00219_ujdet",
+    "matching_order_rows": [
+      {
+        "order_id": 1,
+        "dept_id": "A",
+        "industry": "软件",
+        "order_date": "2026-10-01",
+        "net_amount": "70.00"
+      },
+      {
+        "order_id": 2,
+        "dept_id": "A",
+        "industry": "零售",
+        "order_date": "2026-10-02",
+        "net_amount": "75.00"
+      },
+      {
+        "order_id": 3,
+        "dept_id": "B",
+        "industry": "软件",
+        "order_date": "2026-10-01",
+        "net_amount": "50.00"
+      },
+      {
+        "order_id": 4,
+        "dept_id": "B",
+        "industry": "零售",
+        "order_date": "2026-10-02",
+        "net_amount": "50.00"
+      }
+    ]
+  },
+  "automatic_sync": false,
+  "query_equivalence_scope": "four known fixture rows only; source hashes detect changes, not general SQL equivalence proof"
+}

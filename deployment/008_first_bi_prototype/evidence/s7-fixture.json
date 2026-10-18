@@ -1,0 +1,315 @@
+{
+  "verified_at_utc": "2026-10-18T03:21:13.445482+00:00",
+  "dashboard_id": 3,
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/3/",
+  "seed_chart_id": 6,
+  "seed_chart_name": "008 S7 净收入（模拟人工复核）",
+  "seed_chart_params": {
+    "viz_type": "big_number_total",
+    "metric": {
+      "aggregate": "SUM",
+      "column": {
+        "column_name": "net_amount"
+      },
+      "expressionType": "SIMPLE",
+      "label": "net_revenue",
+      "optionName": "metric_net_amount",
+      "sqlExpression": null,
+      "hasCustomLabel": true,
+      "datasourceWarning": false
+    },
+    "subheader": "模拟人工备注：运营已核对，请保留",
+    "y_axis_format": ",.1f"
+  },
+  "manual_note_id": "MARKDOWN-S7-MANUAL",
+  "preserved_nodes": {
+    "CHART-6": {
+      "children": [],
+      "id": "CHART-6",
+      "meta": {
+        "chartId": 6,
+        "height": 50,
+        "sliceName": "008 S7 净收入（模拟人工复核）",
+        "uuid": "c827a05d-915c-4e71-8bef-c7f44929a7cf",
+        "width": 4
+      },
+      "parents": [
+        "ROOT_ID",
+        "GRID_ID",
+        "ROW-016c0202",
+        "COLUMN-e1eb2323"
+      ],
+      "type": "CHART"
+    },
+    "COLUMN-e1eb2323": {
+      "children": [
+        "CHART-6"
+      ],
+      "id": "COLUMN-e1eb2323",
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT",
+        "width": 12
+      },
+      "parents": [
+        "ROOT_ID",
+        "GRID_ID",
+        "ROW-016c0202"
+      ],
+      "type": "COLUMN"
+    },
+    "ROW-016c0202": {
+      "children": [
+        "COLUMN-e1eb2323"
+      ],
+      "id": "ROW-016c0202",
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT"
+      },
+      "parents": [
+        "ROOT_ID",
+        "GRID_ID"
+      ],
+      "type": "ROW"
+    },
+    "DASHBOARD_VERSION_KEY": "v2",
+    "ROW-S7-MANUAL": {
+      "id": "ROW-S7-MANUAL",
+      "type": "ROW",
+      "parents": [
+        "ROOT_ID",
+        "GRID_ID"
+      ],
+      "children": [
+        "MARKDOWN-S7-MANUAL"
+      ],
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT"
+      }
+    },
+    "MARKDOWN-S7-MANUAL": {
+      "id": "MARKDOWN-S7-MANUAL",
+      "type": "MARKDOWN",
+      "parents": [
+        "ROOT_ID",
+        "GRID_ID",
+        "ROW-S7-MANUAL"
+      ],
+      "children": [],
+      "meta": {
+        "width": 12,
+        "height": 14,
+        "code": "### 模拟人工备注\n本看板用于固定十月净收入核验；请保留此说明。"
+      }
+    }
+  },
+  "setup_calls": [
+    {
+      "tool": "generate_chart",
+      "request": {
+        "dataset_id": 3,
+        "chart_name": "008 S7 净收入（模拟人工复核）",
+        "save_chart": true,
+        "generate_preview": false,
+        "config": {
+          "chart_type": "big_number",
+          "metric": {
+            "name": "net_amount",
+            "aggregate": "SUM",
+            "label": "net_revenue"
+          },
+          "y_axis_format": ",.1f",
+          "subheader": "模拟人工备注：运营已核对，请保留"
+        }
+      },
+      "result": {
+        "chart": {
+          "id": 6,
+          "slice_name": "008 S7 净收入（模拟人工复核）",
+          "viz_type": "big_number_total",
+          "datasource_name": "008_s6_orders_october_v1",
+          "datasource_type": "table",
+          "url": "http://192.168.2.46:8088/explore/?slice_id=6",
+          "description": null,
+          "cache_timeout": null,
+          "changed_by": "BI Research",
+          "changed_by_name": "BI Research",
+          "changed_on": "2026-10-18T03:21:12.738821",
+          "changed_on_humanized": "now",
+          "created_by": "BI Research",
+          "created_on": "2026-10-18T03:21:12.738819",
+          "created_on_humanized": "now",
+          "certified_by": null,
+          "certification_details": null,
+          "uuid": "c827a05d-915c-4e71-8bef-c7f44929a7cf",
+          "tags": [],
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "form_data": {
+            "viz_type": "big_number_total",
+            "metric": {
+              "aggregate": "SUM",
+              "column": {
+                "column_name": "net_amount"
+              },
+              "expressionType": "SIMPLE",
+              "label": "net_revenue",
+              "optionName": "metric_net_amount",
+              "sqlExpression": null,
+              "hasCustomLabel": true,
+              "datasourceWarning": false
+            },
+            "subheader": "模拟人工备注：运营已核对，请保留",
+            "y_axis_format": ",.1f"
+          },
+          "form_data_key": null,
+          "is_unsaved_state": false
+        },
+        "previews": {},
+        "capabilities": {
+          "supports_interaction": false,
+          "supports_real_time": false,
+          "supports_drill_down": false,
+          "supports_export": true,
+          "optimal_formats": [
+            "url",
+            "ascii",
+            "table"
+          ],
+          "data_types": []
+        },
+        "semantics": {
+          "primary_insight": "Highlights a single key metric value as a prominent number",
+          "data_story": "This chart provides insights into the selected dataset",
+          "recommended_actions": [
+            "Review data patterns and trends",
+            "Consider filtering or drilling down for more detail",
+            "Export chart for reporting or sharing"
+          ],
+          "anomalies": [],
+          "statistical_summary": {}
+        },
+        "explore_url": "http://192.168.2.46:8088/explore/?slice_id=6",
+        "embed_code": null,
+        "api_endpoints": {
+          "data": "http://192.168.2.46:8088/api/v1/chart/6/data/",
+          "export": "http://192.168.2.46:8088/api/v1/chart/6/export/"
+        },
+        "form_data": {
+          "viz_type": "big_number_total",
+          "metric": {
+            "aggregate": "SUM",
+            "column": {
+              "column_name": "net_amount"
+            },
+            "expressionType": "SIMPLE",
+            "label": "net_revenue",
+            "optionName": "metric_net_amount",
+            "sqlExpression": null,
+            "hasCustomLabel": true,
+            "datasourceWarning": false
+          },
+          "subheader": "模拟人工备注：运营已核对，请保留",
+          "y_axis_format": ",.1f"
+        },
+        "form_data_key": "XKeMnOIAVQ8",
+        "performance": {
+          "query_duration_ms": 388,
+          "estimated_cost": null,
+          "cache_status": "miss",
+          "optimization_suggestions": []
+        },
+        "accessibility": {
+          "color_blind_safe": true,
+          "alt_text": "Chart showing 008 S7 净收入（模拟人工复核）",
+          "high_contrast_available": false
+        },
+        "success": true,
+        "error": null,
+        "warnings": [
+          "This chart uses a virtual dataset (SQL-based). If the dataset '008_s6_orders_october_v1' is deleted, this chart will break."
+        ],
+        "schema_version": "2.0",
+        "api_version": "v1"
+      }
+    },
+    {
+      "tool": "generate_dashboard",
+      "request": {
+        "chart_ids": [
+          6
+        ],
+        "dashboard_title": "008 S7 Codex 语义与资产实验",
+        "description": "S7 dedicated synthetic-data scenario; preserve simulated human annotations.",
+        "published": true
+      },
+      "result": {
+        "dashboard": {
+          "id": 3,
+          "dashboard_title": "008 S7 Codex 语义与资产实验",
+          "slug": null,
+          "description": "S7 dedicated synthetic-data scenario; preserve simulated human annotations.",
+          "css": null,
+          "certified_by": null,
+          "certification_details": null,
+          "published": true,
+          "is_managed_externally": null,
+          "external_url": null,
+          "created_on": "2026-10-18T03:21:13.271641",
+          "changed_on": "2026-10-18T03:21:13.271645",
+          "created_by": "BI Research",
+          "changed_by": "BI Research",
+          "uuid": "e53ca251-abd8-4664-92bd-77234774dccc",
+          "url": "http://192.168.2.46:8088/superset/dashboard/3/",
+          "created_on_humanized": null,
+          "changed_on_humanized": null,
+          "chart_count": 1,
+          "owners": [
+            {
+              "id": 1,
+              "username": "admin",
+              "first_name": "BI",
+              "last_name": "Research",
+              "email": "bi008@example.invalid",
+              "active": true,
+              "roles": [
+                "Admin"
+              ]
+            }
+          ],
+          "tags": [],
+          "roles": [],
+          "charts": [
+            {
+              "id": 6,
+              "slice_name": "008 S7 净收入（模拟人工复核）",
+              "viz_type": "big_number_total",
+              "datasource_name": "008_s6_orders_october_v1",
+              "url": "http://192.168.2.46:8088/explore/?slice_id=6",
+              "description": null
+            }
+          ],
+          "native_filters": [],
+          "cross_filters_enabled": null,
+          "omitted_fields": {},
+          "permalink_key": null,
+          "filter_state": null,
+          "is_permalink_state": false
+        },
+        "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/3/",
+        "error": null
+      }
+    }
+  ],
+  "human_edits": "simulated by setup, not claimed as an actual user session"
+}

@@ -1,0 +1,12 @@
+{
+  "dashboard_id": 4,
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/4/",
+  "dataset_id": 2,
+  "chart_ids": {
+    "kpi": 9,
+    "trend": 10,
+    "industry": 11
+  },
+  "native_date_filter_id": "NATIVE_FILTER-S7-DATES",
+  "setup_scope": "operator uses native MCP for charts/dashboard, REST for native filter metadata and one-point trend markers; analysis does not get dataset creation tools"
+}

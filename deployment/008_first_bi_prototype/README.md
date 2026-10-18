@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S4 `61c9d59`、W1 `7e6d467`、W2 `35db4e5`、W3与教程整理 `8aa1f0e` 已确认并提交。当前S6官方MCP固定调用已实现并验证，待本步review，未提交、未进入S7；部门隔离暂缓。Superset仍为 `192.168.2.46:8088`，S6专用看板为 `/superset/dashboard/2/`。**
+2026-10-18：**S6 已提交 `5c443ae`。当前 S7 已完成本轮实现和完整验收，待 review，未提交、未进入 S8。原有 24 项为 22 通过、2 延期，13 个独立问题全部通过；新增自选日期和实时数据变化验证通过。当前验收看板：[自选日期与实时数据](http://192.168.2.46:8088/superset/dashboard/4/)。完整操作见 [007 教程](walkthroughs/007_S7-WALKTHROUGH.md)。自动语义同步、并发编辑保护按用户要求暂不处理；部门隔离暂缓。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -1022,3 +1022,47 @@ sudo python3 scripts/source_db.py verify > evidence/s6-source-baseline.json
 交付自查：Compose构建/依赖检查、真实MCP握手、固定调用重跑、原生浏览器渲染/保存/重开、恢复和源/资产核查均通过；Python/Node语法、JSON/TOML、Markdown本地链接/围栏、实际凭据扫描和空白检查通过。W3编译快照补充与原契约哈希一致。未提交S6、未push、未进入S7，未纳入用户根目录.codex配置。
 
 2026-10-18 后续确认：用户要求“继续下一步”，确认S6并授权提交、进入S7。S7成果仍需单独review，部门隔离继续暂缓。
+
+## S7 中途操作记录（历史部分状态，未提交）
+
+本步使用现有 Codex＋两个 MCP，不开发 Agent 框架。完整原理、逐条命令、失败及恢复见 [007 教程](walkthroughs/007_S7-WALKTHROUGH.md)。S6 已在开始本步前提交为 `5c443ae`。
+
+| 顺序 | 实际操作 | 结果及记录 |
+| --- | --- | --- |
+| 1 | `prepare_s7.py`，真实 Wren 与已保存数据集 SQL 逐订单对账 | 四行 70/75/50/50；生成指标/MDL/revision/数据集 UUID/SQL 绑定及过期绑定拒绝证据 |
+| 2 | `configure_s7.py` 与 `codex mcp list --json` | 本原型局部配置接入 13 个 Superset 工具，保留 Wren；根目录和全局配置未修改 |
+| 3 | `verify_s7_codex.py --turn 1/2`，现成 Codex 真实调用 | 同一对话生成、保存、读回日趋势图 7 和行业图 8，加入专用看板 3；245/120/125 对账 |
+| 4 | 模拟人工编辑图 8，再执行第三轮修改 | 原生保存丢失配色，模型如实报告，验证失败；原始失败保留 |
+| 5 | 安装限定版本 MCP 进程适配，恢复测试准备，再续同一对话 | 只改方向；名称、格式、行数和配色保留；第四轮重复保存无写入；逻辑四步实际五次模型执行 |
+| 6 | `verify_s7_cases.py --case all` | 7 题通过；第 8 题明细查询后触发 Codex 账户用量上限，预览未生成；余 5 题未运行 |
+| 7 | `verify_s7_browser.mjs --dashboard-only` | 实际画布、API 数据和离开后重开通过，备注保留；不代替明细/KPI 新预览测试 |
+| 8 | `source_db.py verify`、六容器健康核查、`finish_s7.py --partial` | 源数据指纹与 S2 相同；原有看板不变；24 验收项中 16 通过、1 阻断、5 待测、2 延期，`stage_complete=false` |
+
+所有 Python S7 分析脚本使用 `.local/wren-venv/bin/python`；首次误用系统 Python 缺少 httpx 的失败已纠正。Compose `ps --format json` 实际逐行返回 JSON，服务证据采集按逐行解析修正，没有将采集器解析失败当服务失败。
+
+核心证据：[语义绑定](evidence/s7-binding.json)、[原生更新失败](evidence/s7-native-update-failure.json)、[当前进度](evidence/s7-progress-state.json)、[逐项验收](evidence/s7-case-results.json)、[用量中断](evidence/s7-case-details_preview-blocked.json)、[看板截图](evidence/s7-dashboard.png)。原始 CLI 事件留在忽略的 `.local/`，版本化证据不包含推理或登录凭据。
+
+当前发现：业务语义必须有消费映射和变更闸门；MCP 接通不等于语义自动同步。四行逐键比对和指纹预检只覆盖当前 fixture。Superset 同类型图表更新需要本步的小适配，仍不具备并发修改保护。数据集 3 仍限固定十月，任意日期过滤、真实网络故障和公司权限未验证。部门隔离随 S5 延期。
+
+后续仍是本步 S7：账户可用后继续独立问题和两类预览渲染，再运行完整 `finish_s7.py`；全部补齐再交付本步最终 review。当前供 review 已实现范围，不提交、不进入 S8。
+
+## S7 补测与日期扩展完成（当前交付，待 review）
+
+已补齐原先 Q16～Q21：明细表、指标卡、缺失客户规则、退款扇出、超出旧固定窗口时禁止误保存、拒绝覆盖财务口径。13 个独立问题全部通过，两类新预览均经过真实浏览器渲染检查。原有 24 个验收条目为 22 通过、0 待测、0 阻断、2 延期；延期为真实网络断连恢复、部门/敏感列/撤权。原用量中断、partial 状态保留为历史记录，已不是当前状态。
+
+用户追加的日期需求已实现：全日期数据集 2＋校验后的原生时间过滤，不为每月另建数据集。独立看板 4 包含图表 9/10/11，支持用户在左侧选择日期；原看板 1/2/3 保留。默认十月是初始筛选，数据集未限定月份。
+
+| 验证 | 实测 |
+| --- | --- |
+| 单日边界 | 10-01 到 10-02：120；10-02 到 10-03：125 |
+| 空区间、跨月、全年 | 九月/十一月无订单；09-01 到 11-01 为 245；全年 245 |
+| 实时源变化 | 临时将订单 2 改为九月且实付 90：九月 85、十月 170、跨月 255；恢复后十月 245，源快照与 S2 一致 |
+| 真实 Codex 自选日期 | 11 次 MCP 调用，单日行业预览仅零售 125，未保存新图 |
+| 用户界面 | 浏览器操作原生日期控件，指标/趋势/行业均随范围变化；新预览渲染通过 |
+| 完整终验 | `finish_s7.py` 通过，包含新日期证据及全部未延期旧项目 |
+
+原生 MCP 通用日期比较的 DATE/varchar 问题以限定数据集 2 的时间映射适配解决；又发现未保存预览读取忽略时间条件，已补齐 QueryObject filters 并通过实际对账。失败、修复、操作命令和亲手验收步骤都在 [007 教程](walkthroughs/007_S7-WALKTHROUGH.md)。
+
+当前交互入口 `sh scripts/analyze_s7.sh` 启动前校验全日期绑定，使用 `s7/DATE_ANALYSIS.md` 生成上下文；旧固定十月入口仍供历史问题集回归。当前只验证业务 DATE 日级范围，不宣称小时级精度、大数据扫描成本或生产权限已实现。自动语义同步和并发编辑保护按用户要求暂不处理。
+
+当前证据：[最终状态](evidence/s7-final-state.json)、[逐项结果](evidence/s7-case-results.json)、[全日期绑定](evidence/s7-date-binding.json)、[实时日期回归](evidence/s7-dates.json)、[日期浏览器结果](evidence/s7-dates-browser.json)、[默认看板截图](evidence/s7-date-dashboard.png)。当前停在 review，不提交、不进入 S8。

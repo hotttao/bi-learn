@@ -1,0 +1,18 @@
+{
+  "type":"object",
+  "properties":{
+    "status":{"type":"string","enum":["answered","saved","updated","unchanged","needs_clarification","no_data","unavailable","previewed"]},
+    "metric":{"type":["string","null"]},
+    "mdl_sha256":{"type":["string","null"]},
+    "dataset_id":{"type":["integer","null"]},
+    "dashboard_id":{"type":["integer","null"]},
+    "chart_ids":{"type":"array","items":{"type":"integer"}},
+    "total":{"type":["string","null"]},
+    "daily":{"type":"array","items":{"type":"object","properties":{"date":{"type":"string"},"amount":{"type":"string"}},"required":["date","amount"],"additionalProperties":false}},
+    "industry":{"type":"array","items":{"type":"object","properties":{"industry":{"type":"string"},"amount":{"type":"string"}},"required":["industry","amount"],"additionalProperties":false}},
+    "rows":{"type":"array","items":{"type":"object","properties":{"order_id":{"type":"integer"},"dept_id":{"type":"string"},"industry":{"type":"string"},"order_date":{"type":"string"},"net_amount":{"type":"string"}},"required":["order_id","dept_id","industry","order_date","net_amount"],"additionalProperties":false}},
+    "summary":{"type":"string"}
+  },
+  "required":["status","metric","mdl_sha256","dataset_id","dashboard_id","chart_ids","total","daily","industry","rows","summary"],
+  "additionalProperties":false
+}

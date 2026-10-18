@@ -151,3 +151,7 @@ sudo docker-compose --profile mcp up -d --no-deps --wait superset-mcp
 本步待review，不提交、不进入S7。下一步才将已验证的Superset工具交给现成Codex，重点检查意图、语义、资产定位及人工改动保留，而不是重写一个Agent。
 
 S7还要避免语义旁路：只让分析Agent使用已审核数据集与指标，不因官方MCP存在execute_sql/create_virtual_dataset就全部开放。S6由部署者复用S4 SQL生成固定窗口，不能据此让Agent自由构造新关系。Wren执行模型与BI资产的版本映射仍需核验。
+
+## S7 后续发现（2026-10-18）
+
+S6 历史固定参数更新验证不涵盖全部人工样式。S7 真实多轮实验发现，原生更新保存会丢失未映射的 `color_scheme`，已保留失败并在独立 MCP 进程加入限定版本的合并适配。当前运行服务已使用该启动方式；范围、复现和限制见 [007 教程](007_S7-WALKTHROUGH.md)。这不表示原生 MCP 具备完整人工编辑保留或并发保护。

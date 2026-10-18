@@ -1,0 +1,23 @@
+{
+  "verified_at_utc": "2026-10-18T03:21:11.745537+00:00",
+  "scope": "synthetic fixture; verified mapping, not enterprise semantic publication",
+  "metric": "net_revenue@1",
+  "wren_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "wren_source_revision": "2db98036b40bca76d5e094ff5169bd291e6bbd26334c49ac481ec88d4ee400f4",
+  "dataset_id": 2,
+  "dataset_uuid": "17e84f28-2a46-4cfd-a7f6-f245668bd08d",
+  "database_id": 2,
+  "dataset_sql_sha256": "e450166e5e71e1bac0b8a6b351159b480bfa09113dae21a534838a8f7b4c1bf8",
+  "window": {
+    "mode": "user_selected_half_open_business_dates",
+    "fixed_window": false
+  },
+  "unit": "CNY_yuan",
+  "metric_expression": "SUM(net_amount)",
+  "industry_semantics": "current",
+  "refund_time": "original_order_date",
+  "automatic_sync": false,
+  "query_equivalence_scope": "four known fixture rows only; source hashes detect changes, not general SQL equivalence proof",
+  "temporal_column": "order_date",
+  "date_filter_transport": "validated >=/< YYYY-MM-DD converted to native TEMPORAL_RANGE"
+}

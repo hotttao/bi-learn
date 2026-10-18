@@ -1,0 +1,5 @@
+{
+  "rejected": "BI008_SEMANTIC_BINDING: Wren model changed; re-review mapping before BI writes",
+  "fixture_only": true,
+  "bi_write_attempted": false
+}

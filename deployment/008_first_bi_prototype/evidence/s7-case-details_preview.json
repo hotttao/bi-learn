@@ -1,0 +1,296 @@
+{
+  "verified_at_utc": "2026-10-18T09:47:56.046389+00:00",
+  "case": "details_preview",
+  "prompt": "列出2026年10月订单明细，含订单ID、部门、业务日期、当前行业和净收入。先用Wren核查，再用已核验数据集做原生明细表预览，不保存。日期用YYYY-MM-DD，金额为精确字符串，在rows输出明细并在summary提供预览链接。",
+  "expected": {
+    "statuses": [
+      "previewed",
+      "answered"
+    ],
+    "query": true,
+    "preview": "table"
+  },
+  "calls": [
+    {
+      "id": "item_1",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "get_runtime_contract",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"project\": \"bi008_semantics\",\n  \"metric\": \"net_revenue@1\",\n  \"mdl_sha256\": \"a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83\",\n  \"source_revision\": \"2db98036b40bca76d5e094ff5169bd291e6bbd26334c49ac481ec88d4ee400f4\",\n  \"source_matches_startup\": true,\n  \"wrenai\": \"0.16.0\",\n  \"mcp\": \"1.26.0\",\n  \"strict_mode\": true,\n  \"fallback\": false,\n  \"table_references\": \"unqualified MDL models or visible CTEs only\",\n  \"money_json\": \"Decimal as exact decimal string\",\n  \"allow_write\": false,\n  \"cube_date_range\": \"unsupported; use run_sql with explicit DATE literals\",\n  \"department_isolation\": \"NOT implemented; local synthetic-data experiment\",\n  \"transport\": \"stdio\",\n  \"superset_sync\": \"not implemented\"\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_2",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "get_instructions",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"instructions\": \"# 008 销售语义规则 v1\\n\\n## 指标和时间\\n\\n净收入 net_revenue@1（受控别名“净销售额”）=实付减已记录退款。单位人民币元，展示两位小数。它不是财务收入确认；仅问“收入”时澄清。优先使用 net_revenue cube 的 total；也可 SUM(bi_orders.net_amount)。默认回归窗口为 [2026-10-01, 2026-11-01)，不是随时钟变化的“本月”。业务日期 Asia/Shanghai，退款回溯原订单日。\\n\\n## 关系与粒度\\n\\nbi_orders 每行一订单，order_id 全局唯一。bi_refund_totals 是原始退款按 (dept_id, order_id) 汇总的结果，再与 bi_orders 关联；不关联退款明细后重复求和实付。bi_customers 主键为 (dept_id, customer_id)，关联必须保留两个字段。缺失客户时保留订单，行业为“未知行业”。原始退款明细不是本项目的查询模型。\\n\\n## 行业、质量与权限\\n\\n行业为客户当前行业，更新后历史订单重新分组；无法回答下单时行业。重复客户键、累计退款超过实付等需要外部质量检查拒绝发布，MDL 的基数声明不能代替实际数据质量校验。\\n\\nstrict_mode 只约束本入口的模型引用和只读语句；本实验没有部门认证/隔离。部署会话能访问 Trino 原始源，不代表普通用户已受保护。不要将本地未认证入口当作团队服务。\\n\\n## 变更和 BI\\n\\n模型源 YAML → validate → build → 回归。当前使用 grep 知识后端，memory index 是无索引可构建的 no-op；尚未测试向量检索。MCP 和 Codex 工具接入在 W2，语义变更发布在 W3。Superset 仍使用 S4 SQL，不会因 Wren YAML 改动自动更新。知识 Markdown 是 Agent 上下文，不是引擎强制规则。\\n\\n## 已知兼容限制\\n\\n当前引擎对同名物理表的限定名存在模型范围绕过，模型统一用 bi_ 前缀避开已连接物理表名；仍不得将 strict_mode 宣称为完整授权边界。当前项目没有与 bi_ 模型同名的物理表；新增源表时需重新检查名称冲突与范围测试。关联目标键使用不同别名，避免引擎在外关联时从无匹配一侧投影同名键。\\n\\n## 金额兼容约定\\n\\n当前版本在 MDL 列类型使用通用 DECIMAL，源字段精度另存 properties.source_type；这份属性不是引擎精度保证。SQL 中的非整数金额常量使用显式 CAST('0.01' AS DECIMAL(12,2))，不要使用会被本版本翻译丢失标度的 DECIMAL '0.01'。回归必须包含“分”级值并使用 Decimal 对账，不能只看整数 245。\\n\\n\\n## W2 MCP 能力边界\\n\\nbi008_wren 入口额外禁止输入中的 catalog/schema 限定名、多个语句和表函数，使用启动时的模型/知识快照，金额以精确十进制字符串返回。原生 Wren 缺口仍存在，不能直接改连未适配服务。源变化会拒绝执行，需要构建、回归、review、重启后生效；这不是自动发布。\\n\\nquery_cube 当前支持无范围的聚合/日期分组。带日期范围的 cube 在本 Trino DATE 字段上存在上游翻译错误，入口主动拒绝并要求改用 run_sql 的显式 DATE 字面量。默认回归窗口和退款、行业口径不变。MCP 元数据不是业务授权，部门隔离仍未实现。\",\n  \"used_legacy\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_3",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "describe_model",
+      "arguments": {
+        "name": "bi_orders"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"name\": \"bi_orders\",\n  \"columns\": [\n    {\n      \"name\": \"order_id\",\n      \"type\": \"BIGINT\",\n      \"description\": \"全局唯一订单 ID\"\n    },\n    {\n      \"name\": \"dept_id\",\n      \"type\": \"CHAR(1)\",\n      \"description\": \"部门，客户和退款关联键的一部分\"\n    },\n    {\n      \"name\": \"customer_id\",\n      \"type\": \"BIGINT\",\n      \"description\": \"部门内客户 ID，不能单独关联\"\n    },\n    {\n      \"name\": \"order_date\",\n      \"type\": \"DATE\",\n      \"description\": \"Asia/Shanghai 业务日期，退款归属原订单日\"\n    },\n    {\n      \"name\": \"paid_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"订单实付，人民币元，定点数\"\n    },\n    {\n      \"name\": \"refund\",\n      \"type\": \"bi_refund_totals\",\n      \"description\": \"退款已按部门和订单汇总，至多一行\"\n    },\n    {\n      \"name\": \"customer\",\n      \"type\": \"bi_customers\",\n      \"description\": \"按部门和客户复合键匹配当前客户，允许无匹配\"\n    },\n    {\n      \"name\": \"refund_total\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"订单累计已记录退款，无退款为零，归属订单日\"\n    },\n    {\n      \"name\": \"net_amount\",\n      \"type\": \"DECIMAL\",\n      \"description\": \"净收入行值=实付-累计退款，人民币元；SUM 为净收入\"\n    },\n    {\n      \"name\": \"industry\",\n      \"type\": \"VARCHAR\",\n      \"description\": \"客户当前行业，缺失保留订单为未知行业\"\n    }\n  ],\n  \"primary_key\": \"order_id\",\n  \"ref_sql\": null,\n  \"relationships\": [\n    {\n      \"name\": \"orders_refund_totals\",\n      \"models\": [\n        \"bi_orders\",\n        \"bi_refund_totals\"\n      ],\n      \"join_type\": \"MANY_TO_ONE\",\n      \"condition\": \"bi_orders.dept_id = bi_refund_totals.refund_dept_id AND bi_orders.order_id = bi_refund_totals.refund_order_id\"\n    },\n    {\n      \"name\": \"orders_customers\",\n      \"models\": [\n        \"bi_orders\",\n        \"bi_customers\"\n      ],\n      \"join_type\": \"MANY_TO_ONE\",\n      \"condition\": \"bi_orders.dept_id = bi_customers.customer_dept_id AND bi_orders.customer_id = bi_customers.customer_local_id\"\n    }\n  ]\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_4",
+      "type": "mcp_tool_call",
+      "server": "bi008_superset",
+      "tool": "get_dataset_info",
+      "arguments": {
+        "request": {
+          "identifier": 3,
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"id\":3,\"table_name\":\"008_s6_orders_october_v1\",\"schema\":null,\"database_name\":\"008 Trino federation (source readers)\",\"description\":\"S6 only: S4 net_revenue@1 SQL, fixed [2026-10-01,2026-11-01). Native DATE filter workaround, not Wren synchronization.\",\"certified_by\":null,\"certification_details\":null,\"changed_by\":\"BI Research\",\"changed_on\":\"2026-10-18T03:02:06.852870\",\"changed_on_humanized\":\"6 hours ago\",\"created_by\":\"BI Research\",\"created_on\":\"2026-10-18T03:02:06.828202\",\"created_on_humanized\":\"6 hours ago\",\"tags\":[],\"owners\":[{\"id\":1,\"username\":\"admin\",\"first_name\":\"BI\",\"last_name\":\"Research\",\"email\":\"bi008@example.invalid\",\"active\":true,\"roles\":[\"Admin\"]}],\"is_virtual\":true,\"database_id\":2,\"uuid\":\"8239d2bf-21ca-47ed-b1de-5a87c6297be1\",\"schema_perm\":null,\"url\":\"http://192.168.2.46:8088/tablemodelview/edit/3\",\"sql\":\"SELECT * FROM (\\n-- Grain: one row per order. Industry is CURRENT, not as-of-order.\\nWITH refund_totals AS (\\n    SELECT dept_id, order_id, SUM(refund_amount) AS refund_total\\n    FROM mysql.sales.refunds\\n    GROUP BY dept_id, order_id\\n)\\nSELECT o.order_id, o.dept_id, o.customer_id, o.order_date,\\n       COALESCE(c.industry, '未知行业') AS industry,\\n       o.paid_amount,\\n       COALESCE(r.refund_total, DECIMAL '0.00') AS refund_total,\\n       o.paid_amount - COALESCE(r.refund_total, DECIMAL '0.00') AS net_amount\\nFROM mysql.sales.orders o\\nLEFT JOIN refund_totals r ON o.dept_id = r.dept_id AND o.order_id = r.order_id\\nLEFT JOIN crm.public.customers c ON o.dept_id = c.dept_id AND o.customer_id = c.customer_id\\n) source_orders\\nWHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01'\",\"main_dttm_col\":\"order_date\",\"offset\":0,\"cache_timeout\":null,\"params\":null,\"template_params\":null,\"extra\":null,\"columns\":[{\"column_name\":\"order_id\",\"verbose_name\":null,\"type\":\"BIGINT\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"dept_id\",\"verbose_name\":null,\"type\":\"CHAR(1)\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"customer_id\",\"verbose_name\":null,\"type\":\"BIGINT\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"order_date\",\"verbose_name\":null,\"type\":\"DATE\",\"is_dttm\":true,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"industry\",\"verbose_name\":null,\"type\":\"VARCHAR\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"paid_amount\",\"verbose_name\":null,\"type\":\"DECIMAL(12, 2)\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"refund_total\",\"verbose_name\":null,\"type\":\"DECIMAL(38, 2)\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null},{\"column_name\":\"net_amount\",\"verbose_name\":null,\"type\":\"DECIMAL(38, 2)\",\"is_dttm\":false,\"groupby\":true,\"filterable\":true,\"description\":null}],\"metrics\":[{\"metric_name\":\"count\",\"verbose_name\":\"COUNT(*)\",\"expression\":\"COUNT(*)\",\"description\":null,\"d3format\":null}],\"is_favorite\":null}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_5",
+      "type": "mcp_tool_call",
+      "server": "bi008_superset",
+      "tool": "get_chart_type_schema",
+      "arguments": {
+        "chart_type": "table",
+        "include_examples": true
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"chart_type\":\"table\",\"schema\":{\"$defs\":{\"ColumnRef\":{\"properties\":{\"name\":{\"maxLength\":255,\"minLength\":1,\"pattern\":\"^[a-zA-Z0-9_][a-zA-Z0-9_\\\\s\\\\-\\\\.]*$\",\"title\":\"Name\",\"type\":\"string\"},\"label\":{\"anyOf\":[{\"maxLength\":500,\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Label\"},\"dtype\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Dtype\"},\"aggregate\":{\"anyOf\":[{\"enum\":[\"SUM\",\"COUNT\",\"AVG\",\"MIN\",\"MAX\",\"COUNT_DISTINCT\",\"STDDEV\",\"VAR\",\"MEDIAN\",\"PERCENTILE\"],\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"SQL aggregate function\",\"title\":\"Aggregate\"},\"saved_metric\":{\"default\":false,\"description\":\"If true, 'name' refers to a saved metric from the dataset (use get_dataset_info to see available metrics). When set, 'aggregate' is ignored.\",\"title\":\"Saved Metric\",\"type\":\"boolean\"}},\"required\":[\"name\"],\"title\":\"ColumnRef\",\"type\":\"object\"},\"FilterConfig\":{\"properties\":{\"column\":{\"maxLength\":255,\"minLength\":1,\"pattern\":\"^[a-zA-Z0-9_][a-zA-Z0-9_\\\\s\\\\-\\\\.]*$\",\"title\":\"Column\",\"type\":\"string\"},\"op\":{\"description\":\"LIKE/ILIKE use % wildcards. IN/NOT IN take a list.\",\"enum\":[\"=\",\">\",\"<\",\">=\",\"<=\",\"!=\",\"LIKE\",\"ILIKE\",\"NOT LIKE\",\"IN\",\"NOT IN\"],\"title\":\"Op\",\"type\":\"string\"},\"value\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"integer\"},{\"type\":\"number\"},{\"type\":\"boolean\"},{\"items\":{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"integer\"},{\"type\":\"number\"},{\"type\":\"boolean\"}]},\"type\":\"array\"}],\"description\":\"For IN/NOT IN, provide a list.\",\"title\":\"Value\"}},\"required\":[\"column\",\"op\",\"value\"],\"title\":\"FilterConfig\",\"type\":\"object\"}},\"properties\":{\"chart_type\":{\"const\":\"table\",\"default\":\"table\",\"title\":\"Chart Type\",\"type\":\"string\"},\"viz_type\":{\"default\":\"table\",\"description\":\"'ag-grid-table' for interactive features\",\"enum\":[\"table\",\"ag-grid-table\"],\"title\":\"Viz Type\",\"type\":\"string\"},\"query_mode\":{\"anyOf\":[{\"enum\":[\"aggregate\",\"raw\"],\"type\":\"string\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Query mode: 'raw' returns individual rows without aggregation, 'aggregate' groups data using metrics. When set to 'raw', all columns are treated as plain columns regardless of any aggregate settings. Defaults to auto-detection: 'raw' if no column has an aggregate function, 'aggregate' otherwise.\",\"title\":\"Query Mode\"},\"columns\":{\"description\":\"Columns with unique labels\",\"items\":{\"$ref\":\"#/$defs/ColumnRef\"},\"minItems\":1,\"title\":\"Columns\",\"type\":\"array\"},\"filters\":{\"anyOf\":[{\"items\":{\"$ref\":\"#/$defs/FilterConfig\"},\"type\":\"array\"},{\"type\":\"null\"}],\"default\":null,\"description\":\"Structured filters (column/op/value). Do NOT use adhoc_filters or raw SQL expressions.\",\"title\":\"Filters\"},\"sort_by\":{\"anyOf\":[{\"items\":{\"type\":\"string\"},\"type\":\"array\"},{\"type\":\"null\"}],\"default\":null,\"title\":\"Sort By\"},\"row_limit\":{\"default\":1000,\"description\":\"Max rows returned\",\"maximum\":50000,\"minimum\":1,\"title\":\"Row Limit\",\"type\":\"integer\"}},\"required\":[\"columns\"],\"title\":\"TableChartConfig\",\"type\":\"object\"},\"examples\":[{\"chart_type\":\"table\",\"columns\":[{\"name\":\"customer_name\"},{\"name\":\"revenue\",\"aggregate\":\"SUM\"}]}]}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_6",
+      "type": "mcp_tool_call",
+      "server": "bi008_superset",
+      "tool": "get_instance_info",
+      "arguments": {},
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"instance_summary\":{\"total_dashboards\":3,\"total_charts\":8,\"total_datasets\":3,\"total_databases\":2,\"total_users\":1,\"total_roles\":5,\"total_tags\":0,\"avg_charts_per_dashboard\":2.67},\"recent_activity\":{\"dashboards_created_last_30_days\":3,\"charts_created_last_30_days\":8,\"datasets_created_last_30_days\":3,\"dashboards_modified_last_7_days\":3,\"charts_modified_last_7_days\":8,\"datasets_modified_last_7_days\":3},\"dashboard_breakdown\":{\"published\":3,\"unpublished\":0,\"certified\":1,\"with_charts\":3,\"without_charts\":0},\"database_breakdown\":{\"by_type\":{\"mysql+pymysql\":1,\"trino\":1}},\"popular_content\":{\"top_tags\":[],\"top_creators\":[]},\"current_user\":{\"id\":1,\"username\":\"admin\",\"first_name\":\"BI\",\"last_name\":\"Research\",\"email\":\"bi008@example.invalid\",\"active\":true,\"roles\":[\"Admin\"]},\"feature_availability\":{\"accessible_menus\":[\"Action Log\",\"Alerts & Report\",\"Annotation Layers\",\"CSS Templates\",\"Charts\",\"Dashboards\",\"Data\",\"Databases\",\"Datasets\",\"Extensions\",\"Home\",\"List Groups\",\"List Roles\",\"List Users\",\"Manage\",\"Plugins\",\"Query Search\",\"Row Level Security\",\"SQL Editor\",\"SQL Lab\",\"Saved Queries\",\"Security\",\"Tags\",\"Tasks\",\"Themes\",\"User Registrations\"]},\"timestamp\":\"2026-10-18T09:47:24.917900Z\"}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_7",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "dry_plan",
+      "arguments": {
+        "sql": "SELECT order_id, dept_id, order_date, industry, net_amount FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' ORDER BY order_id"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".dept_id AS dept_id, \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__2.dept_id, COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_date, __relation__2.order_id FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_date, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, dept_id, order_date, industry, net_amount FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE) ORDER BY order_id"
+          }
+        ],
+        "structured_content": {
+          "result": "WITH bi_orders AS (SELECT \"wren_src_bi_orders\".order_id AS order_id, \"wren_src_bi_orders\".dept_id AS dept_id, \"wren_src_bi_orders\".order_date AS order_date, \"wren_src_bi_orders\".industry AS industry, \"wren_src_bi_orders\".net_amount AS net_amount FROM (SELECT __relation__2.dept_id, COALESCE(__relation__2.industry, '未知行业') AS industry, __relation__2.paid_amount - COALESCE(__relation__2.refund_total, CAST(0 AS DECIMAL(38, 10))) AS net_amount, __relation__2.order_date, __relation__2.order_id FROM (SELECT bi_customers.customer_dept_id, __relation__1.customer_id, bi_customers.customer_local_id, __relation__1.dept_id, bi_customers.industry, __relation__1.order_date, __relation__1.order_id, __relation__1.paid_amount, __relation__1.refund_dept_id, __relation__1.refund_order_id, __relation__1.refund_total FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT bi_customers.customer_dept_id, bi_customers.customer_local_id, bi_customers.industry FROM (SELECT __source.customer_dept_id AS customer_dept_id, __source.customer_local_id AS customer_local_id, __source.industry AS industry FROM (SELECT dept_id AS customer_dept_id, customer_id AS customer_local_id, industry FROM crm.public.customers) AS __source) AS bi_customers) AS bi_customers) AS bi_customers RIGHT OUTER JOIN (SELECT bi_orders.customer_id, bi_orders.dept_id, bi_orders.order_date, bi_orders.order_id, bi_orders.paid_amount, bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT bi_refund_totals.refund_dept_id, bi_refund_totals.refund_order_id, bi_refund_totals.refund_total FROM (SELECT __source.refund_dept_id AS refund_dept_id, __source.refund_order_id AS refund_order_id, __source.refund_total AS refund_total FROM (SELECT dept_id AS refund_dept_id, order_id AS refund_order_id, SUM(refund_amount) AS refund_total FROM mysql.sales.refunds GROUP BY dept_id, order_id) AS __source) AS bi_refund_totals) AS bi_refund_totals) AS bi_refund_totals RIGHT OUTER JOIN (SELECT __source.customer_id AS customer_id, __source.dept_id AS dept_id, __source.order_date AS order_date, __source.order_id AS order_id, __source.paid_amount AS paid_amount FROM mysql.sales.orders AS __source) AS bi_orders ON bi_refund_totals.refund_dept_id = bi_orders.dept_id AND bi_refund_totals.refund_order_id = bi_orders.order_id) AS __relation__1 ON bi_customers.customer_dept_id = __relation__1.dept_id AND bi_customers.customer_local_id = __relation__1.customer_id) AS __relation__2) AS \"wren_src_bi_orders\") SELECT order_id, dept_id, order_date, industry, net_amount FROM bi_orders WHERE order_date >= CAST('2026-10-01' AS DATE) AND order_date < CAST('2026-11-01' AS DATE) ORDER BY order_id"
+        }
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_8",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "dry_run",
+      "arguments": {
+        "sql": "SELECT order_id, dept_id, order_date, industry, net_amount FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' ORDER BY order_id"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"ok\": true\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_9",
+      "type": "mcp_tool_call",
+      "server": "bi008_wren",
+      "tool": "run_sql",
+      "arguments": {
+        "sql": "SELECT order_id, dept_id, order_date, industry, net_amount FROM bi_orders WHERE order_date >= DATE '2026-10-01' AND order_date < DATE '2026-11-01' ORDER BY order_id",
+        "limit": 10000
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"columns\": [\n    \"order_id\",\n    \"dept_id\",\n    \"order_date\",\n    \"industry\",\n    \"net_amount\"\n  ],\n  \"rows\": [\n    {\n      \"order_id\": 1,\n      \"dept_id\": \"A\",\n      \"order_date\": \"2026-10-01\",\n      \"industry\": \"软件\",\n      \"net_amount\": \"70.0000000000\"\n    },\n    {\n      \"order_id\": 2,\n      \"dept_id\": \"A\",\n      \"order_date\": \"2026-10-02\",\n      \"industry\": \"零售\",\n      \"net_amount\": \"75.0000000000\"\n    },\n    {\n      \"order_id\": 3,\n      \"dept_id\": \"B\",\n      \"order_date\": \"2026-10-01\",\n      \"industry\": \"软件\",\n      \"net_amount\": \"50.0000000000\"\n    },\n    {\n      \"order_id\": 4,\n      \"dept_id\": \"B\",\n      \"order_date\": \"2026-10-02\",\n      \"industry\": \"零售\",\n      \"net_amount\": \"50.0000000000\"\n    }\n  ],\n  \"row_count\": 4,\n  \"truncated\": false\n}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    },
+    {
+      "id": "item_10",
+      "type": "mcp_tool_call",
+      "server": "bi008_superset",
+      "tool": "generate_chart",
+      "arguments": {
+        "request": {
+          "dataset_id": 3,
+          "config": {
+            "chart_type": "table",
+            "viz_type": "table",
+            "query_mode": "raw",
+            "columns": [
+              {
+                "name": "order_id"
+              },
+              {
+                "name": "dept_id"
+              },
+              {
+                "name": "order_date"
+              },
+              {
+                "name": "industry"
+              },
+              {
+                "name": "net_amount"
+              }
+            ],
+            "sort_by": [
+              "order_id"
+            ],
+            "row_limit": 10000
+          },
+          "save_chart": false,
+          "generate_preview": true,
+          "preview_formats": [
+            "url",
+            "table"
+          ],
+          "force_refresh": true
+        }
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"chart\":null,\"previews\":{\"table\":{\"type\":\"table\",\"table_data\":\"Table Preview\\n================================================================================\\norder_id | dept_id  | order_date | industry | net_amount\\n---------+----------+------------+----------+-----------\\n1        | A        | 2026-10-01 | 软件       | 70.00     \\n2        | A        | 2026-10-02 | 零售       | 75.00     \\n3        | B        | 2026-10-01 | 软件       | 50.00     \\n4        | B        | 2026-10-02 | 零售       | 50.00     \\n\\nTotal: 4 rows × 5 columns\",\"row_count\":4,\"supports_sorting\":true}},\"capabilities\":{\"supports_interaction\":false,\"supports_real_time\":false,\"supports_drill_down\":true,\"supports_export\":true,\"optimal_formats\":[\"url\",\"ascii\",\"table\"],\"data_types\":[]},\"semantics\":{\"primary_insight\":\"Displays detailed data in tabular format\",\"data_story\":\"This chart provides insights into the selected dataset\",\"recommended_actions\":[\"Review data patterns and trends\",\"Consider filtering or drilling down for more detail\",\"Export chart for reporting or sharing\"],\"anomalies\":[],\"statistical_summary\":{}},\"explore_url\":\"http://192.168.2.46:8088/explore/?form_data_key=ZSMJRJFqhtU\",\"embed_code\":null,\"api_endpoints\":{},\"form_data\":{\"viz_type\":\"table\",\"all_columns\":[\"order_id\",\"dept_id\",\"order_date\",\"industry\",\"net_amount\"],\"columns\":[\"order_id\",\"dept_id\",\"order_date\",\"industry\",\"net_amount\"],\"query_mode\":\"raw\",\"include_time\":false,\"order_desc\":true,\"order_by_cols\":[\"order_id\"],\"row_limit\":10000},\"form_data_key\":\"ZSMJRJFqhtU\",\"performance\":{\"query_duration_ms\":556,\"estimated_cost\":null,\"cache_status\":\"miss\",\"optimization_suggestions\":[]},\"accessibility\":{\"color_blind_safe\":true,\"alt_text\":\"Chart showing Order Id, Dept Id, Order Date Table\",\"high_contrast_available\":false},\"success\":true,\"error\":null,\"warnings\":[],\"schema_version\":\"2.0\",\"api_version\":\"v1\"}"
+          }
+        ],
+        "structured_content": null
+      },
+      "error": null,
+      "status": "completed"
+    }
+  ],
+  "answer": {
+    "status": "previewed",
+    "metric": "net_revenue@1",
+    "mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+    "dataset_id": 3,
+    "dashboard_id": null,
+    "chart_ids": [],
+    "total": null,
+    "daily": [],
+    "industry": [],
+    "rows": [
+      {
+        "order_id": 1,
+        "dept_id": "A",
+        "industry": "软件",
+        "order_date": "2026-10-01",
+        "net_amount": "70.00"
+      },
+      {
+        "order_id": 2,
+        "dept_id": "A",
+        "industry": "零售",
+        "order_date": "2026-10-02",
+        "net_amount": "75.00"
+      },
+      {
+        "order_id": 3,
+        "dept_id": "B",
+        "industry": "软件",
+        "order_date": "2026-10-01",
+        "net_amount": "50.00"
+      },
+      {
+        "order_id": 4,
+        "dept_id": "B",
+        "industry": "零售",
+        "order_date": "2026-10-02",
+        "net_amount": "50.00"
+      }
+    ],
+    "summary": "Wren 口径和模型指纹与绑定一致；2026年10月共4笔订单，原生明细表预览逐行一致，未保存。金额为人民币元精确字符串；净收入=实付减累计已记录退款，退款归属订单日，行业为客户当前行业。仅限本地合成数据、admin开发身份。[预览明细表](http://192.168.2.46:8088/explore/?form_data_key=ZSMJRJFqhtU)"
+  },
+  "new_saved_charts": 0,
+  "checks_passed": true,
+  "scope": "one real independent Codex question; no department isolation claim"
+}

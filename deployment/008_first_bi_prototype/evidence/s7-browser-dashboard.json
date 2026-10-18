@@ -1,0 +1,38 @@
+{
+  "verified_at_utc": "2026-10-18T09:07:33.483Z",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/3/",
+  "scope": "saved dashboard only; independent previews pending",
+  "dashboard": {
+    "kpi": 245,
+    "industry": {
+      "软件": 120,
+      "零售": 125
+    },
+    "daily": {
+      "2026-10-01": 120,
+      "2026-10-02": 125
+    },
+    "manual_note_visible": true
+  },
+  "bar": {
+    "id": 8,
+    "name": "008 S7 行业净收入（模拟人工改名）",
+    "orientation": "horizontal",
+    "color_scheme": "d3Category10",
+    "row_limit": 77,
+    "y_axis_format": ",.1f"
+  },
+  "reopened": {
+    "kpi": 245,
+    "industry": {
+      "软件": 120,
+      "零售": 125
+    },
+    "daily": {
+      "2026-10-01": 120,
+      "2026-10-02": 125
+    },
+    "manual_note_visible": true
+  },
+  "previews": {}
+}

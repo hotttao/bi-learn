@@ -1,0 +1,49 @@
+{
+  "verified_at_utc": "2026-10-18T09:11:24.864483+00:00",
+  "dashboard_url": "http://192.168.2.46:8088/superset/dashboard/3/",
+  "scenario_session_id": "01a14d09-aac8-74f0-818a-c6b4ce437e1b",
+  "chart_ids": {
+    "seed": 6,
+    "trend": 7,
+    "industry": 8
+  },
+  "metric": "net_revenue@1",
+  "wren_mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "dataset_id": 3,
+  "logical_conversation_steps": 4,
+  "native_failed_attempts_retained": 1,
+  "independent_questions_passed": 7,
+  "acceptance_items": {
+    "passed": 16,
+    "pending": 5,
+    "blocked": 1,
+    "deferred": 2
+  },
+  "manual_settings_preserved": true,
+  "other_charts_and_layout_preserved": true,
+  "repeat_save_no_mutation": true,
+  "same_type_update_compatibility_required": true,
+  "compatibility_adapter_sha256": "d13310fc511837eda25e336694a05a6a23a986e2446580f9e010553de44703a5",
+  "normal_dashboard_chart_ids": [
+    1,
+    2,
+    3
+  ],
+  "s6_dashboard_chart_ids": [
+    4,
+    5
+  ],
+  "source_snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "not_verified": [
+    "production concurrent edits/CAS",
+    "real network failure recovery",
+    "department authentication/revocation (deferred)",
+    "arbitrary time-range BI dataset generation",
+    "automatic Wren→Superset synchronization",
+    "large-schema/large-data capacity (S8)",
+    "S7 missing-customer data fixture (question covers rule explanation only; prior W1 regression exists)",
+    "remaining independent questions and table/KPI preview rendering: Codex account usage limit"
+  ],
+  "duration_tracking": "end-to-end client duration not separately collected in this run; actual token usage and tool query durations retained",
+  "stage_complete": false
+}

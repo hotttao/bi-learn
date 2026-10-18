@@ -1,0 +1,35 @@
+{
+  "entry": {
+    "name": "bi008_superset",
+    "enabled": true,
+    "disabled_reason": null,
+    "transport": {
+      "type": "streamable_http",
+      "url": "http://127.0.0.1:5008/mcp",
+      "bearer_token_env_var": null,
+      "http_headers": null,
+      "env_http_headers": null,
+      "http_headers_helper": null
+    },
+    "startup_timeout_sec": 30.0,
+    "tool_timeout_sec": 120.0,
+    "auth_status": "unsupported"
+  },
+  "enabled_tools": [
+    "health_check",
+    "get_instance_info",
+    "list_datasets",
+    "get_dataset_info",
+    "list_charts",
+    "get_chart_info",
+    "get_chart_data",
+    "get_chart_type_schema",
+    "generate_chart",
+    "update_chart",
+    "add_chart_to_existing_dashboard",
+    "get_dashboard_info",
+    "list_dashboards"
+  ],
+  "scope": "prototype-local only; global/repository-root configuration untouched",
+  "actual_model_invocation_verified": true
+}

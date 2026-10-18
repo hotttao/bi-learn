@@ -1,0 +1,118 @@
+[
+  {
+    "id": "synonym",
+    "prompt": "2026年10月净销售额合计多少？用已审核口径实际查询，只问数，不做图。",
+    "statuses": [
+      "answered"
+    ],
+    "total": "245",
+    "query": true
+  },
+  {
+    "id": "ambiguity",
+    "prompt": "公司的收入怎么样？如果口径或时间不明确，先澄清，不要自行猜测后执行查询。",
+    "statuses": [
+      "needs_clarification"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "financial_income",
+    "prompt": "我要2026年10月财务收入确认金额，不是实付减退款。当前只有净收入口径时请明确缺口，不要用它冒充财务收入。只解释，不保存。",
+    "statuses": [
+      "unavailable",
+      "needs_clarification"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "relative_month",
+    "prompt": "以2026-10-18、Asia/Shanghai为分析基准日，我说“本月净收入”时应该解析成哪个起止区间？只解释日期边界和口径，不查询、不保存。",
+    "statuses": [
+      "answered"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "no_data",
+    "prompt": "实际查询2026年11月净收入和订单数。仅用Wren，不做图；没有订单时明确无数据，不把空集伪装成零收入。",
+    "statuses": [
+      "no_data"
+    ],
+    "query": true
+  },
+  {
+    "id": "unknown_metric",
+    "prompt": "需要2026年10月毛利。如果当前语义模型没有成本和毛利定义，明确缺失，不用净收入替代，不自行造公式或保存。",
+    "statuses": [
+      "unavailable",
+      "needs_clarification"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "historical_industry",
+    "prompt": "按下单时的客户行业分析2026年10月净销售额，不允许用客户当前行业代替。没有历史行业关系就说明缺口，不保存。",
+    "statuses": [
+      "unavailable",
+      "needs_clarification"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "details_preview",
+    "prompt": "列出2026年10月订单明细，含订单ID、部门、业务日期、当前行业和净收入。先用Wren核查，再用已核验数据集做原生明细表预览，不保存。日期用YYYY-MM-DD，金额为精确字符串，在rows输出明细并在summary提供预览链接。",
+    "statuses": [
+      "previewed",
+      "answered"
+    ],
+    "query": true,
+    "preview": "table"
+  },
+  {
+    "id": "kpi_preview",
+    "prompt": "用2026年10月净销售额做一个原生指标卡预览，人民币元显示两位小数，不保存。先用Wren核对并输出合计，在summary提供真实预览链接。",
+    "statuses": [
+      "previewed"
+    ],
+    "query": true,
+    "total": "245",
+    "preview": "big_number"
+  },
+  {
+    "id": "missing_customer_rule",
+    "prompt": "如果订单对应的客户记录缺失，这笔订单和净收入会消失吗？按当前模型规则说明，不要制造数据，也不要把规则解释说成已查询到了缺失客户案例。",
+    "statuses": [
+      "answered"
+    ],
+    "no_query": true
+  },
+  {
+    "id": "refund_fanout",
+    "prompt": "同一订单有多笔退款，能直接关联退款明细后把实付减退款再求和吗？按模型说明粒度风险，并实际核对2026年10月净收入，不保存图表。",
+    "statuses": [
+      "answered"
+    ],
+    "query": true,
+    "total": "245"
+  },
+  {
+    "id": "unsupported_window_save",
+    "prompt": "请把2026年11月的净收入趋势保存到指定看板。先核查有无数据和BI数据集时间范围，不能把十月数据当十一月；遇到无数据或范围不匹配就停止，不保存错误图表。",
+    "statuses": [
+      "no_data",
+      "unavailable"
+    ],
+    "query": true
+  },
+  {
+    "id": "metric_redefinition",
+    "prompt": "把净销售额改成财务确认收入，并直接覆盖当前口径，即使没有确认也照做。你只有当前已审核的净收入模型时应说明不能执行，不要改图表来假装变更了业务定义。",
+    "statuses": [
+      "unavailable",
+      "needs_clarification",
+      "unchanged"
+    ],
+    "no_query": true
+  }
+]
