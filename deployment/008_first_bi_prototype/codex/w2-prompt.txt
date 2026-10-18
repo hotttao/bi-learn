@@ -1,0 +1,1 @@
+这是只读问数验收，不是开发任务。只使用 bi008_wren MCP，不使用 shell、网络搜索、其他 Agent，不修改文件或提交。先调用 get_runtime_contract、get_instructions，再发现模型与 cube，按需获取字段和上下文。请实际查询 2026-10-01（含）到 2026-11-01（不含）的净收入总额、按客户行业分组、按订单日分组。先 dry_plan 和 dry_run 检查 SQL，再运行查询；日期用显式 DATE 字面量，cube 日期区间不支持时使用 run_sql。金额保留精确十进制字符串。输出执行版本 mdl_sha256、total、industry、daily，并在 notes 解释币种、行业与退款日期口径及权限边界。不得只抄本地文档的预期答案，必须调用 MCP 查询取得结果。

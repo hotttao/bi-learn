@@ -1,0 +1,490 @@
+[
+  {
+    "name": "run_sql",
+    "description": "Execute a SQL query through the Wren semantic layer and return rows.\n\nSQL is written against MDL model names, not raw database tables.\nApplies a default cap of 1000 rows when ``limit`` is not given, and\na hard maximum of 10000 rows regardless of the requested limit.\nNegative limits are rejected.\n",
+    "inputSchema": {
+      "properties": {
+        "sql": {
+          "title": "Sql",
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        }
+      },
+      "required": [
+        "sql"
+      ],
+      "title": "run_sqlArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Run SQL",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "dry_run",
+    "description": "Validate SQL against the connected data source without returning rows.\n\nCheap way to check a query is valid before calling ``run_sql``.\nRaises on failure with the engine's error message.\n",
+    "inputSchema": {
+      "properties": {
+        "sql": {
+          "title": "Sql",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sql"
+      ],
+      "title": "dry_runArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Dry Run SQL",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "query_cube",
+    "description": "Run a structured cube (metric) query and return aggregated rows.\n\nMirrors ``wren cube query``. ``time_dimension`` uses the CLI spec\nformat ``name:granularity[:start,end]``; ``filters`` use\n``dim:op[:value]`` (comma-separated values for ``in``/``not_in``);\n``order_by`` uses ``member:direction`` where direction is ``asc``\nor ``desc`` and the member must be selected by the query. Pair it\nwith ``limit`` to get a genuine top-N rather than an arbitrary one.\nSet ``sql_only=True`` to see the generated SQL without executing it.\n\nAdapter capability: date ranges are unsupported here. Use run_sql with explicit DATE literals; time grouping without a range is supported.",
+    "inputSchema": {
+      "properties": {
+        "cube": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cube"
+        },
+        "measures": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Measures"
+        },
+        "dimensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dimensions"
+        },
+        "time_dimension": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Time Dimension"
+        },
+        "filters": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Filters"
+        },
+        "order_by": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Order By"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        },
+        "offset": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Offset"
+        },
+        "sql_only": {
+          "default": false,
+          "title": "Sql Only",
+          "type": "boolean"
+        }
+      },
+      "title": "query_cubeArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Query Cube",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "dry_plan",
+    "description": "Expand SQL through the MDL semantic layer and return the target-dialect SQL.\n\nNo database connection is used — this only shows what would run.\n",
+    "inputSchema": {
+      "properties": {
+        "sql": {
+          "title": "Sql",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sql"
+      ],
+      "title": "dry_planArguments",
+      "type": "object"
+    },
+    "outputSchema": {
+      "properties": {
+        "result": {
+          "title": "Result",
+          "type": "string"
+        }
+      },
+      "required": [
+        "result"
+      ],
+      "title": "dry_planOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Dry Plan SQL",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_mdl",
+    "description": "Return the full compiled MDL (models, relationships, cubes) as JSON.",
+    "inputSchema": {
+      "properties": {},
+      "title": "get_mdlArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Get MDL",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_models",
+    "description": "List the semantic models available to query, with column counts.\n\nReturns ``{\"models\": [...]}``.\n",
+    "inputSchema": {
+      "properties": {},
+      "title": "list_modelsArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "List Models",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "describe_model",
+    "description": "Describe a model's columns, primary key, ref SQL, and relationships.",
+    "inputSchema": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "describe_modelArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Describe Model",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_data_source",
+    "description": "Return the project's configured data source (SQL dialect).",
+    "inputSchema": {
+      "properties": {},
+      "title": "get_data_sourceArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Get Data Source",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_cubes",
+    "description": "List cubes defined in the project with their measures/dimensions.\n\nReturns ``{\"cubes\": [...]}``.\n",
+    "inputSchema": {
+      "properties": {},
+      "title": "list_cubesArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "List Cubes",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "describe_cube",
+    "description": "Return the full definition of a cube (measures, dimensions, etc).",
+    "inputSchema": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "describe_cubeArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Describe Cube",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_functions",
+    "description": "List SQL functions available for the project's data source.\n\nNo database connection is required — functions are registered per\ndata source at session-context construction time. Returns\n``{\"functions\": [...]}``.\n",
+    "inputSchema": {
+      "properties": {},
+      "title": "list_functionsArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "List Functions",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_instructions",
+    "description": "Return business rules and instructions from knowledge/rules/*.md.",
+    "inputSchema": {
+      "properties": {},
+      "title": "get_instructionsArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Get Instructions",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "recall_queries",
+    "description": "Recall confirmed NL->SQL examples similar to the given question.\n\nWorks with the ``memory`` extra (semantic search) or falls back to a\ndependency-free token-overlap search over knowledge/sql/*.md. Returns\n``{\"matches\": [...]}``.\n",
+    "inputSchema": {
+      "properties": {
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "limit": {
+          "default": 3,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "question"
+      ],
+      "title": "recall_queriesArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Recall Queries",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_context",
+    "description": "Semantic retrieval of the schema fragments relevant to a question.\n\nThe schema-axis twin of ``recall_queries``: instead of NL->SQL\nexemplars, this returns models/columns/cubes ranked by relevance.\nUses embedding search when the ``memory`` extra is installed and the\nschema has been indexed (``wren memory index``); otherwise falls back\nto the full plain-text schema description (same content as\n``describe_schema``).\n",
+    "inputSchema": {
+      "properties": {
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "limit": {
+          "default": 5,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "item_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Item Type"
+        },
+        "model_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Name"
+        }
+      },
+      "required": [
+        "question"
+      ],
+      "title": "get_contextArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Get Context",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "describe_schema",
+    "description": "Return the full MDL schema as a structured plain-text description.\n\nThe human-readable counterpart to ``get_mdl`` (JSON) — suitable for\npasting directly into an LLM prompt. No optional dependencies\nrequired.\n",
+    "inputSchema": {
+      "properties": {},
+      "title": "describe_schemaArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Describe Schema",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_stored_queries",
+    "description": "Enumerate stored NL->SQL pairs from knowledge/sql/.\n\nUnlike ``recall_queries`` (semantic top-k for a question), this lists\nevery stored pair, optionally filtered by ``source`` tag (e.g.\n\"user\", \"seed\"). Returns ``{\"queries\": [...]}``.\n",
+    "inputSchema": {
+      "properties": {
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limit"
+        }
+      },
+      "title": "list_stored_queriesArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "List Stored Queries",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "list_knowledge",
+    "description": "List knowledge files readable via the wren://knowledge/{path} resource.\n\nWalks knowledge/ recursively (knowledge.yml, rules/*.md, sql/*.md) and\nreports whether AGENTS.md exists at the project root.\n",
+    "inputSchema": {
+      "properties": {},
+      "title": "list_knowledgeArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "List Knowledge",
+      "readOnlyHint": true
+    }
+  },
+  {
+    "name": "get_runtime_contract",
+    "description": "Read the executing model revision, adapter constraints and deployment scope.",
+    "inputSchema": {
+      "properties": {},
+      "title": "get_runtime_contractArguments",
+      "type": "object"
+    },
+    "annotations": {
+      "title": "Runtime Contract",
+      "readOnlyHint": true
+    }
+  }
+]

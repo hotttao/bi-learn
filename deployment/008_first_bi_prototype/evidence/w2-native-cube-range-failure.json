@@ -1,0 +1,19 @@
+{
+  "command": [
+    "scripts/wren.sh",
+    "cube",
+    "query",
+    "--cube",
+    "net_revenue",
+    "--measures",
+    "total",
+    "--time-dimension",
+    "order_date:day:2026-10-01,2026-10-03",
+    "--output",
+    "json"
+  ],
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "Error: [INVALID_SQL] TrinoUserError(type=USER_ERROR, name=TYPE_MISMATCH, message=\"line 1:1528: Cannot apply operator: date <= varchar(10)\", query_id=20261018_023030_00034_ujdet) phase=SQL_EXECUTION\n",
+  "assessment": "Native date-range feature failed. W2 adapter explicitly rejects this input; use run_sql with typed DATE literals."
+}

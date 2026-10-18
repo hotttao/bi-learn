@@ -2,7 +2,7 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S4 已确认并提交（`61c9d59`）。W1 已获用户确认：Wren 0.16.0＋引擎 0.8.1 的三模型/两关系/cube 已对账 245、120/125，并通过缺失客户和分级精度回归；通用限定名范围缺口仍未修复，详见 W1 记录。Superset 仍为 `192.168.2.46:8088`；MCP 尚未接入。**
+2026-10-18：**S4 已提交（`61c9d59`），W1 已确认并提交（`7e6d467`）。W2 的 Codex＋Wren MCP 已通过 review，用户授权提交并按原计划进入 W3；本次提交前尚未实施 W3。Superset 仍为 `192.168.2.46:8088`，原有资产未变。**
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -793,3 +793,74 @@ grep 后端的 index 实测 no-op；describe 输出三模型、关系和 cube，
 **W1 本轮实现与调研完成；用户回复“继续”，确认本步并授权提交、进入 W2。** 核心建模查询可用，通用严格范围缺口仍未修复；MCP、变更发布、部门隔离、向量检索、大数据性能和 Superset 自动同步均未通过本步验证。S3 图表换位未验证项继续保留。
 
 交付自查：Python AST、shell 语法、YAML 严格校验与构建、JSON 解析、Markdown 本地链接/围栏、真实密码扫描、空白检查均通过。编译 MDL 与回归/最终状态的哈希一致；模型和知识源文件哈希一致。宿主恢复后五容器均 healthy，见 [w1-containers.json](evidence/w1-containers.json)。没有提交 W1，没有 push，没有纳入 `.codex/` 用户配置。
+
+
+## W2 Codex＋Wren MCP 实际记录（2026-10-18）
+
+**状态：实现完成，待 review；未提交 W2，不进入 W3。** 用户本轮“继续”确认 W1 后，已先提交 W1 为 `7e6d467`。此前 W1 段落中的“没有提交”描述的是当时交付状态，此处记录后续动作。
+
+目的：验证现成 Codex 能消费同一份可执行业务语义，而非新建 Agent。教学入口是 [W2-WALKTHROUGH.md](W2-WALKTHROUGH.md)，指令仍由 [agent.md](agent.md) 和 [wren/AGENTS.md](wren/AGENTS.md) 提供。
+
+### 1. 实际操作、版本和文件
+
+| 顺序 | 实际操作 | 结果及文件 |
+| --- | --- | --- |
+| 1 | 检查 W1 状态并提交获准文件 | `7e6d467`；未纳入仓库根 `.codex/`，没有 push |
+| 2 | 在现有 `.local/wren-venv` 安装 Wren MCP extra，使用 W1 lock 约束核心包 | 最初解析出 MCP 2.3.0，原生 server 导入 fastmcp 失败；改固定 `mcp[cli]==1.26.0`，生成 65 包 [requirements-mcp.lock](wren/requirements-mcp.lock) 和对应 input |
+| 3 | 检查原生 MCP 工具、资源、prompt 和引擎入口 | 复用原生 17 个只读工具；增加运行契约为 18 个。未注册 store_query，不新增 Web 服务 |
+| 4 | 实现 [guarded_wren_mcp.py](scripts/guarded_wren_mcp.py) 和 [wren_mcp.sh](scripts/wren_mcp.sh) | 输入 AST 范围限制、关闭 fallback、精确 Decimal 字符串、启动语义快照和 revision 检测；不修改安装包源码 |
+| 5 | 使用真实 stdio ClientSession 运行 [verify_w2_mcp.py](scripts/verify_w2_mcp.py) | 模型、规则、cube、知识资源、上下文和固定查询成功；越界输入、未知模型/指标、资源越界与源变化按预期拒绝 |
+| 6 | 遇到 cube 日期区间失败后独立复现 | 原生 Trino DATE/varchar TYPE_MISMATCH；保存失败证据，入口明确拒绝该能力，改用显式 DATE 的 run_sql |
+| 7 | 发现本机 Codex 二进制及登录状态，配置本原型 MCP | Codex CLI 0.163.0，已有 ChatGPT 登录；继承用户模型配置。只写本原型 `.codex/config.toml`，仓库根和全局配置未改 |
+| 8 | 用真实 Codex CLI 执行中文问数与歧义用例 | 固定 10 月总额/行业/日趋势分别有工具执行记录；歧义问题先问时间和指标，没有执行数据查询 |
+| 9 | 写 [install_w2.py](scripts/install_w2.py) 并实际重跑安装 | 同步 65 个固定包成功，三模型/两关系 validate/build 成功；W1 的 48 个核心依赖均保持原版本 |
+| 10 | 重新执行源验证、只读检查 Superset 和 Trino | S2 指纹不变、源约束与账号拒绝测试通过；S4 数据集 SQL、看板图表 1/2/3 未变 |
+
+全程命令工作目录为本原型，主要复现命令如下。Docker 权限只在重新验证原始源时需要；密码未写入脚本或 Git。
+
+```bash
+python3 scripts/install_w2.py
+.local/codex-bin mcp list --json
+.local/wren-venv/bin/python scripts/verify_w2_mcp.py
+python3 scripts/verify_w2_codex.py
+python3 scripts/verify_w2_codex.py --case ambiguity
+python3 scripts/verify_w2_codex.py --case synonym
+sudo python3 scripts/source_db.py verify > evidence/w2-source-baseline.json
+.local/wren-venv/bin/python scripts/finish_w2.py
+```
+
+第一轮固定 MCP 检查中，文本工具的 structuredContent 外包了一层 result，测试读取方式随实际协议修正；第二轮暴露原生 cube 日期类型问题，保留失败后增加能力拒绝再通过。最终状态脚本最初引用了不存在的 S2 文件名及错误 JSON 层级，已改为实际 `s2-sources.json.reconciliation` 并重跑通过。失败没有被改写成能力通过。
+
+### 2. 实测结果与 review 证据
+
+| 项目 | 结果 | 证据 |
+| --- | --- | --- |
+| 实际工具输入 schema | 18 个服务端工具，Codex 仅开放 12 个；stdio 无 HTTP 监听 | [工具清单](evidence/w2-mcp-tools.json)、[客户端配置证据](evidence/w2-codex-config.json) |
+| 净收入、行业、日趋势 | 245；软件 120、零售 125；10-01 120、10-02 125 | [固定 MCP 调用](evidence/w2-mcp-verification.json) |
+| 精确金额与截断 | 大金额含分字符串不丢精度，limit=1 标记 truncated | 同上 exact_decimal/truncation |
+| 限定名等输入约束 | run_sql/dry_run/dry_plan 各 10 个非法输入被拒绝；未进入原生 query 方法 | 同上 rejections/audit_counts；该计数不是数据库扫描计数 |
+| 未知语义对象 | 未知模型与 cube measure 拒绝 | 同上 rejections |
+| 版本一致性 fixture | 源变动被发现，规则仍是启动快照，查询拒绝 | 同上 revision_fixture，仅临时副本 |
+| 真实 Codex 问数 | 15 次 MCP 调用，三条 SQL 各有 dry_plan/dry_run/run_sql；答案和实际查询结果均核对 | [Codex 执行证据](evidence/w2-codex-verification.json) |
+| 真实 Codex 同义问法 | “净销售额”同样经 15 次 MCP 调用取得 245、120/125 | [同义问法证据](evidence/w2-codex-synonym-verification.json) |
+| 真实 Codex 歧义处理 | 仅两次元数据调用，先问时间和收入口径，没有执行 SQL | [歧义证据](evidence/w2-codex-ambiguity-verification.json) |
+| 原生 cube 日期区间 | 已知能力失败，本入口返回 BI008_CUBE_RANGE，使用 SQL DATE 替代 | [失败复现](evidence/w2-native-cube-range-failure.json) |
+| 源和 BI 基线 | 原始源完整指纹与 S2 相同，W1 MDL 未变、核心 pin 保持、Superset 原有资产不变 | [源验证](evidence/w2-source-baseline.json)、[最终状态](evidence/w2-final-state.json) |
+
+编译 MDL SHA256 仍是 `a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83`。规则、模型源和连接配置另形成 source_revision；编译模型相同不代表业务知识没有变化。原始源指纹仍是 `f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8`。
+
+### 3. 这些结果意味着什么
+
+这一步的数据经过“Codex→stdio MCP→Wren 模型展开→Trino→两业务源”。正确性来自实际工具返回、最终答案、明细/分组基线与源指纹核对，不来自 Agent 声称自己理解了规则。排错先检查运行契约和语义版本，再看生成计划、源数据和实际结果。
+
+适配器只修补本入口的已测兼容路径。原生 Wren CLI/SDK 的 W1 缺口仍在；没有做完整生产安全审计。原生 MCP 启动仍有 pydantic-settings 的 lifespan 注解警告，握手与工具调用已通过；负向测试日志中的预期错误不代表整个测试失败。金额输出是字符串，消费端应继续用 Decimal，而非先转 float。
+
+Codex 项目配置已实际被新 CLI 会话加载；已有客户端如未发现工具，需要重新打开以加载配置。这与本项目“每步 review 后提交”的协作约定不同，也不代表服务器授权。`required=true` 会让连接失败明确可见；没有为绕过失败而扩大数据库权限。
+
+服务端无写知识工具；stdio 进程随客户端结束，无新增局域网入口。Superset 仍可从 `http://192.168.2.46:8088/superset/dashboard/1/` 访问。Wren 模型没有自动写回 Superset。
+
+尚未验收：真实部门认证/隔离、语义变更发布和回滚、Superset 自动同步、HTTP MCP、向量检索、目录/数据规模与成本。少量固定中文用例不代表任意问法都可靠。下一步 W3 要研究语义变化如何发现、审核、发布和回归；本轮不提前实施。
+
+交付自查：本步变更文件的 Python AST、shell 语法、JSON/TOML 解析、Markdown 本地链接和围栏、真实凭据扫描、空白检查通过。安装复现成功；固定 MCP、实际 Codex 基线/同义/歧义和最终状态检查均有证据。原始日志与机器配置留在 Git 忽略目录；未纳入仓库根 `.codex/`。没有提交 W2，没有 push。
+
+2026-10-18 后续确认：用户要求“按照原先的计划继续”，授权提交 W2 并进入 W3。部门隔离暂缓；本次确认不提前批准 W3 的实现或提交。

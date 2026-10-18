@@ -1,0 +1,37 @@
+{
+  "verified_at_utc": "2026-10-18T02:34:22.489084+00:00",
+  "mdl_sha256": "a7bd97299b819012eebdf91211b2cd3ca1ae03df83ec4f75e6478b01ff46ed83",
+  "source_revision": "94ccd0856163a50eac6191fe9a31d446a65f1fc54f3a3c77a77f4ae8641b4002",
+  "adapter_sha256": "3ecc3201e56f0f6cba876e3ec353b42f55a824c42a4894d92bd001915eb0dad0",
+  "source_snapshot_sha256": "f5f457e68edf6080470a01c093bb4be2cc23d3a08c337af6446ffae446a750f8",
+  "w1_core_pins_preserved": 48,
+  "versions": {
+    "wrenai": "0.16.0",
+    "wren-core-py": "0.8.1",
+    "mcp": "1.26.0"
+  },
+  "codex_actual_mcp_calls": 15,
+  "superset": {
+    "url": "http://192.168.2.46:8088/superset/dashboard/1/",
+    "healthy": true,
+    "s4_sql_unchanged": true,
+    "chart_ids": [
+      1,
+      2,
+      3
+    ]
+  },
+  "trino": {
+    "nodeId": "bi008-single",
+    "state": "ACTIVE",
+    "nodeVersion": {
+      "version": "481"
+    },
+    "environment": "bi008",
+    "coordinator": true,
+    "coordinatorId": "ujdet",
+    "starting": false,
+    "uptime": "26.33m"
+  },
+  "scope": "W2 local stdio semantic query prototype; department authorization and automated publication NOT implemented"
+}

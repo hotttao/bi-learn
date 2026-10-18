@@ -1,0 +1,5 @@
+# MCP 2.x removed mcp.server.fastmcp, which Wren 0.16.0 imports.
+# Compile with -c requirements.lock to retain W1 core pins.
+wrenai[mcp,trino]==0.16.0
+wren-core-py==0.8.1
+mcp[cli]==1.26.0

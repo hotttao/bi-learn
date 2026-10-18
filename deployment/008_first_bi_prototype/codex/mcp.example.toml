@@ -1,0 +1,9 @@
+# Run scripts/configure_w2.py to render absolute paths into the ignored local config.
+[mcp_servers.bi008_wren]
+command = "/ABSOLUTE/PATH/TO/008_first_bi_prototype/scripts/wren_mcp.sh"
+cwd = "/ABSOLUTE/PATH/TO/008_first_bi_prototype/wren"
+required = true
+startup_timeout_sec = 30
+tool_timeout_sec = 90
+default_tools_approval_mode = "approve"
+enabled_tools = ["get_runtime_contract", "list_models", "describe_model", "list_cubes", "describe_cube", "get_instructions", "get_context", "recall_queries", "dry_plan", "dry_run", "run_sql", "query_cube"]

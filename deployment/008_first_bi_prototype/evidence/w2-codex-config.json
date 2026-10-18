@@ -1,0 +1,38 @@
+{
+  "codex_version": "codex-cli 0.163.0",
+  "binary": "/home/tao/.codex/packages/app-server-daemon/releases/0.163.0-x86_64-unknown-linux-musl/bin/codex",
+  "config_scope": "prototype-local .codex/config.toml; user/global and repository-root config untouched",
+  "entry": {
+    "name": "bi008_wren",
+    "enabled": true,
+    "disabled_reason": null,
+    "transport": {
+      "type": "stdio",
+      "command": "/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/scripts/wren_mcp.sh",
+      "args": [],
+      "env": null,
+      "env_vars": [],
+      "cwd": "/home/tao/code/github/bi-learn/deployment/008_first_bi_prototype/wren"
+    },
+    "startup_timeout_sec": 30.0,
+    "tool_timeout_sec": 90.0,
+    "auth_status": "unsupported"
+  },
+  "enabled_tools": [
+    "get_runtime_contract",
+    "list_models",
+    "describe_model",
+    "list_cubes",
+    "describe_cube",
+    "get_instructions",
+    "get_context",
+    "recall_queries",
+    "dry_plan",
+    "dry_run",
+    "run_sql",
+    "query_cube"
+  ],
+  "transport": "stdio",
+  "model_session_invocation_verified": true,
+  "invocation_evidence": "evidence/w2-codex-verification.json"
+}
