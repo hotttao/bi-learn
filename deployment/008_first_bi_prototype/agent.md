@@ -21,7 +21,7 @@
 
 ## 当前研究优先级
 
-S8 已按用户确认提交为 `57f67a7`，原计划未暂缓部分已完成。用户确认主题选择后提出文件 Wiki＋Skill 路线，S9 已实现并完成六次真实 Codex 验证，当前待 review、未提交，以 s9/plan.json 和 walkthroughs/009_S9-WALKTHROUGH.md 为准。不再重复模型 trial，不进入下一步。不要重复 S8 模型 trial。保持主 Wren、四订单基线和 S7 看板；自动语义同步、并发编辑保护和部门隔离仍暂缓。
+S8 已按用户确认提交为 `57f67a7`，原计划未暂缓部分已完成。用户确认主题选择后提出文件 Wiki＋Skill 路线，S9 已实现并完成六次真实 Codex 验证，已提交为 `9f73f7b`，以 s9/plan.json 和 walkthroughs/009_S9-WALKTHROUGH.md 为准。2026-10-19 用户要求仅将改进方案写入文档，暂不实现；方案见 ../../docs/wiki/11-file-wiki-semantic-context.md 第 5 节。不再重复模型 trial，不进入下一步。不要重复 S8 模型 trial。保持主 Wren、四订单基线和 S7 看板；自动语义同步、并发编辑保护和部门隔离仍暂缓。
 
 部门隔离暂缓，不作为当前前置；不宣称隔离通过。W3 独立 v2/195 fixture 与正常 v1/245 分开。S7 已启用限定版本的 MCP 同类型更新参数合并适配，原生失败必须保留，不将其描述为无需适配通过。
 

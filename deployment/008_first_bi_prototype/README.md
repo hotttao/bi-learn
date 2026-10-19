@@ -2,7 +2,9 @@
 
 ## 当前状态与协作方式
 
-2026-10-18：**S8 已按用户确认提交为 `57f67a7`，S0～S8 中未暂缓的原定研究已完成。S9 已按用户建议完成“文件 Wiki＋Skill 增量读取语义、Wren 仅执行查询”，待 review、未提交；六次真实 Codex 问数均正确，元数据 MCP 调用为 0。计划见 [S9 计划](s9/plan.json)，操作见 [009 教程](walkthroughs/009_S9-WALKTHROUGH.md)。不自动恢复部门隔离、自动语义同步或并发编辑保护。S7 自选日期看板保持可用。S8 教学与结果见 [008 教程](walkthroughs/008_S8-WALKTHROUGH.md)。**
+2026-10-19：**S8 已按用户确认提交为 `57f67a7`，S0～S8 中未暂缓的原定研究已完成。S9 已按用户建议完成“文件 Wiki＋Skill 增量读取语义、Wren 仅执行查询”，已提交为 `9f73f7b`；六次真实 Codex 问数均正确，元数据 MCP 调用为 0。计划见 [S9 计划](s9/plan.json)，操作见 [009 教程](walkthroughs/009_S9-WALKTHROUGH.md)。不自动恢复部门隔离、自动语义同步或并发编辑保护。S7 自选日期看板保持可用。S8 教学与结果见 [008 教程](walkthroughs/008_S8-WALKTHROUGH.md)。**
+
+当前仅记录 Skill review 后的[改进方案](../../docs/wiki/11-file-wiki-semantic-context.md#5-skill-review-后的改进方案2026-10-19仅规划)，包括发布、依赖、按需追溯、组合问题和索引评估；用户明确要求暂不实现。
 
 依据：[首个原型方案](../../docs/wiki/08-first-bi-prototype.md)、[工作流](../../docs/wiki/workflow.md)。按用户指定使用单数 `deployment/`；仓库已有的空目录 `deployments/` 保留。
 
@@ -1085,7 +1087,7 @@ S8 完整检查 `finish_s8.py` 已通过：54 次语义 SDK 查询全部对账�
 已新增独立 [S8 规则](s8/rules.md)、[关系审阅清单](s8/semantic-map.yaml)、[术语词典](../../docs/ddd/bi008/CONTEXT.md)、可执行复现脚本与去敏证据。累计 token 与模型耗时保留在 [对照汇总](evidence/s8-agent-comparison.json)，不臆测账户实际费用。额外 query-info 接口 401 不扩大身份，使用 statement stats，源端逐查询磁盘/CPU 未测。暂不引入本体或新平台；先维护实体身份、关系角色、历史和标签分配等可回归契约。S8 未提交，等待本步 review。
 
 
-## S9：文件 Wiki＋Skill 语义入口（2026-10-18，待 review）
+## S9：文件 Wiki＋Skill 语义入口（2026-10-18，已提交 `9f73f7b`）
 
 用户先确认按业务主题选择上下文，随后提出参考 LLM Wiki、直接读取 Wren 格式文件。当前主线据此调整为 **Codex → 本地 Skill → Wiki 索引/主题 → 原生 Wren YAML → 查询 MCP**。保留早期主题 MCP 适配作比较，不继续扩大它，也不要求安装向量库。
 
@@ -1095,4 +1097,4 @@ S8 完整检查 `finish_s8.py` 已通过：54 次语义 SDK 查询全部对账�
 
 主要入口：`.local/wren-venv/bin/python scripts/ask_s9.py '统计2026年全年的净销售额，按客户当前行业分组，并给出不重复总额。'`。它启动已有 Codex，不是新的 Agent 实现。需现有发布包与运行环境；发布与复验步骤见教程。
 
-文件方案解决发现与理解；关键规则还需可执行模型与回归保证。S9 原始目录实验不代表全部文字规则已被 Wren 强制执行。发布包指纹拒绝混版，不是自动语义同步；主题索引也不是权限控制。[Wiki 方案与取舍](../../docs/wiki/11-file-wiki-semantic-context.md) 汇总这一边界。S9 未提交，不进入下一阶段；原有暂缓项保持暂缓。
+文件方案解决发现与理解；关键规则还需可执行模型与回归保证。S9 原始目录实验不代表全部文字规则已被 Wren 强制执行。发布包指纹拒绝混版，不是自动语义同步；主题索引也不是权限控制。[Wiki 方案与取舍](../../docs/wiki/11-file-wiki-semantic-context.md) 汇总这一边界。S9 已提交为 `9f73f7b`；后续改进仅记录方案，暂不实施，原有暂缓项保持暂缓。
